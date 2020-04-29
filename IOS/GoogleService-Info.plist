@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>192548003681-5kfsql54ip70v6sd3lrilf7niv7e5tkg.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.192548003681-5kfsql54ip70v6sd3lrilf7niv7e5tkg</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDONTZJEYMYC0tXKKdXt8RiO0n4lbIG9RM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>192548003681</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.theoryparking</string>
+	<key>PROJECT_ID</key>
+	<string>theory-parking</string>
+	<key>STORAGE_BUCKET</key>
+	<string>theory-parking.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:192548003681:ios:a9a80a45d278ced99caf20</string>
+	<key>DATABASE_URL</key>
+	<string>https://theory-parking.firebaseio.com</string>
+</dict>
+</plist>
