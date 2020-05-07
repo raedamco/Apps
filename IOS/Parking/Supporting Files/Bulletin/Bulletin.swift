@@ -81,6 +81,38 @@ enum BulletinDataSource {
         
     }
     
+    static func cancelRoute() -> FeedbackPageBLTNItem {
+        let page = FeedbackPageBLTNItem(title: "Confirm")
+
+        page.appearance.actionButtonColor = standardContrastColor
+        page.appearance.actionButtonTitleColor = standardBackgroundColor
+        page.appearance.actionButtonFontSize = 22
+        
+        page.appearance.titleTextColor = standardContrastColor
+        
+        page.appearance.alternativeButtonTitleColor = standardContrastColor
+        page.appearance.alternativeButtonFontSize = 20
+        
+        page.descriptionLabel?.textAlignment = .left
+        
+        page.actionButtonTitle = "Cancel"
+        page.alternativeButtonTitle = "Continue"
+        page.descriptionText = "Confirm route cancelation"
+        page.requiresCloseButton = false
+        
+        page.actionHandler = { item in
+            item.manager?.dismissBulletin(animated: true)
+            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
+        }
+        
+        page.alternativeHandler = { item in
+            item.manager?.dismissBulletin(animated: true)
+        }
+        
+        return page
+        
+    }
+    
     
     
     

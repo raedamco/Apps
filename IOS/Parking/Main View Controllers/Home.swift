@@ -40,6 +40,11 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         let page = BulletinDataSource.routeInfo()
         return BLTNItemManager(rootItem: page)
     }()
+    
+    lazy var bulletinManagerCancelRoute: BLTNItemManager = {
+        let page = BulletinDataSource.cancelRoute()
+        return BLTNItemManager(rootItem: page)
+    }()
     // BLTNBoard END
     
     override func viewDidLoad() {
@@ -136,30 +141,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
 }
 
 extension HomeViewController: GMSAutocompleteViewControllerDelegate {
-    func styleMap(DarkMode: Bool) {
-        mapView.settings.myLocationButton = true
-        mapView.settings.rotateGestures = false
-        var style = String()
-        
-        if DarkMode == true {
-            style = "darkstyle"
-        }else{
-            style = "lightstyle"
-        }
-        
-        do{
-            if let styleURL = Bundle.main.url(forResource: style, withExtension: "json") {
-                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
-            }else{
-                NSLog("Unable to find style.json")
-            }
-        }catch{
-            NSLog("One or more of the map styles failed to load. \(error)")
-        }
-    }
-            
+
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
-        //let inputLocation = place.coordinate
         destinationName = place.name!
         
         dismiss(animated: true) {
@@ -198,30 +181,33 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         let destinationLocation2D = CLLocationCoordinate2D(latitude:  SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
         
         dismiss(animated: true, completion: {
-            self.mapView.animate(toLocation: self.userLocation.coordinate)
-            self.mapView.animate(toZoom: 19)
-            self.mapView.animate(toViewingAngle: 0)
             self.drawCircle(position: destinationLocation2D)
             self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
             self.destinationTextField.isHidden = true
             self.navigationbarAttributes(Hidden: false, Translucent: false)
-            self.setupNavigationBar(LargeText: true, Title: destinationName, SystemImageR: true, ImageR: true, ImageTitleR: "info.circle", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.cancelRoute(notification:)))
+            self.setupNavigationBar(LargeText: true, Title: destinationName, SystemImageR: true, ImageR: true, ImageTitleR: "info.circle", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.cancelRouteConfirm(notification:)))
         })
+    }
+    
+    @objc func cancelRouteConfirm(notification: NSNotification){
+        self.bulletinManagerCancelRoute.allowsSwipeInteraction = false
+        self.bulletinManagerCancelRoute.showBulletin(above: self)
     }
     
     @objc func cancelRoute(notification: NSNotification){
         self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
         SelectedParkingData.removeAll()
-        self.destinationTextField.titleLabel?.text = "Destination"
         self.navigationbarAttributes(Hidden: true, Translucent: true)
         self.destinationTextField.isHidden = false
         self.mapView.clear()
     }
     
+    
     @objc func showRouteInfo(){
         self.bulletinManagerShowInfo.allowsSwipeInteraction = false
         self.bulletinManagerShowInfo.showBulletin(above: self)
     }
+    
 
     func drawCircle(position: CLLocationCoordinate2D) {
         circle = GMSCircle(position: position, radius: 30)
@@ -230,30 +216,19 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         circle.map = mapView
     }
     
-    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
-        print("Error: ", error.localizedDescription)
-    }
-    
-    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
+    func drawPath(from polyStr: String){
+       let path = GMSPath(fromEncodedPath: polyStr)
+       let polyline = GMSPolyline(path: path)
+       polyline.strokeColor = UIColor(red: 0.08, green: 0.43, blue: 0.88, alpha: 1.00)
+       polyline.strokeWidth = 3.0
+       polyline.map = mapView
 
-        guard UIApplication.shared.applicationState == .inactive else {
-            return
-        }
+       let currentZoom = mapView.camera.zoom
+       let cameraUpdate = GMSCameraUpdate.fit(GMSCoordinateBounds(coordinate: self.userLocation.coordinate, coordinate: self.destinationLocation.coordinate))
+       mapView.moveCamera(cameraUpdate)
+       mapView.animate(toZoom: currentZoom - 0.2)
 
-        if self.traitCollection.userInterfaceStyle == .dark {
-            styleMap(DarkMode: true)
-            self.view.reloadInputViews()
-        }else{
-            styleMap(DarkMode: false)
-            self.view.reloadInputViews()
-        }
     }
-    
     
     func getRouteSteps(source: CLLocationCoordinate2D,destination: CLLocationCoordinate2D) {
         let session = URLSession.shared
@@ -281,7 +256,6 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
             guard let duration = leg["duration"] as? [String: Any] else { return }
             guard let distance = leg["distance"] as? [String: Any] else { return }
 
-
             RouteData.append(RouteInfo(Time: String(describing: duration["text"]! as Any), Distance: String(describing: distance["text"]! as Any)))
 
             for item in steps {
@@ -304,18 +278,53 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         task.resume()
     }
     
-    func drawPath(from polyStr: String){
-        let path = GMSPath(fromEncodedPath: polyStr)
-        let polyline = GMSPolyline(path: path)
-        polyline.strokeColor = .blue
-        polyline.strokeWidth = 3.0
-        polyline.map = mapView
-//
-//        let currentZoom = mapView.camera.zoom
-//        let cameraUpdate = GMSCameraUpdate.fit(GMSCoordinateBounds(coordinate: self.userLocation.coordinate, coordinate: self.destinationLocation.coordinate))
-//        mapView.moveCamera(cameraUpdate)
-//        mapView.animate(toZoom: currentZoom - 1.4)
+    
+    
+    func styleMap(DarkMode: Bool) {
+        mapView.settings.myLocationButton = true
+        mapView.settings.rotateGestures = false
+        var style = String()
         
+        if DarkMode == true {
+            style = "darkstyle"
+        }else{
+            style = "lightstyle"
+        }
+        
+        do{
+            if let styleURL = Bundle.main.url(forResource: style, withExtension: "json") {
+                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            }else{
+                NSLog("Unable to find style.json")
+            }
+        }catch{
+            NSLog("One or more of the map styles failed to load. \(error)")
+        }
+    }
+    
+
+    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
+        print("Error: ", error.localizedDescription)
+    }
+    
+    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard UIApplication.shared.applicationState == .inactive else {
+            return
+        }
+
+        if self.traitCollection.userInterfaceStyle == .dark {
+            styleMap(DarkMode: true)
+            self.view.reloadInputViews()
+        }else{
+            styleMap(DarkMode: false)
+            self.view.reloadInputViews()
+        }
     }
     
     
