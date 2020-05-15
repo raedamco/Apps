@@ -24,9 +24,9 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     var userLocation = CLLocation()
     var destinationLocation = CLLocation()
     var polyline = GMSPolyline()
-    var circle = GMSCircle()
     let APIKey = "AIzaSyBLF8x5SR3UJbI-ybS04Bd9TPUebvziMlw"
     
+
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
     var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
@@ -107,6 +107,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             locationManager.startUpdatingLocation()
+            locationManager.delegate = self
+            locationManager.startUpdatingHeading()
             mapView.isMyLocationEnabled = true
             mapView.settings.allowScrollGesturesDuringRotateOrZoom = true
             mapView.settings.rotateGestures = true
@@ -116,7 +118,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         }
         
         view = mapView
-        
      }
      
      func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -124,27 +125,36 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             return
         }
         locationManager.startUpdatingLocation()
-        mapView.isMyLocationEnabled = true
+        
         mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17)
+        
      }
      
-     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-         guard let location = locations.first else {
-             return
-         }
-        userLocation = location
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else {
+            return
+        }
         
+        userLocation = location
+
         let update = GMSCameraUpdate.setTarget(location.coordinate)
         mapView.moveCamera(update)
+        
         
         if location.distance(from: destinationLocation) <= blockDistance {
             updateDirectionsView()
         }else{
             
         }
-        
-     }
-     
+
+    }
+    
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading){
+
+    }
+    
+
      @objc func searchLocation(){
         let AutofillController = GMSAutocompleteViewController()
         AutofillController.delegate = self
@@ -176,7 +186,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         dismiss(animated: true, completion: {
             self.mapView.settings.compassButton = true
             self.mapView.settings.myLocationButton = true
-            self.drawCircle(position: destinationLocation2D)
+            self.addMarker(position: destinationLocation2D)
             self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
         })
     }
@@ -197,7 +207,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         let destinationLocation2D = CLLocationCoordinate2D(latitude:  SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
         
         dismiss(animated: true, completion: {
-            self.drawCircle(position: destinationLocation2D)
+            self.addMarker(position: destinationLocation2D)
             self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
             self.destinationTextField.isHidden = true
         })
@@ -222,7 +232,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
     
     
     
-    func drawCircle(position: CLLocationCoordinate2D) {
+    func addMarker(position: CLLocationCoordinate2D) {
         
 //        let pulseAnimation = CABasicAnimation(keyPath: "opacity")
 //        pulseAnimation.duration = 30
@@ -232,12 +242,16 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
 //        pulseAnimation.autoreverses = true
 //        pulseAnimation.repeatCount = .greatestFiniteMagnitude
 //        self.view.layer.add(pulseAnimation, forKey: nil)
-//        circle.map?.layer.add(pulseAnimation, forKey: nil)
+        let marker = GMSMarker()
+        marker.position = position
+        marker.map = mapView
         
-        circle = GMSCircle(position: position, radius: 30)
-        circle.fillColor = UIColor(red:0.13, green:0.35, blue:0.88, alpha:0.35)
-        circle.strokeColor = .white
-        circle.map = mapView
+        if self.traitCollection.userInterfaceStyle == .dark {
+            marker.icon = UIImage(named: "destination.png")
+        }else{
+            marker.icon = UIImage(named: "destination.png")?.withTintColor(.black)
+        }
+
     }
     
     func drawPath(from polyStr: String){
