@@ -2,8 +2,8 @@
 //  HomeViewController.swift
 //  Parking
 //
-//  Created by Omar on 9/8/19.
-//  Copyright © 2019 WAKED. All rights reserved.
+//  Created for Theory Parking on 9/8/19.
+//  Copyright © 2020 Theory Parking. All rights reserved.
 //
 
 import UIKit
@@ -88,7 +88,13 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     
         if destinationTextField.isHidden {
             navigationbarAttributes(Hidden: false, Translucent: false)
-            self.setupNavigationBar(LargeText: true, Title: destinationName, SystemImageR: true, ImageR: true, ImageTitleR: "info.circle", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.cancelRoute(notification:)))
+            if DirectionsData.count > 0 {
+                let directionTitle = DirectionsData[indexPath.row].Manuver
+                
+                self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
+                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
+                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
+            }
         }else{
             navigationbarAttributes(Hidden: true, Translucent: false)
         }
@@ -109,15 +115,17 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             //Force user to enable location
         }
         
-         view = mapView
+        view = mapView
+        
      }
      
      func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-         guard status == .authorizedWhenInUse else {
-             return
-         }
-         locationManager.startUpdatingLocation()
-         mapView.isMyLocationEnabled = true
+        guard status == .authorizedWhenInUse else {
+            return
+        }
+        locationManager.startUpdatingLocation()
+        mapView.isMyLocationEnabled = true
+        mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17)
      }
      
      func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -125,8 +133,16 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
              return
          }
         userLocation = location
-        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
-        locationManager.stopUpdatingLocation()
+        
+        let update = GMSCameraUpdate.setTarget(location.coordinate)
+        mapView.moveCamera(update)
+        
+        if location.distance(from: destinationLocation) <= blockDistance {
+            updateDirectionsView()
+        }else{
+            
+        }
+        
      }
      
      @objc func searchLocation(){
@@ -155,7 +171,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
     @objc func createRoute(notification: NSNotification){
         destinationLocation = CLLocation(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
         
-        let destinationLocation2D = CLLocationCoordinate2D(latitude:  SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
+        let destinationLocation2D = CLLocationCoordinate2D(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
         
         dismiss(animated: true, completion: {
             self.mapView.settings.compassButton = true
@@ -184,16 +200,9 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
             self.drawCircle(position: destinationLocation2D)
             self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
             self.destinationTextField.isHidden = true
-            self.navigationbarAttributes(Hidden: false, Translucent: false)
-            self.setupNavigationBar(LargeText: true, Title: destinationName, SystemImageR: true, ImageR: true, ImageTitleR: "info.circle", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.cancelRouteConfirm(notification:)))
         })
     }
-    
-    @objc func cancelRouteConfirm(notification: NSNotification){
-        self.bulletinManagerCancelRoute.allowsSwipeInteraction = false
-        self.bulletinManagerCancelRoute.showBulletin(above: self)
-    }
-    
+
     @objc func cancelRoute(notification: NSNotification){
         self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
         SelectedParkingData.removeAll()
@@ -202,14 +211,29 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         self.mapView.clear()
     }
     
-    
     @objc func showRouteInfo(){
         self.bulletinManagerShowInfo.allowsSwipeInteraction = false
         self.bulletinManagerShowInfo.showBulletin(above: self)
     }
     
-
+    func updateDirectionsView(){
+        print("USER NEAR STRUCTURE")
+    }
+    
+    
+    
     func drawCircle(position: CLLocationCoordinate2D) {
+        
+//        let pulseAnimation = CABasicAnimation(keyPath: "opacity")
+//        pulseAnimation.duration = 30
+//        pulseAnimation.fromValue = 0
+//        pulseAnimation.toValue = 1
+//        pulseAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+//        pulseAnimation.autoreverses = true
+//        pulseAnimation.repeatCount = .greatestFiniteMagnitude
+//        self.view.layer.add(pulseAnimation, forKey: nil)
+//        circle.map?.layer.add(pulseAnimation, forKey: nil)
+        
         circle = GMSCircle(position: position, radius: 30)
         circle.fillColor = UIColor(red:0.13, green:0.35, blue:0.88, alpha:0.35)
         circle.strokeColor = .white
@@ -223,10 +247,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
        polyline.strokeWidth = 3.0
        polyline.map = mapView
 
-       let currentZoom = mapView.camera.zoom
-       let cameraUpdate = GMSCameraUpdate.fit(GMSCoordinateBounds(coordinate: self.userLocation.coordinate, coordinate: self.destinationLocation.coordinate))
-       mapView.moveCamera(cameraUpdate)
-       mapView.animate(toZoom: currentZoom - 0.2)
+       self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 16, bearing: 0, viewingAngle: 25)
 
     }
     
@@ -268,18 +289,23 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                 
                 DispatchQueue.main.async {
                     self.drawPath(from: polyLineString)
+                    DirectionsData.append(DirectionsInfo(Time: String(describing: stepTime["text"]! as Any), Distance: String(describing: stepDistance["text"]! as Any), Manuver: stepTurns.html2String))
+                    
+                    if DirectionsData.count > 0 {
+                        self.navigationbarAttributes(Hidden: false, Translucent: false)
+                        let directionTitle = DirectionsData[indexPath.row].Manuver
+                        
+                        self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
+                        let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
+                        self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
+                    }
                 }
-                
-                DirectionsData.append(DirectionsInfo(Time: String(describing: stepTime["text"]! as Any), Distance: String(describing: stepDistance["text"]! as Any), Manuver: stepTurns.html2String))
-                //step["maneuver"] as? String ?? ""
             }
-
         })
         task.resume()
     }
     
-    
-    
+
     func styleMap(DarkMode: Bool) {
         mapView.settings.myLocationButton = true
         mapView.settings.rotateGestures = false
@@ -295,10 +321,10 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
             if let styleURL = Bundle.main.url(forResource: style, withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
             }else{
-                NSLog("Unable to find style.json")
+                print("Unable to find style.json")
             }
         }catch{
-            NSLog("One or more of the map styles failed to load. \(error)")
+            print("One or more of the map styles failed to load. \(error)")
         }
     }
     
@@ -326,7 +352,4 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
             self.view.reloadInputViews()
         }
     }
-    
-    
-    
 }

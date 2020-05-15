@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "0734C0962325BBBF00E74D0A"
                BuildableName = "park.app"
-               BlueprintName = "Parking"
-               ReferencedContainer = "container:Parking.xcodeproj">
+               BlueprintName = "Theory Parking"
+               ReferencedContainer = "container:Theory Parking.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,10 +46,16 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0734C0962325BBBF00E74D0A"
             BuildableName = "park.app"
-            BlueprintName = "Parking"
-            ReferencedContainer = "container:Parking.xcodeproj">
+            BlueprintName = "Theory Parking"
+            ReferencedContainer = "container:Theory Parking.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-FIRDebugDisabled"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -63,8 +69,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0734C0962325BBBF00E74D0A"
             BuildableName = "park.app"
-            BlueprintName = "Parking"
-            ReferencedContainer = "container:Parking.xcodeproj">
+            BlueprintName = "Theory Parking"
+            ReferencedContainer = "container:Theory Parking.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

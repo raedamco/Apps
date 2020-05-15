@@ -22,19 +22,19 @@ enum BulletinDataSource {
     
     static func routeInfo() -> BLTNPageItem {
         let page = FeedbackPageBLTNItem(title: "Route Info")
+        page.requiresCloseButton = true
+        page.isDismissable = true
         page.appearance.actionButtonColor = standardContrastColor
         page.appearance.actionButtonTitleColor = standardBackgroundColor
         page.appearance.actionButtonFontSize = 22
-        
+    
         page.appearance.titleTextColor = standardContrastColor
-        
-        page.appearance.alternativeButtonTitleColor = standardContrastColor
+        page.appearance.alternativeButtonTitleColor = .red
         page.appearance.alternativeButtonFontSize = 20
         
         page.actionButtonTitle = "More Info"
-        page.alternativeButtonTitle = "Close"
+        page.alternativeButtonTitle = "Cancel Route"
         page.descriptionText = "Time: \(RouteData[indexPath.row].Time) \n Distance: \(RouteData[indexPath.row].Distance)"
-        page.requiresCloseButton = false
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
@@ -42,26 +42,22 @@ enum BulletinDataSource {
         }
         
         page.alternativeHandler = { item in
-            item.manager?.dismissBulletin(animated: true)
+            let confrimCancel = self.cancelRoute()
+            page.manager?.push(item: confrimCancel)
         }
         
         return page
     }
     
     static func startRoute() -> FeedbackPageBLTNItem {
-        let page = FeedbackPageBLTNItem(title: "Confirm")
-
+        let page = FeedbackPageBLTNItem(title: "Confirm Route")
+        page.appearance.titleTextColor = standardContrastColor
         page.appearance.actionButtonColor = standardContrastColor
         page.appearance.actionButtonTitleColor = standardBackgroundColor
         page.appearance.actionButtonFontSize = 22
-        
-        page.appearance.titleTextColor = standardContrastColor
-        
         page.appearance.alternativeButtonTitleColor = standardContrastColor
         page.appearance.alternativeButtonFontSize = 20
-        
         page.descriptionLabel?.textAlignment = .left
-        
         page.actionButtonTitle = "Start"
         page.alternativeButtonTitle = "Cancel"
         page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n $\(SelectedParkingData[indexPath.row].Price)/min"
@@ -82,22 +78,16 @@ enum BulletinDataSource {
     }
     
     static func cancelRoute() -> FeedbackPageBLTNItem {
-        let page = FeedbackPageBLTNItem(title: "Confirm")
-
-        page.appearance.actionButtonColor = standardContrastColor
-        page.appearance.actionButtonTitleColor = standardBackgroundColor
-        page.appearance.actionButtonFontSize = 22
-        
+        let page = FeedbackPageBLTNItem(title: "Confirm Cancelation")
         page.appearance.titleTextColor = standardContrastColor
-        
+        page.appearance.actionButtonColor = .red
+        page.appearance.actionButtonTitleColor = standardContrastColor
+        page.appearance.actionButtonFontSize = 22
         page.appearance.alternativeButtonTitleColor = standardContrastColor
         page.appearance.alternativeButtonFontSize = 20
-        
         page.descriptionLabel?.textAlignment = .left
-        
-        page.actionButtonTitle = "Cancel"
-        page.alternativeButtonTitle = "Continue"
-        page.descriptionText = "Confirm route cancelation"
+        page.actionButtonTitle = "End Route"
+        page.alternativeButtonTitle = "Continue Route"
         page.requiresCloseButton = false
         
         page.actionHandler = { item in
@@ -112,9 +102,7 @@ enum BulletinDataSource {
         return page
         
     }
-    
-    
-    
+
     
  //PREFERENCES START//
     static func LocationPage() -> FeedbackPageBLTNItem {

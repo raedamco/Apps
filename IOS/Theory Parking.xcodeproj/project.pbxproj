@@ -369,9 +369,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0734C0962325BBBF00E74D0A /* Parking */ = {
+		0734C0962325BBBF00E74D0A /* Theory Parking */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0734C0AD2325BBC000E74D0A /* Build configuration list for PBXNativeTarget "Parking" */;
+			buildConfigurationList = 0734C0AD2325BBC000E74D0A /* Build configuration list for PBXNativeTarget "Theory Parking" */;
 			buildPhases = (
 				FBBCFA9E472B023730D6A3E0 /* [CP] Check Pods Manifest.lock */,
 				0734C0932325BBBF00E74D0A /* Sources */,
@@ -386,7 +386,7 @@
 			);
 			dependencies = (
 			);
-			name = Parking;
+			name = "Theory Parking";
 			productName = Parking;
 			productReference = 0734C0972325BBBF00E74D0A /* park.app */;
 			productType = "com.apple.product-type.application";
@@ -406,7 +406,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0734C0922325BBBF00E74D0A /* Build configuration list for PBXProject "Parking" */;
+			buildConfigurationList = 0734C0922325BBBF00E74D0A /* Build configuration list for PBXProject "Theory Parking" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -419,7 +419,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0734C0962325BBBF00E74D0A /* Parking */,
+				0734C0962325BBBF00E74D0A /* Theory Parking */,
 			);
 		};
 /* End PBXProject section */
@@ -751,7 +751,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0734C0922325BBBF00E74D0A /* Build configuration list for PBXProject "Parking" */ = {
+		0734C0922325BBBF00E74D0A /* Build configuration list for PBXProject "Theory Parking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0734C0AB2325BBC000E74D0A /* Debug */,
@@ -760,7 +760,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0734C0AD2325BBC000E74D0A /* Build configuration list for PBXNativeTarget "Parking" */ = {
+		0734C0AD2325BBC000E74D0A /* Build configuration list for PBXNativeTarget "Theory Parking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0734C0AE2325BBC000E74D0A /* Debug */,

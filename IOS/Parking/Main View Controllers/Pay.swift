@@ -121,7 +121,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     }
      
     @objc func searchLocation(){ 
-        retrieveNearByParking(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude, meters: 1000000)
+        retrieveNearByParking(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude, meters: nearByDistance)
         
     }
     

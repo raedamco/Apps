@@ -13,7 +13,6 @@ import UIKit
 
 let userDefaults = UserDefaults.standard
 let indexPath = IndexPath(row: Int(), section: Int())
-
 let database = Firestore.firestore()
 let settings = database.settings
 var reference: DocumentReference? = nil
@@ -21,11 +20,9 @@ var storageReference = Storage.storage().reference()
 var vehicles = [String]()
 var parkingAreas = [String]()
 var destinationName = String()
-
 var functions = Functions.functions()
 var errorMessage = String()
 var functionError = Bool()
-
 let currentDay = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: .medium, timeStyle: .short)
 
 //WEBSITE LINKS
@@ -40,7 +37,6 @@ var standardContrastColor = UIColor(named: "contrastColor")!
 var font = "VarelaRound-Regular"
 var fontBold = "VarelaRound-Regular"
 var standardFont = "VarelaRound-Regular"
-
 var standardTintColor = UIColor(red:0.00, green:0.48, blue:1.00, alpha:1.0)
 var standardClearColor = UIColor.clear
 
@@ -49,4 +45,6 @@ let titleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.fo
 let buttonAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 17)!]
 let largeTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 35)!]
 
-
+//DISTANCES
+let blockDistance = 0.012427423844747
+let nearByDistance = Double(1000000)

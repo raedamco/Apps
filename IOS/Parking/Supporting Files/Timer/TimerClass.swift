@@ -8,9 +8,6 @@
 
 import Foundation
 
-
-
-
 class customTimer {
     var startTime: TimeInterval?
     
