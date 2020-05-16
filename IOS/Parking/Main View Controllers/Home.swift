@@ -107,8 +107,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             locationManager.startUpdatingLocation()
-            locationManager.delegate = self
-            locationManager.startUpdatingHeading()
             mapView.isMyLocationEnabled = true
             mapView.settings.allowScrollGesturesDuringRotateOrZoom = true
             mapView.settings.rotateGestures = true
@@ -136,11 +134,12 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         }
         
         userLocation = location
-
-        let update = GMSCameraUpdate.setTarget(location.coordinate)
-        mapView.moveCamera(update)
-        
-        
+        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
+        locationManager.stopUpdatingLocation()
+//        let update = GMSCameraUpdate.setTarget(location.coordinate)
+//        mapView.moveCamera(update)
+//
+//
         if location.distance(from: destinationLocation) <= blockDistance {
             updateDirectionsView()
         }else{
@@ -188,6 +187,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
             self.mapView.settings.myLocationButton = true
             self.addMarker(position: destinationLocation2D)
             self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
+ 
         })
     }
     
@@ -255,13 +255,12 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
     }
     
     func drawPath(from polyStr: String){
-       let path = GMSPath(fromEncodedPath: polyStr)
-       let polyline = GMSPolyline(path: path)
-       polyline.strokeColor = UIColor(red: 0.08, green: 0.43, blue: 0.88, alpha: 1.00)
-       polyline.strokeWidth = 3.0
-       polyline.map = mapView
-
-       self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 16, bearing: 0, viewingAngle: 25)
+        let path = GMSPath(fromEncodedPath: polyStr)
+        let polyline = GMSPolyline(path: path)
+        polyline.strokeColor = UIColor(red: 0.08, green: 0.43, blue: 0.88, alpha: 1.00)
+        polyline.strokeWidth = 3.0
+        polyline.map = mapView
+//        self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 16, bearing: 0, viewingAngle: 25)
 
     }
     
@@ -313,10 +312,15 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                         let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
                         self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
                     }
+                    let currentZoom = self.mapView.camera.zoom
+                    let cameraUpdate = GMSCameraUpdate.fit(GMSCoordinateBounds(coordinate: self.userLocation.coordinate, coordinate: self.destinationLocation.coordinate))
+                    self.mapView.moveCamera(cameraUpdate)
+                    self.mapView.animate(toZoom: currentZoom - 1.4)
                 }
             }
         })
         task.resume()
+        
     }
     
 
