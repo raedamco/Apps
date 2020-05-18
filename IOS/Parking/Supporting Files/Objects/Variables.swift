@@ -30,6 +30,7 @@ var webLink = String()
 var webViewLabel = String()
 
 //COLORS
+
 var standardBackgroundColor = UIColor(named: "color")!
 var standardContrastColor = UIColor(named: "contrastColor")!
 

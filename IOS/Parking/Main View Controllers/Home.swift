@@ -88,6 +88,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     
         if destinationTextField.isHidden {
             navigationbarAttributes(Hidden: false, Translucent: false)
+            
             if DirectionsData.count > 0 {
                 let directionTitle = DirectionsData[indexPath.row].Manuver
                 
@@ -123,7 +124,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             return
         }
         locationManager.startUpdatingLocation()
-        
         mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17)
         
      }
@@ -300,30 +300,35 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                 guard let polyline = step["polyline"] as? [String: Any] else { return }
                 guard let polyLineString = polyline["points"] as? String else { return }
                 
+                guard let maneuver = step["maneuver"] as? Any else { return }
+                print(maneuver)
                 DispatchQueue.main.async {
                     self.drawPath(from: polyLineString)
                     DirectionsData.append(DirectionsInfo(Time: String(describing: stepTime["text"]! as Any), Distance: String(describing: stepDistance["text"]! as Any), Manuver: stepTurns.html2String))
                     
                     if DirectionsData.count > 0 {
                         self.navigationbarAttributes(Hidden: false, Translucent: false)
-                        let directionTitle = DirectionsData[indexPath.row].Manuver
+                        let directionTitle = DirectionsData[indexPath.row].Manuver + " in " + DirectionsData[indexPath.row].Distance //DirectionsData[indexPath.row].Manuver
                         
                         self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
                         let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
                         self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
                     }
-                    let currentZoom = self.mapView.camera.zoom
-                    let cameraUpdate = GMSCameraUpdate.fit(GMSCoordinateBounds(coordinate: self.userLocation.coordinate, coordinate: self.destinationLocation.coordinate))
-                    self.mapView.moveCamera(cameraUpdate)
-                    self.mapView.animate(toZoom: currentZoom - 1.4)
                 }
             }
         })
         task.resume()
-        
+        let cameraUpdate = GMSCameraUpdate.fit(GMSCoordinateBounds(coordinate: self.userLocation.coordinate, coordinate: self.destinationLocation.coordinate))
+        self.mapView.moveCamera(cameraUpdate)
+        let currentZoom = self.mapView.camera.zoom
+        self.mapView.animate(toZoom: currentZoom - 0.8)
     }
-    
 
+}
+
+
+
+extension HomeViewController {
     func styleMap(DarkMode: Bool) {
         mapView.settings.myLocationButton = true
         mapView.settings.rotateGestures = false

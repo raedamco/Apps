@@ -26,9 +26,9 @@ class FilterView: UITableViewController {
         
         tableViewData = [
                         CellData(opened: false, title: "Sort",text: true, sectionData: ["Price: Low to High","Price: High to Low","Distance: Near to Far","Distance: Far to Near"]),
-                        CellData(opened: false, title: "Distance",text: false, sectionData: []),
-                        CellData(opened: false, title: "Price",text: false, sectionData: []),
-                        CellData(opened: false, title: "Duration",text: false, sectionData: []),
+                        CellData(opened: false, title: "Distance",text: false, sectionData: ["10ft or Less", "50ft or Less", "100ft or Less"]),
+                        CellData(opened: false, title: "Price",text: false, sectionData: ["$2/hr or Less","$3-4/hr","$5-9/hr"]),
+                        CellData(opened: false, title: "Duration",text: false, sectionData: ["1hr Max","2hr Max","4hr Max","No Constraint"]),
                         CellData(opened: false, title: "Features",text: true, sectionData: ["EV","ADA","Security"])
                         ]
     }
@@ -124,6 +124,8 @@ class FilterView: UITableViewController {
             cell?.accessoryView = UIImageView.init(image: UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate))
             cell?.accessoryView?.tintColor = standardContrastColor
         }
+        tableView.beginUpdates()
+        tableView.endUpdates()
         
     }
     

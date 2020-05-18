@@ -31,12 +31,6 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Find Parking</string>
-	<key>NSLocationUsageDescription</key>
-	<string>Find Parking</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Find Parking</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -70,5 +64,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>We use Bluetooth to help validate your parking</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>We use Bluetooth to help validate your parking</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Your location is needed to guide you to a parking spot</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Your location is needed to guide you to a parking spot</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is needed to guide you to a parking spot</string>
 </dict>
 </plist>

@@ -134,6 +134,35 @@ enum BulletinDataSource {
         
     }
     
+    static func BluetoothPage() -> FeedbackPageBLTNItem {
+        let page = FeedbackPageBLTNItem(title: "Bluetooth")
+        page.image = UIImage(named: "Bluetooth")
+        page.descriptionText = "Bluetooth services required to improve experience"
+        page.actionButtonTitle = "Enable"
+        page.isDismissable = false
+        page.appearance.titleTextColor = standardContrastColor
+        
+        if userDefaults.bool(forKey: "BLUETOOTH") == true {
+            page.alternativeButtonTitle = "Disable"
+        }else{
+            page.alternativeButtonTitle = "Not now"
+        }
+        
+        page.actionHandler = { item in
+            userDefaults.set(true, forKey: "BLUETOOTH")
+            //UPDATE PERMISSIONS
+            item.manager?.dismissBulletin(animated: true)
+        }
+        
+        page.alternativeHandler = { item in
+            userDefaults.set(false, forKey: "BLUETOOTH")
+            item.manager?.dismissBulletin(animated: true)
+        }
+        
+        return page
+        
+    }
+    
     static func NotitificationsPage() -> FeedbackPageBLTNItem {
         let page = FeedbackPageBLTNItem(title: "Push Notifications")
         page.image = UIImage(named: "Notification")
@@ -154,7 +183,6 @@ enum BulletinDataSource {
             
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
             UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: {_, _ in })
-        
             UIApplication.shared.registerForRemoteNotifications()
             item.manager?.dismissBulletin(animated: true)
         }
@@ -190,6 +218,33 @@ enum BulletinDataSource {
         
         page.alternativeHandler = { item in
             userDefaults.set(false, forKey: "AUTO-CHECKIN")
+            item.manager?.dismissBulletin(animated: true)
+        }
+        return page
+    }
+    
+    static func ThemePage() -> FeedbackPageBLTNItem {
+        let page = FeedbackPageBLTNItem(title: "Theme")
+        page.image = UIImage(named: "Theme")
+        page.descriptionText = "Choose your preferred theme"
+        page.isDismissable = false
+        page.appearance.titleTextColor = standardContrastColor
+        
+        if userDefaults.bool(forKey: "THEME") == true {
+            page.actionButtonTitle = "Light"
+            page.alternativeButtonTitle = "Dark"
+        }else{
+            page.actionButtonTitle = "Dark"
+            page.alternativeButtonTitle = "Light"
+        }
+        
+        page.actionHandler = { item in
+            userDefaults.set(true, forKey: "THEME")
+            item.manager?.dismissBulletin(animated: true)
+        }
+        
+        page.alternativeHandler = { item in
+            userDefaults.set(false, forKey: "THEME")
             item.manager?.dismissBulletin(animated: true)
         }
         return page

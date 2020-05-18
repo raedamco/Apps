@@ -6,15 +6,18 @@
 import UIKit
 import CoreLocation
 import UserNotifications
+import CoreBluetooth
 /**
  * Requests permission for system features.
  */
 
 class PermissionsManager {
-    
+    static var centralManager: CBCentralManager?
+    static var peripheral: CBPeripheral?
     static let shared = PermissionsManager()
     
     let locationManager = CLLocationManager()
+    let bluetoothManager = CBCentralManager()
     
     func requestLocalNotifications() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
@@ -26,5 +29,6 @@ class PermissionsManager {
     func requestWhenInUseLocation() {
         locationManager.requestWhenInUseAuthorization()
     }
+
     
 }

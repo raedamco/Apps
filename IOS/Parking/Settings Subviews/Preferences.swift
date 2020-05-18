@@ -8,11 +8,12 @@
 
 import UIKit
 import BLTNBoard
+import CoreBluetooth
 
 class PreferencesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var tableView = UITableView()
-    var sections = ["Location","Bluetooth", "Notifications", "Auto Check-In"]
+    var sections = ["Location","Bluetooth","Notifications","Automated Check-In","Theme"]
     
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
@@ -20,6 +21,11 @@ class PreferencesViewController: UIViewController, UITableViewDelegate, UITableV
     
     lazy var bulletinManagerLocation: BLTNItemManager = {
         let page = BulletinDataSource.LocationPage()
+        return BLTNItemManager(rootItem: page)
+    }()
+    
+    lazy var bulletinManagerBluetooth: BLTNItemManager = {
+        let page = BulletinDataSource.BluetoothPage()
         return BLTNItemManager(rootItem: page)
     }()
     
@@ -32,6 +38,12 @@ class PreferencesViewController: UIViewController, UITableViewDelegate, UITableV
         let page = BulletinDataSource.AutoCheckInPage()
         return BLTNItemManager(rootItem: page)
     }()
+    
+    lazy var bulletinManagerTheme: BLTNItemManager = {
+        let page = BulletinDataSource.ThemePage()
+        return BLTNItemManager(rootItem: page)
+    }()
+
     // BLTNBoard END
     
     override func viewDidLoad() {
@@ -102,17 +114,19 @@ class PreferencesViewController: UIViewController, UITableViewDelegate, UITableV
             self.bulletinManagerLocation.allowsSwipeInteraction = false
             self.bulletinManagerLocation.showBulletin(above: self)
         }else if sections[indexPath.row] == "Bluetooth"{
-            
+            self.bulletinManagerBluetooth.allowsSwipeInteraction = false
+            self.bulletinManagerBluetooth.showBulletin(above: self)
         }else if sections[indexPath.row] == "Notifications"{
             self.bulletinManagerNotification.allowsSwipeInteraction = false
             self.bulletinManagerNotification.showBulletin(above: self)
-        }else if sections[indexPath.row] == "Auto Check-In"{
+        }else if sections[indexPath.row] == "Automated Check-In"{
             self.bulletinManagerAutoCheckIn.allowsSwipeInteraction = false
             self.bulletinManagerAutoCheckIn.showBulletin(above: self)
+        }else if sections[indexPath.row] == "Theme"{
+            self.bulletinManagerTheme.allowsSwipeInteraction = false
+            self.bulletinManagerTheme.showBulletin(above: self)
         }
-        
     }
-    
     
     @objc func closeView(gesture: UISwipeGestureRecognizer) {
         self.tabBarController?.tabBar.isHidden = false
