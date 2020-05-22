@@ -3,22 +3,10 @@ const admin = require('firebase-admin');
 admin.initializeApp({
   databaseURL: "https://theory-parking.firebaseio.com"
 });
-// var logging = require('@google-cloud/logging')();
+
 const stripe = require('stripe')("sk_test_CFsR0YQ2XzltRxt6pmRCxoOH00rs0xeJ3I");
-
-// When a user is created, register them with Stripe
-exports.createStripeCustomer = functions.auth.user().onCreate(async (user) => {
-  const customer = await stripe.customers.create({email: user.email});
-  return admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).set({"StripeID": customer.id}, {merge: true});
-});
-
-// When a user deletes their account, clean up after them
-exports.cleanupUser = functions.auth.user().onDelete(async (user) => {
-  const snapshot = await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).get();
-  const customer = snapshot.data();
-  await stripe.customers.del(customer.customer_id);
-  return admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).delete();
-});
+var slack = require('slack-notify')('https://hooks.slack.com/services/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');
+// var logging = require('@google-cloud/logging')();
 
 // Add a payment source (card) for a user by writing a stripe payment source token to Cloud Firestore
 exports.addPaymentSource = functions.firestore.document('/stripe_customers/{userId}/tokens/{pushId}').onCreate(async (snap, context) => {
@@ -127,12 +115,8 @@ exports.createStripeCharge = functions.firestore.document('stripe_customers/{use
 // alerts, if you've opted into receiving them.
 // [START reporterror]
 function reportError(err, context = {}) {
-  // This is the name of the StackDriver log stream that will receive the log
-  // entry. This name can be any valid log stream name, but must contain "err"
-  // in order for the error to be picked up by StackDriver Error Reporting.
   const logName = 'errors';
   const log = logging.log(logName);
-
   // https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/MonitoredResource
   const metadata = {
     resource: {
@@ -140,7 +124,6 @@ function reportError(err, context = {}) {
       labels: {function_name: process.env.FUNCTION_NAME},
     },
   };
-
   // https://cloud.google.com/error-reporting/reference/rest/v1beta1/ErrorEvent
   const errorEvent = {
     message: err.stack,
@@ -150,7 +133,6 @@ function reportError(err, context = {}) {
     },
     context: context,
   };
-
   // Write the error log entry
   return new Promise((resolve, reject) => {
     log.write(log.entry(metadata, errorEvent), (error) => {
@@ -167,3 +149,80 @@ function reportError(err, context = {}) {
 function userFacingMessage(error) {
   return error.type ? error.message : 'An error occurred, developers have been alerted';
 }
+
+// When a user creates their account, set up their database log, stripe account, and notify slack
+exports.addUser = functions.auth.user().onCreate(async (user) => {
+    var date = new Date();
+    const customer = await stripe.customers.create({email: user.email});
+
+    admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).set({
+        UUID: user.uid,
+        Email: user.email,
+        Joined: admin.firestore.Timestamp.fromDate(date),
+        StripeID: customer.id
+    }, {merge: true});
+
+    const email = user.email;
+
+    await slack.send({
+        'username': 'User Activity Bot',
+        'text': 'New User Joined :tada:',
+        'icon_emoji': ':tada:',
+        'attachments': [{
+          'color': '#30FCF1',
+          'fields': [
+            {
+                'title': 'Email',
+                'value': email,
+                'short': true
+            },
+            {
+                'title': 'Joined',
+                'value': date.toUTCString(),
+                'short': true
+            }
+          ]
+        }]
+    })
+
+    return
+});
+
+
+// When a user deletes their account, clean up after them and notify slack
+exports.removeUser = functions.auth.user().onDelete(async (user) => {
+  const snapshot = await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).get();
+  const snapval = snapshot.data();
+  const email = snapval.Email;
+  const name = snapval.Name;
+  const joined = snapval.Joined;
+
+  slack.send({
+      'username': 'User Activity Bot',
+      'text': 'User Deleted Account :disappointed:',
+      'icon_emoji': ':x:',
+      'attachments': [{
+        'color': '#ff0000',
+        'fields': [
+          {
+              'title': 'Email',
+              'value': email,
+              'short': true
+          },
+          {
+              'title': 'Name',
+              'value': name,
+              'short': true
+          },
+          {
+              'title': 'Date Joined',
+              'value': joined,
+              'short': true
+          },
+        ]
+      }]
+  })
+
+  await stripe.customers.del(snapval.StripeID);
+  return admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).delete();
+});

@@ -102,7 +102,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     
     func showView(ViewController: UIViewController){
         
-        if Auth.auth().currentUser == nil {
+        if Auth.auth().currentUser == nil || UserData.isEmpty == true {
             self.logout()
             self.errorMessageBLTN = "We hit a snag. Please sign in again."
             self.bulletinManagerError.allowsSwipeInteraction = false

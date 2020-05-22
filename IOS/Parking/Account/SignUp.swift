@@ -119,10 +119,22 @@ class SignUp: UIViewController, UITextFieldDelegate{
     }
     
     @objc func createDatabaseAccount(){
-        let UUID = Auth.auth().currentUser?.uid
-        let structData: [String: Any] = ["Name": self.nameTextField.text!, "Email": self.emailTextField.text!, "UUID": UUID!, "Joined": currentDay, "Permits":[:],"Vehicles":[]]
+//        functions.httpsCallable("addUserData").call(["UID": Auth.auth().currentUser?.uid ,"Name": self.nameTextField.text!]) { (result, error) in
+//            if let error = error as NSError? {
+//                if error.domain == FunctionsErrorDomain {
+////                    let code = FunctionsErrorCode(rawValue: error.code)
+////                    let message = error.localizedDescription
+////                    let details = error.userInfo[FunctionsErrorDetailsKey]
+//                }
+//
+//                return self.getData()
+//            }
+//        }
         
-        database.collection("Users").document("Commuters").collection("Users").document(UUID!).setData(structData) { error in
+        let UUID = Auth.auth().currentUser?.uid
+        let structData: [String: Any] = ["Name": self.nameTextField.text!, "Permits":[:],"Vehicles":[]]
+
+        database.collection("Users").document("Commuters").collection("Users").document(UUID!).setData(structData, merge: true) { error in
             if let error = error?.localizedDescription {
                 print(error)
             }else{

@@ -275,7 +275,7 @@ enum BulletinDataSource {
     
 //CHECKIN START//
     static func parkingProviderInfo() -> BLTNPageItem {
-        let page = BLTNPageItem(title: "Confirm Location")
+        let page = BLTNPageItem()
         page.image = UIImage(named: "Info")?.withTintColor(standardContrastColor)
         
         page.appearance.actionButtonColor = standardContrastColor
@@ -289,26 +289,34 @@ enum BulletinDataSource {
         
         page.descriptionLabel?.textAlignment = .left
         
-        page.actionButtonTitle = "Yes"
-        page.alternativeButtonTitle = "No"
-        
-//        if (NearByParking[indexPath.row].Organization == SelectedParkingData[indexPath.row].Organization) && NearByParking[indexPath.row].Spot == SelectedParkingData[indexPath.row].Spot {
-//            page.descriptionText = "\(NearByParking[indexPath.row].Organization) \n \(NearByParking[indexPath.row].Name) \n \(NearByParking[indexPath.row].Floor)-\(NearByParking[indexPath.row].Spot)"
-//        }
-        page.descriptionText = "\(NearByParking[indexPath.row].Organization) \n \(NearByParking[indexPath.row].Name) \n \(NearByParking[indexPath.row].Floor) - \(NearByParking[indexPath.row].Spot)"
-        page.requiresCloseButton = false
-        
 
-        page.actionHandler = { item in
-            item.manager?.dismissBulletin(animated: true)
-            NotificationCenter.default.post(name: NSNotification.Name("startPayment"), object: nil)
+        if SelectedParkingData.count > 0 {
+            page.actionButtonTitle = "Yes"
+            page.alternativeButtonTitle = "No"
+            
+            page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot)"
+            
+            page.actionHandler = { item in
+                item.manager?.dismissBulletin(animated: true)
+                NotificationCenter.default.post(name: NSNotification.Name("startPayment"), object: nil)
+            }
+            
+            page.alternativeHandler = { item in
+                item.manager?.dismissBulletin(animated: true)
+                NotificationCenter.default.post(name: NSNotification.Name("enterLocation"), object: nil)
+            }
+        }else if SelectedParkingData.count == 0{
+            page.actionButtonTitle = "Dimiss"
+            
+            page.descriptionText = "You must enter your destination and arrive prior to starting payment"
+            
+            page.actionHandler = { item in
+                item.manager?.dismissBulletin(animated: true)
+            }
+
         }
-        
-        page.alternativeHandler = { item in
-            item.manager?.dismissBulletin(animated: true)
-            NotificationCenter.default.post(name: NSNotification.Name("enterLocation"), object: nil)
-        }
-        
+        page.requiresCloseButton = false
+    
         return page
     }
     
@@ -385,6 +393,7 @@ enum BulletinDataSource {
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
             NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
         }
 
         return page

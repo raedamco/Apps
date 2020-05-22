@@ -32,7 +32,7 @@ extension UITextField {
         self.layer.shadowOpacity = 1.0
         self.layer.shadowRadius = 0.0
         
-        self.layer.shadowColor = UIColor.white.cgColor
+        self.layer.shadowColor = UIColor.gray.cgColor
         self.textColor = standardContrastColor
         self.layer.backgroundColor = standardBackgroundColor.cgColor
     }

@@ -32,4 +32,11 @@ func getUserData(Email: String){
             getTransactionHistory()
         }
     }
+    
+    if UserData.isEmpty {
+        print("error")
+    }else{
+        return
+    }
+    
 }

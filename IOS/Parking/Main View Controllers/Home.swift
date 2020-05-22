@@ -90,11 +90,12 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             navigationbarAttributes(Hidden: false, Translucent: false)
             
             if DirectionsData.count > 0 {
-                let directionTitle = DirectionsData[indexPath.row].Manuver
+                let directionTitle = SelectedParkingData[indexPath.row].Name
+                    //DirectionsData[indexPath.row].Manuver
                 
                 self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
-                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
+//                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
+//                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
             }
         }else{
             navigationbarAttributes(Hidden: true, Translucent: false)
@@ -308,11 +309,12 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                     
                     if DirectionsData.count > 0 {
                         self.navigationbarAttributes(Hidden: false, Translucent: false)
-                        let directionTitle = DirectionsData[indexPath.row].Manuver + " in " + DirectionsData[indexPath.row].Distance //DirectionsData[indexPath.row].Manuver
+                        let directionTitle = SelectedParkingData[indexPath.row].Name
+                            //DirectionsData[indexPath.row].Manuver + " in " + DirectionsData[indexPath.row].Distance //DirectionsData[indexPath.row].Manuver
                         
                         self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-                        let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
-                        self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
+//                        let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
+//                        self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
                     }
                 }
             }
