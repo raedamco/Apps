@@ -301,20 +301,22 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                 guard let polyline = step["polyline"] as? [String: Any] else { return }
                 guard let polyLineString = polyline["points"] as? String else { return }
                 
-                guard let maneuver = step["maneuver"] as? Any else { return }
-                print(maneuver)
+//                guard let maneuver = step["maneuver"] as? Any else { return }
+//                print(maneuver)
+                
                 DispatchQueue.main.async {
                     self.drawPath(from: polyLineString)
                     DirectionsData.append(DirectionsInfo(Time: String(describing: stepTime["text"]! as Any), Distance: String(describing: stepDistance["text"]! as Any), Manuver: stepTurns.html2String))
                     
                     if DirectionsData.count > 0 {
                         self.navigationbarAttributes(Hidden: false, Translucent: false)
+                        
                         let directionTitle = SelectedParkingData[indexPath.row].Name
                             //DirectionsData[indexPath.row].Manuver + " in " + DirectionsData[indexPath.row].Distance //DirectionsData[indexPath.row].Manuver
                         
                         self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-//                        let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
-//                        self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
+                        let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 25)!]
+                        self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
                     }
                 }
             }

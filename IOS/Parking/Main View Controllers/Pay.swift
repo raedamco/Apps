@@ -97,7 +97,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         self.view.addSubview(checkInButton)
         
         checkInButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        checkInButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -125).isActive = true
+        checkInButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
         checkInButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
         checkInButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
 
@@ -120,7 +120,8 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.stopUpdatingLocation()
     }
      
-    @objc func searchLocation(){ 
+    @objc func searchLocation(){
+        // MARK: CHECK IF USER HAS PAYMENT SETUP BEFORE ALLOWING THEM TO CHECK IN
         retrieveNearByParking(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude, meters: nearByDistance)
         
     }

@@ -63,12 +63,12 @@ extension AppDelegate {
     func style() {
         UITableView.appearance().backgroundColor = standardBackgroundColor
         
-        UITabBar.appearance().backgroundColor = standardBackgroundColor
+        UITabBar.appearance().backgroundColor = standardBackgroundColor.withAlphaComponent(0.7)
         UITabBar.appearance().barTintColor = standardBackgroundColor
         UITabBar.appearance().tintColor = standardContrastColor
         UITabBar.appearance().clipsToBounds = true
         UITabBar.appearance().isOpaque = false
-        UITabBar.appearance().isTranslucent = false
+        UITabBar.appearance().isTranslucent = true
         UITabBar.appearance().backgroundImage = UIImage()
         UITabBar.appearance().shadowImage = UIImage()
     }

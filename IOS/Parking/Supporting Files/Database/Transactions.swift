@@ -14,7 +14,7 @@ var TransactionsData = [Transactions]()
 
 func getTransactionHistory(){
     if UserData.isEmpty != true {
-        database.collection("Users").document("Commuters").collection("Users").document(UserData[indexPath.row].UID).collection("History").order(by: "Duration.Start", descending: true).getDocuments { (snapshot, error) in
+        database.collection("Users").document("Commuters").collection("Users").document(Auth.auth().currentUser?.uid ?? "").collection("History").order(by: "Duration.Start", descending: true).getDocuments { (snapshot, error) in
             if error != nil {
                 print(error as Any)
             }else{
