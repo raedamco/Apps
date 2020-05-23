@@ -81,7 +81,7 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
         self.view.addSubview(checkInButton)
         
         checkInButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        checkInButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -125).isActive = true
+        checkInButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
         checkInButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
         checkInButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
     }

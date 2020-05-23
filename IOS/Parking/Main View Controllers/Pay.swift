@@ -66,6 +66,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         self.view.reloadInputViews()
         createViewLayout()
         paymentButton.isEnabled = Stripe.deviceSupportsApplePay()
+        paymentButton.layer.borderColor = UIColor.clear.cgColor
         NotificationCenter.default.addObserver(self, selector: #selector(displayParkingInfo(notification:)), name: NSNotification.Name(rawValue: "checkIn"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(enterLocation(notification:)), name: NSNotification.Name(rawValue: "enterLocation"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(startPayment(notification:)), name: NSNotification.Name(rawValue: "startPayment"), object: nil)
@@ -176,7 +177,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         timeLabel.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
 
         paymentButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        paymentButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -125).isActive = true
+        paymentButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
         paymentButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
         paymentButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
         

@@ -29,13 +29,11 @@ func getUserData(Email: String){
                 
                 UserData.append(User(Name: Name, Email: Email, UID: UID, License: License, Permit: Permit, StripeID: StripeID))
             }
-            getTransactionHistory()
         }
     }
     
-    if UserData.isEmpty {
-        print("error")
-    }else{
+    if UserData.isEmpty != true {
+        getTransactionHistory()
         return
     }
     
