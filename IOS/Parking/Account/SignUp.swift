@@ -104,10 +104,9 @@ class SignUp: UIViewController, UITextFieldDelegate{
         textFieldEntries()
         if emailTextField.text?.isEmpty == false && passwordTextField.text?.isEmpty == false && passwordTextField.text == passwordVerifyTextField.text && passwordVerifyTextField.text?.isEmpty == false && nameTextField.text?.isEmpty == false {
             Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
-                if user != nil{
+                if user != nil {
                     self.createDatabaseAccount()
                     self.getData()
-                    print("EMAIL" + (Auth.auth().currentUser?.email!)!)
                 }else{
                     if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
                         self.errorMessageBLTN = errorCode.errorMessage

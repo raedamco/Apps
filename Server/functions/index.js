@@ -170,7 +170,7 @@ exports.addUser = functions.auth.user().onCreate(async (user) => {
           'color': '#30FCF1',
           'fields': [
             {
-                'title': 'Joined',
+                'title': 'Joined On',
                 'value': date.toUTCString(),
                 'short': true
             }
@@ -196,7 +196,7 @@ exports.removeUser = functions.auth.user().onDelete(async (user) => {
         'color': '#ff0000',
         'fields': [
           {
-              'title': 'Date Joined',
+              'title': 'Member Since',
               'value': joined,
               'short': true
           },

@@ -156,9 +156,10 @@ func ParkingDataUpdates(){
                     }
                 }else if (ParkingData.isEmpty == false && ParkingData[indexPath.row].Spots.contains(diff.document.documentID) == false && occupied == false){
                     ParkingData[indexPath.row].Spots.append(String(describing: spotID))
-                }else if (SelectedParkingData[indexPath.row].Spot.contains(diff.document.documentID) && occupied == true){
+                }else if (SelectedParkingData.isEmpty == false && SelectedParkingData[indexPath.row].Spot.contains(diff.document.documentID) && occupied == true){
                     print("PARKING TAKEN")
                 }
+                NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
             }
             
             if (diff.type == .removed) {

@@ -133,8 +133,13 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     @objc func reloadTable(notification: NSNotification) {
-        tableView.reloadData()
-        tableView.reloadInputViews()
+        self.tableView.reloadData()
+        self.tableView.reloadInputViews()
+        self.tableView.setNeedsUpdateConstraints()
+        self.reloadInputViews()
+        self.view.needsUpdateConstraints()
+        self.tableView.cellForRow(at: indexPath)?.reloadInputViews()
+        setNeedsFocusUpdate()
         
         if ParkingData.count == 0 {
             self.bulletinManagerNotifyNoResults.allowsSwipeInteraction = false
