@@ -107,6 +107,7 @@ class SignUp: UIViewController, UITextFieldDelegate{
                 if user != nil{
                     self.createDatabaseAccount()
                     self.getData()
+                    print("EMAIL" + (Auth.auth().currentUser?.email!)!)
                 }else{
                     if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
                         self.errorMessageBLTN = errorCode.errorMessage

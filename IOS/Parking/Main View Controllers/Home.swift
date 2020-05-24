@@ -94,6 +94,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
                     //DirectionsData[indexPath.row].Manuver
                 
                 self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
+                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
+                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
 //                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
 //                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
             }
@@ -315,7 +317,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                             //DirectionsData[indexPath.row].Manuver + " in " + DirectionsData[indexPath.row].Distance //DirectionsData[indexPath.row].Manuver
                         
                         self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-                        let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 25)!]
+                        let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
                         self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
                     }
                 }

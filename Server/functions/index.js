@@ -5,7 +5,7 @@ admin.initializeApp({
 });
 
 const stripe = require('stripe')("sk_test_CFsR0YQ2XzltRxt6pmRCxoOH00rs0xeJ3I");
-var slack = require('slack-notify')('https://hooks.slack.com/services/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');
+var slack = require('slack-notify')('https://hooks.slack.com/services/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');
 // var logging = require('@google-cloud/logging')();
 
 // Add a payment source (card) for a user by writing a stripe payment source token to Cloud Firestore
@@ -162,8 +162,6 @@ exports.addUser = functions.auth.user().onCreate(async (user) => {
         StripeID: customer.id
     }, {merge: true});
 
-    const email = user.email;
-
     await slack.send({
         'username': 'User Activity Bot',
         'text': 'New User Joined :tada:',
@@ -171,11 +169,6 @@ exports.addUser = functions.auth.user().onCreate(async (user) => {
         'attachments': [{
           'color': '#30FCF1',
           'fields': [
-            {
-                'title': 'Email',
-                'value': email,
-                'short': true
-            },
             {
                 'title': 'Joined',
                 'value': date.toUTCString(),
@@ -193,8 +186,6 @@ exports.addUser = functions.auth.user().onCreate(async (user) => {
 exports.removeUser = functions.auth.user().onDelete(async (user) => {
   const snapshot = await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).get();
   const snapval = snapshot.data();
-  const email = snapval.Email;
-  const name = snapval.Name;
   const joined = snapval.Joined;
 
   slack.send({
@@ -204,16 +195,6 @@ exports.removeUser = functions.auth.user().onDelete(async (user) => {
       'attachments': [{
         'color': '#ff0000',
         'fields': [
-          {
-              'title': 'Email',
-              'value': email,
-              'short': true
-          },
-          {
-              'title': 'Name',
-              'value': name,
-              'short': true
-          },
           {
               'title': 'Date Joined',
               'value': joined,
