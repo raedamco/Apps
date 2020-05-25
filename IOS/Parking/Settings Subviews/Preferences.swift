@@ -13,7 +13,7 @@ import CoreBluetooth
 class PreferencesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var tableView = UITableView()
-    var sections = ["Location","Bluetooth","Notifications","Automated Check-In","Theme"]
+    var sections = ["Location","Bluetooth","Notifications","Automated Payment","Theme"]
     
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
@@ -119,7 +119,7 @@ class PreferencesViewController: UIViewController, UITableViewDelegate, UITableV
         }else if sections[indexPath.row] == "Notifications"{
             self.bulletinManagerNotification.allowsSwipeInteraction = false
             self.bulletinManagerNotification.showBulletin(above: self)
-        }else if sections[indexPath.row] == "Automated Check-In"{
+        }else if sections[indexPath.row] == "Automated Payment"{
             self.bulletinManagerAutoCheckIn.allowsSwipeInteraction = false
             self.bulletinManagerAutoCheckIn.showBulletin(above: self)
         }else if sections[indexPath.row] == "Theme"{

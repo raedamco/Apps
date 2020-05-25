@@ -40,15 +40,12 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
         NotificationCenter.default.addObserver(self, selector: #selector(closeView(notification:)), name: NSNotification.Name(rawValue: "closeTView"), object: nil)
-        if TransactionsData.isEmpty {
-            self.emptyAlert.allowsSwipeInteraction = false
-            self.emptyAlert.showBulletin(above: self)
-        }
+
     }
 
     func createViewLayout(){
         view.backgroundColor = standardBackgroundColor
-        setupNavigationBar(LargeText: true, Title: "History", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
+        setupNavigationBar(LargeText: true, Title: "Payment Methods", SystemImageR: true, ImageR: true, ImageTitleR: "plus", TargetR: self, ActionR: #selector(self.addPayment), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
 
         tableView.register(transactionHistoryCell.self, forCellReuseIdentifier: "paymentCell")
         tableView.isScrollEnabled = true
@@ -111,6 +108,11 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
         
     }
     
+    @objc func addPayment() {
+        
+    }
+    
+    
     @objc func closeView(gesture: UISwipeGestureRecognizer) {
         self.tabBarController?.tabBar.isHidden = false
         self.navigationController?.pushViewController(PaymentViewController(), animated: false)
@@ -121,5 +123,3 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
         self.navigationController?.pushViewController(PaymentViewController(), animated: false)
     }
 }
-
-

@@ -319,6 +319,11 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                         self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
                         let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
                         self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
+                        
+                        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) //UIImage.init(named: "transparent.png")
+                        self.navigationController?.navigationBar.shadowImage = UIImage()
+                        self.navigationController?.navigationBar.isTranslucent = false
+                        self.navigationController?.view.backgroundColor = UIColor.black.withAlphaComponent(0.7)
                     }
                 }
             }

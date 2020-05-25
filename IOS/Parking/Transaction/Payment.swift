@@ -10,12 +10,15 @@ import Foundation
 import PassKit
 import Stripe
 import Alamofire
+import Firebase
+import FirebaseFunctions
 
 extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
     
     func proccessPayment(){
         let paymentNetworks = [PKPaymentNetwork.amex, .discover, .masterCard, .visa]
-        let paymentItem = PKPaymentSummaryItem.init(label: "For PSU Parking", amount: NSDecimalNumber(value: Double(self.mainTimer.inInt) * Double(truncating: NearByParking[indexPath.row].Prices)))
+        let paymentItem = PKPaymentSummaryItem.init(label: "For PSU Parking", amount: NSDecimalNumber(value: Double(0)))
+        //NSDecimalNumber(value: Double(self.mainTimer.inInt) * Double(truncating: NearByParking[indexPath.row].Prices))
 
         if PKPaymentAuthorizationViewController.canMakePayments(usingNetworks: paymentNetworks) {
             let request = PKPaymentRequest()
@@ -35,12 +38,29 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
             paymentVC.delegate = self
             self.present(paymentVC, animated: true, completion: nil)
         }
-        isRunning = !isRunning
+        requestTimerStop()
     }
+    
+    func requestTimerStop(){
+            functions.httpsCallable("paymentTimer").call(["UID":UserData[indexPath.row].UID,
+                                                          "StartTimer":true,
+                                                          "Organization": SelectedParkingData[indexPath.row].Organization,
+                                                          //"Location":
+                                                        ]) { (result, error) in
+                if let error = error as NSError? {
+                    if error.domain == FunctionsErrorDomain {
+                        let code = FunctionsErrorCode(rawValue: error.code)
+                        let message = error.localizedDescription
+                        let details = error.userInfo[FunctionsErrorDetailsKey]
+                        print(code as Any, message as Any, details as Any)
+                    }
+              }
+                print(result?.data as? [String: Any]? as Any)
+            }
+        }
 
     func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
         dismiss(animated: true, completion: nil)
-        isRunning = !isRunning
     }
     
     func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
@@ -51,7 +71,7 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
                 return
             }
             
-            let amount = round((Double(self.mainTimer.inInt) * Double(truncating: NearByParking[indexPath.row].Prices)) * 100)
+            let amount = round((Double(0) * Double(truncating: NearByParking[indexPath.row].Prices)) * 100)
             print(amount)
             functions.httpsCallable("createCharge").call(["amount": amount,
                                                           "customer": UserData[indexPath.row].StripeID,
@@ -69,7 +89,6 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
         self.bulletinManagerPaymentComplete.allowsSwipeInteraction = false
         self.bulletinManagerPaymentComplete.showBulletin(above: self)
         self.transactionCompleted()
-        endTimer()
     }
 
     func transactionCompleted(){
@@ -88,11 +107,6 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
     
     func saveTransaction(){
         // MARK: SAVE TRANSACTION TO FIREBASE
-    }
-    
-    
-    @objc func resetTimer(notification: NSNotification){
-        mainTimer.reset()
     }
     
     func createStripeCharge(){

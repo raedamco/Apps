@@ -207,3 +207,67 @@ exports.removeUser = functions.auth.user().onDelete(async (user) => {
   await stripe.customers.del(snapval.StripeID);
   return admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).delete();
 });
+
+
+exports.paymentTimer = functions.https.onCall((data, context) => {
+    var requestTimer = data.StartTimer;
+    var TimeStart;
+    var TimeEnd;
+
+    if (requestTimer === true) {
+        TimeStart = new Date();
+        console.log("WORKING START");
+    }else{
+        TimeEnd = new Date();
+        console.log("WORKING END");
+    }
+
+    const UID = data.UID;
+    const TransactionID = "TEST"; //get stripe transactionID
+
+    const Organization = data.Organization;
+    const Location = data.Location;
+    const Floor = data.Floor;
+    const Spot = data.Spot;
+
+    const snapshot = admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).get();
+    const snapval = snapshot.data();
+    const StripeID = snapval.StripeID;
+
+
+    let parkingData = admin.firestore().collection('PSU').where('Location', '==', Location).get().then(doc => {
+        if (!doc.exists) {
+          return console.log('No such document!');
+        }else{
+          return console.log('Document data:', doc.data()["Pricing.Minute"]);
+        }
+     }).catch(err => {
+         console.log('Error getting document', err);
+     });
+
+    // if (TimeStart !== null) {
+    //     let documentData = {
+    //       Time: {
+    //           Start: admin.firestore.Timestamp.fromDate(TimeStart),
+    //           End: admin.firestore.Timestamp.fromDate(TimeEnd),
+    //       },
+    //       TransactionID: TransactionID,
+    //       Data: {
+    //           Organization: Organization,
+    //           Location: Location,
+    //           Floor: Floor,
+    //           Spot: Spot,
+    //           Rate: Rate,
+    //       }
+    //     };
+    // }
+
+
+    // if (startTimer = true) {
+    //     TimeStart = new Date();
+    // }else if (startTimer = false){
+    //     TimeEnd = new Date();
+    //     admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).collection("History").set(documentData);
+    // }
+
+});
