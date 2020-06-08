@@ -8,13 +8,12 @@
 
 import UIKit
 import BLTNBoard
-import CoreBluetooth
 
 class PreferencesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    var ble: BLE!
     var tableView = UITableView()
     var sections = ["Location","Bluetooth","Notifications","Automated Payment","Theme"]
-    
+
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
     var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
@@ -49,6 +48,7 @@ class PreferencesViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         createViewLayout()
+        NotificationCenter.default.addObserver(self, selector: #selector(bluetoothPermission(notification:)), name: NSNotification.Name(rawValue: "bluetoothPermission"), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -132,5 +132,11 @@ class PreferencesViewController: UIViewController, UITableViewDelegate, UITableV
         self.tabBarController?.tabBar.isHidden = false
         self.navigationController?.pushViewController(SettingsViewController(), animated: false)
     }
+
+    @objc func bluetoothPermission(notification: NSNotification){
+        ble = BLE()
+    }
+    
+   
 
 }

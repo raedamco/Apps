@@ -16,7 +16,6 @@ class DirectionsTable: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         createViewLayout()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -35,7 +34,7 @@ class DirectionsTable: UITableViewController {
         tableView.register(filterCell.self, forCellReuseIdentifier: "directionsCell")
         tableView.isScrollEnabled = true
         tableView.allowsSelection = true
-        tableView.rowHeight = 90
+        tableView.rowHeight = 95
         tableView.separatorColor = .darkGray
         let adjustForTabbarInsets: UIEdgeInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: UITabBar.appearance().frame.height, right: 0)
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
@@ -50,7 +49,7 @@ class DirectionsTable: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return tableViewData.count
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -59,7 +58,7 @@ class DirectionsTable: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: "directionsCell")
-        cell.textLabel?.font = UIFont(name: font, size: 17)
+        cell.textLabel?.font = UIFont(name: font, size: 16)
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         cell.textLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
         cell.textLabel?.numberOfLines = 2
@@ -67,10 +66,8 @@ class DirectionsTable: UITableViewController {
         cell.detailTextLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
         cell.detailTextLabel?.textColor = standardContrastColor
         cell.detailTextLabel?.font = UIFont(name: font, size: 15)
-        
         cell.textLabel!.text = DirectionsData[indexPath.row].Manuver
-        cell.detailTextLabel?.text = "Distance: \(DirectionsData[indexPath.row].Distance)"
-//Time: \(DirectionsData[indexPath.row].Time) \n
+        cell.detailTextLabel?.text = "Distance: \(DirectionsData[indexPath.row].Distance) \nTime: \(DirectionsData[indexPath.row].Time)"
         cell.backgroundColor = standardBackgroundColor
         cell.textLabel?.textColor = standardContrastColor
 

@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import BLTNBoard
 
 class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -15,11 +16,27 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     var itemsInSections = [["Email: ",""],[" | Licence:"],["Logout"]]
     var sections = [["Account"],["Vehicles"],["Permits"],[""]]
     
+    // BLTNBoard START
+       let backgroundStyles = BackgroundStyles()
+       var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
+       
+       lazy var bulletinManagerAddData: BLTNItemManager = {
+           let page = BulletinDataSource.AddDataPage()
+           return BLTNItemManager(rootItem: page)
+       }()
+    // BLTNBoard END
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         createViewLayout()
-    
-        itemsInSections = [["\(UserData[indexPath.row].Email)",""],["None",""],["None"],["Logout"]]
+        
+        itemsInSections = [["\(UserData[indexPath.row].Email)",
+                            "\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))",""],
+                           ["\(UserData[indexPath.row].License[indexPath.row])",""],
+                           [""],
+                           ["Logout"]
+                          ]
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -28,7 +45,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func createViewLayout(){
         view.backgroundColor = standardBackgroundColor
-        setupNavigationBar(LargeText: true, Title: UserData[indexPath.row].Name, SystemImageR: true, ImageR: true, ImageTitleR: "plus", TargetR: self, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
+        setupNavigationBar(LargeText: true, Title: UserData[indexPath.row].Name, SystemImageR: true, ImageR: true, ImageTitleR: "plus", TargetR: self, ActionR: #selector(self.addData), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "accountCell")
         tableView.isScrollEnabled = true
@@ -42,9 +59,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.backgroundColor = standardBackgroundColor
         tableView.contentInset = adjustForTabbarInsets
         tableView.scrollIndicatorInsets = adjustForTabbarInsets
-        
         tableView.tableFooterView = UIView()
-
         tableView.dataSource = self
         tableView.delegate = self
         tableView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 780)
@@ -57,7 +72,13 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemsInSections[section].count
+        if itemsInSections[indexPath.section][indexPath.row] == "Vehicles" {
+            return UserData[indexPath.row].License.count
+        }else{
+            return itemsInSections[section].count
+        }
+        
+        
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -85,6 +106,12 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         cell.backgroundColor = standardBackgroundColor
         cell.textLabel?.textColor = standardContrastColor
         
+        if itemsInSections[indexPath.section][indexPath.row] == "Vehicles" {
+            for licence in UserData[indexPath.row].License {
+                cell.textLabel?.text = licence
+            }
+        }
+        
         if cell.textLabel!.text == "Logout" {
             cell.textLabel?.textAlignment = .center
         }
@@ -99,6 +126,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         
     }
     
+    @objc func addData() {
+        self.bulletinManagerAddData.allowsSwipeInteraction = false
+        self.bulletinManagerAddData.showBulletin(above: self)
+    }
     
     @objc func closeView(gesture: UISwipeGestureRecognizer) {
         self.tabBarController?.tabBar.isHidden = false

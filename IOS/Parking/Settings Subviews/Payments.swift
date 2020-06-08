@@ -24,6 +24,7 @@ class PaymentViewController: UIViewController, UITableViewDelegate, UITableViewD
        let page = BulletinDataSource.makeErrorPage(message: errorMessageBLTN)
        return BLTNItemManager(rootItem: page)
     }()
+    
     // BLTNBoard END
     
     override func viewDidLoad() {

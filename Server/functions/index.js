@@ -220,9 +220,10 @@ exports.paymentTimer = functions.https.onCall((data, context) => {
     }else{
         TimeEnd = new Date();
         console.log("WORKING END");
+        //Finalize transaction and store in database
+        // admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).collection("History").set(documentData);
     }
 
-    const UID = data.UID;
     const TransactionID = "TEST"; //get stripe transactionID
 
     const Organization = data.Organization;
@@ -230,13 +231,18 @@ exports.paymentTimer = functions.https.onCall((data, context) => {
     const Floor = data.Floor;
     const Spot = data.Spot;
 
-    const snapshot = admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).get();
-    const snapval = snapshot.data();
-    const StripeID = snapval.StripeID;
+    try {
+      const snapshot = admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(data.UID).get()
+      const snapval = snapshot.data();
+      const UserStripeID = snapval.StripeID
 
+      console.log(UserStripeID);
+    } catch(error) {
+      return console.log(error);
+    }
 
     let parkingData = admin.firestore().collection('PSU').where('Location', '==', Location).get().then(doc => {
-        if (!doc.exists) {
+        if (!doc.exists){
           return console.log('No such document!');
         }else{
           return console.log('Document data:', doc.data()["Pricing.Minute"]);
@@ -262,12 +268,31 @@ exports.paymentTimer = functions.https.onCall((data, context) => {
     //     };
     // }
 
+});
 
-    // if (startTimer = true) {
-    //     TimeStart = new Date();
-    // }else if (startTimer = false){
-    //     TimeEnd = new Date();
-    //     admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).collection("History").set(documentData);
-    // }
+exports.addVehicleData = functions.https.onCall((data, context) => {
+    const UID = data.UID;
+    const VehicleData = data.VehicleData;
 
+    try {
+        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).set({
+            Vehicles: admin.firestore.FieldValue.arrayUnion(VehicleData)
+        }, {merge: true});
+    }catch(error){
+        throw new functions.https.HttpsError('failed-precondition', 'Error adding data to database');
+    }
+});
+
+exports.addPermitData = functions.https.onCall((data, context) => {
+    const UID = data.UID;
+    const PermitData = data.PermitData;
+    const PermitNumer = data.PermitNumber;
+
+    admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).set({
+        Permits: {
+            PermitData: PermitNumer
+        }
+    }, {merge: true});
+
+    return
 });

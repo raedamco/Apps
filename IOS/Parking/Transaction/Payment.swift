@@ -57,7 +57,7 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
               }
                 print(result?.data as? [String: Any]? as Any)
             }
-        }
+    }
 
     func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
         dismiss(animated: true, completion: nil)
@@ -97,20 +97,14 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
         currentLocation.removeFromSuperview()
         paymentButton.removeFromSuperview()
         
+        // MARK: SHOW SCREEN TO USER INDICATING THEY HAVE FINISHED TRANSACTION -> BUTTON TO GO TO TRANSACTION DETAILS
+        
         self.view.addSubview(checkInButton)
         
         checkInButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         checkInButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
         checkInButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
         checkInButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
-    }
-    
-    func saveTransaction(){
-        // MARK: SAVE TRANSACTION TO FIREBASE
-    }
-    
-    func createStripeCharge(){
-        
     }
     
 }

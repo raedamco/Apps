@@ -24,7 +24,8 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
 
     let checkInButton = createButton(Title: "Check In", FontName: fontBold, FontSize: 20, FontColor: standardBackgroundColor, BorderWidth: 0, CornerRaduis: 5, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(searchLocation))
     let paymentButton = createPaymentButton(Target: self, Action: #selector(checkout))
- 
+    let transactionDetailButton = createButton(Title: "Transaction Details", FontName: fontBold, FontSize: 20, FontColor: standardBackgroundColor, BorderWidth: 0, CornerRaduis: 5, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(showTransactionDetails))
+    
     let currentLocation = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: font, FontSize: 26, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 1)
     let timeLabel = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: fontBold, FontSize: 30, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 0)
     
@@ -206,6 +207,10 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
 
     @objc func checkout(){
         proccessPayment()
+    }
+    
+    @objc func showTransactionDetails(){
+        //present(TransactionHistory, animated: false, completion: nil)
     }
 
     

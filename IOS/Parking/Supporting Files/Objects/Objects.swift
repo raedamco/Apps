@@ -36,7 +36,7 @@ func createButton(Title: String, FontName: String, FontSize: CGFloat, FontColor:
     button.layer.borderColor = BorderColor
     button.translatesAutoresizingMaskIntoConstraints = false
     button.titleLabel?.textAlignment = NSTextAlignment.center
-    button.titleLabel?.adjustsFontSizeToFitWidth = true
+    button.titleLabel?.adjustsFontSizeToFitWidth = false
     button.setTitleColor(FontColor, for: UIControl.State.normal)
     button.addTarget(Target, action: Action, for: UIControl.Event.touchUpInside)
     return button
@@ -132,7 +132,7 @@ func createBarButtonItem(SystemImage: Bool, Image:Bool, Title:String, Target: An
 
 func createView() -> UIView {
     let view = UIView()
-    view.backgroundColor = standardBackgroundColor
+    view.backgroundColor = standardBackgroundColor.withAlphaComponent(0.7)
     view.dropShadow()
     view.addBorderBottom(size: 1.5, color: UIColor.white)
     return view
@@ -257,3 +257,4 @@ let slider: UISlider = {
     slider.setValue(0, animated: false)
     return slider
 }()
+

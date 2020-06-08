@@ -26,7 +26,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     var polyline = GMSPolyline()
     let APIKey = "AIzaSyBLF8x5SR3UJbI-ybS04Bd9TPUebvziMlw"
     
-
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
     var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
@@ -80,7 +79,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         self.view.addSubview(destinationTextField)
         destinationTextField.target(forAction: #selector(self.searchLocation), withSender: self)
         destinationTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 100).isActive = true
+        destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
         destinationTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
         destinationTextField.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
         
@@ -302,9 +301,9 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                 guard let stepTime = step["duration"] as? [String: Any] else { return }
                 guard let polyline = step["polyline"] as? [String: Any] else { return }
                 guard let polyLineString = polyline["points"] as? String else { return }
-                
-//                guard let maneuver = step["maneuver"] as? Any else { return }
-//                print(maneuver)
+            
+                //guard let maneuver = step["maneuver"] as? Any else { return }
+                //print(maneuver)
                 
                 DispatchQueue.main.async {
                     self.drawPath(from: polyLineString)

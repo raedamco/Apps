@@ -18,14 +18,16 @@ struct User {
     var License: [String]
     var Permit: [String:String]
     var StripeID: String
+    var Phone: String
     
-    init(Name: String!, Email: String!, UID: String!, License: [String], Permit: [String:String], StripeID: String) {
+    init(Name: String!, Email: String!,Phone: String!, UID: String!, License: [String], Permit: [String:String], StripeID: String) {
         self.Name = Name
         self.Email = Email
         self.UID = UID
         self.License = License
         self.Permit = Permit
         self.StripeID = StripeID
+        self.Phone = Phone
     }
 }
 

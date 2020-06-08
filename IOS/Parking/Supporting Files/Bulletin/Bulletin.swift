@@ -80,31 +80,119 @@ enum BulletinDataSource {
     static func cancelRoute() -> FeedbackPageBLTNItem {
         let page = FeedbackPageBLTNItem(title: "Confirm Cancelation")
         page.appearance.titleTextColor = standardContrastColor
-        page.appearance.actionButtonColor = .red
-        page.appearance.actionButtonTitleColor = standardContrastColor
+        page.appearance.actionButtonColor = standardContrastColor
+        page.appearance.actionButtonTitleColor = standardBackgroundColor
         page.appearance.actionButtonFontSize = 22
-        page.appearance.alternativeButtonTitleColor = standardContrastColor
-        page.appearance.alternativeButtonFontSize = 20
+        page.appearance.alternativeButtonTitleColor = .red
+        page.appearance.alternativeButtonFontSize = 18
         page.descriptionLabel?.textAlignment = .left
-        page.actionButtonTitle = "End Route"
-        page.alternativeButtonTitle = "Continue Route"
+        page.alternativeButtonTitle = "End Route"
+        page.actionButtonTitle = "Continue Route"
         page.requiresCloseButton = false
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
-            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
         }
         
         page.alternativeHandler = { item in
             item.manager?.dismissBulletin(animated: true)
+            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
         }
         
         return page
         
     }
-
     
- //PREFERENCES START//
+// MARK: ACCOUNT BLTN START
+    static func AddDataPage() -> FeedbackPageBLTNItem {
+        let page = FeedbackPageBLTNItem(title: "Add Data")
+        page.appearance.titleTextColor = standardContrastColor
+        page.appearance.actionButtonColor = standardContrastColor
+        page.appearance.actionButtonTitleColor = standardBackgroundColor
+        page.appearance.actionButtonFontSize = 22
+        page.appearance.alternativeButtonTitleColor = standardContrastColor
+        page.appearance.alternativeButtonFontSize = 20
+        page.descriptionLabel?.textAlignment = .left
+        page.actionButtonTitle = "Vehicle"
+        page.alternativeButtonTitle = "Permit"
+        page.requiresCloseButton = false
+        
+        page.actionHandler = { item in
+            let nextPage = self.AddVehicleData()
+            page.manager?.push(item: nextPage)
+        }
+        
+        page.alternativeHandler = { item in
+            let nextPage = self.AddPermitData()
+            page.manager?.push(item: nextPage)
+        }
+        
+        return page
+        
+    }
+    
+    static func AddVehicleData() -> TextFieldAddDataBulletinPage {
+        let page = TextFieldAddDataBulletinPage(title: "Add Vehicle")
+        page.descriptionText = "Enter your vehicle's licence plate"
+        page.appearance.titleTextColor = standardContrastColor
+        page.isDismissable = true
+        page.requiresCloseButton = false
+        page.actionButtonTitle = "Continue"
+
+        page.actionHandler = { item in
+            if functionError == true {
+                let errorPage = self.makeErrorPage(message: "Error")
+                page.manager?.push(item: errorPage)
+            }else{
+                let completionPage = self.successPage(text: "Vehicle Successfully Added")
+                item.manager?.push(item: completionPage)
+            }
+        }
+        return page
+    }
+    
+    static func AddPermitData() -> TextFieldAddDataBulletinPage {
+        let page = TextFieldAddDataBulletinPage(title: "Add Permit")
+        page.descriptionText = "Enter your permit number"
+        page.appearance.titleTextColor = standardContrastColor
+        page.isDismissable = true
+        page.requiresCloseButton = false
+        page.actionButtonTitle = "Continue"
+
+        page.actionHandler = { item in
+            if functionError == true {
+                let errorPage = self.makeErrorPage(message: "Error")
+                page.manager?.push(item: errorPage)
+            }else{
+                let completionPage = self.successPage(text: "Permit Successfully Added")
+                item.manager?.push(item: completionPage)
+            }
+        }
+
+        return page
+    }
+    
+    static func successPage(text: String) -> BLTNPageItem {
+        let page = BLTNPageItem(title: text)
+        page.image = UIImage(named: "Completion")
+        page.appearance.titleTextColor = standardContrastColor
+        page.appearance.actionButtonColor = UIColor.green
+        page.appearance.imageViewTintColor = UIColor.green
+        page.appearance.actionButtonTitleColor = UIColor.white
+        page.actionButtonTitle = "Close"
+        page.isDismissable = true
+        page.requiresCloseButton = false
+        
+        page.actionHandler = { item in
+            item.manager?.dismissBulletin(animated: true)
+        }
+        
+        return page
+    }
+    
+// MARK: ACCOUNT BLTN END
+
+// MARK: PREFERENCES BLTN START
     static func LocationPage() -> FeedbackPageBLTNItem {
         let page = FeedbackPageBLTNItem(title: "Location Services")
         page.image = UIImage(named: "Location")
@@ -150,8 +238,8 @@ enum BulletinDataSource {
         
         page.actionHandler = { item in
             userDefaults.set(true, forKey: "BLUETOOTH")
-            //UPDATE PERMISSIONS
-            item.manager?.dismissBulletin(animated: true)
+            NotificationCenter.default.post(name: NSNotification.Name("bluetoothPermission"), object: nil)
+            //item.manager?.dismissBulletin(animated: true)
         }
         
         page.alternativeHandler = { item in
@@ -166,7 +254,7 @@ enum BulletinDataSource {
     static func NotitificationsPage() -> FeedbackPageBLTNItem {
         let page = FeedbackPageBLTNItem(title: "Push Notifications")
         page.image = UIImage(named: "Notification")
-        page.descriptionText = "Receive notifications regarding parking statuses, feautres, etc."
+        page.descriptionText = "Receive notifications regarding parking statuses, new feautres, etc."
         page.actionButtonTitle = "Enable"
         page.isDismissable = false
         page.appearance.titleTextColor = standardContrastColor
@@ -249,7 +337,7 @@ enum BulletinDataSource {
         }
         return page
     }
- //PREFERENCES END//
+// MARK: PREFERENCES BLTN END
     
 //SEARCH START//
     static func makeNoResults() -> BLTNPageItem {
@@ -378,15 +466,19 @@ enum BulletinDataSource {
     static func paymentSuccessful() -> BLTNPageItem {
         let page = BLTNPageItem(title: "Success")
         
-        page.image = UIImage(named: "Completion")?.withTintColor(.green)
+        page.image = UIImage(named: "Completion")?.withTintColor(standardContrastColor)
         
-        page.appearance.actionButtonColor = .green
+        page.appearance.actionButtonColor = standardContrastColor
         page.appearance.actionButtonTitleColor = standardBackgroundColor
+        page.appearance.alternativeButtonTitleColor = standardContrastColor
+        page.appearance.alternativeButtonFontSize = 18
         page.appearance.actionButtonFontSize = 22
         page.appearance.titleTextColor = standardContrastColor
+        
     
         page.actionButtonTitle = "Dimiss"
-
+        page.alternativeButtonTitle = "See details"
+        
         page.descriptionText = "Transaction completed."
         page.requiresCloseButton = false
         
@@ -394,6 +486,40 @@ enum BulletinDataSource {
             item.manager?.dismissBulletin(animated: true)
             NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
             NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
+        }
+        
+        page.alternativeHandler = { item in
+            NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
+            let detailPage = self.paymentDetails()
+            item.manager?.push(item: detailPage)
+        }
+
+        return page
+    }
+    
+    static func paymentDetails() -> BLTNPageItem {
+        let page = BLTNPageItem(title: "Transaction Details")
+        
+        page.appearance.actionButtonColor = standardContrastColor
+        page.appearance.actionButtonTitleColor = standardBackgroundColor
+        page.appearance.alternativeButtonTitleColor = standardContrastColor
+        page.appearance.alternativeButtonFontSize = 18
+        page.appearance.actionButtonFontSize = 22
+        page.appearance.titleTextColor = standardContrastColor
+        
+        page.actionButtonTitle = "Dismiss"
+        page.alternativeButtonTitle = "Report error"
+        
+        page.descriptionText = "Date: \nLocation: \nDuration: \nAmount: "
+        page.requiresCloseButton = false
+        
+        page.actionHandler = { item in
+            item.manager?.dismissBulletin(animated: true)
+        }
+        
+        page.alternativeHandler = { item in
+            //send to view to create support ticket
         }
 
         return page

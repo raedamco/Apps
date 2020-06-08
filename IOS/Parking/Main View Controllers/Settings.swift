@@ -14,7 +14,7 @@ import BLTNBoard
 class SettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let tableView = UITableView()
-    var sections = ["Account","Preferences","Payments","Help","About"]
+    var sections = ["Account","Payments","Preferences","Help","About"]
     
     // BLTNBoard START
        let backgroundStyles = BackgroundStyles()

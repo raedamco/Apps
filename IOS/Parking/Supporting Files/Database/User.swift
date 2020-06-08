@@ -26,11 +26,20 @@ func getUserData(Email: String){
                 guard let License = document.data()["Vehicles"] as? [String] else { return }
                 guard let Permit = document.data()["Permits"] as? [String:String] else { return }
                 guard let StripeID = document.data()["StripeID"] as? String else { return }
+                guard let Phone = document.data()["Phone"] as? String else { return }
                 
-                UserData.append(User(Name: Name, Email: Email, UID: UID, License: License, Permit: Permit, StripeID: StripeID))
+                UserData.append(User(Name: Name, Email: Email,Phone: Phone, UID: UID, License: License, Permit: Permit, StripeID: StripeID))
             }
         }
     }
+    
+//    if UserData[indexPath.row].License.isEmpty {
+//        UserData[indexPath.row].License.append("None")
+//    }
+    
+//    if UserData[indexPath.row].Permit.isEmpty {
+//        UserData[indexPath.row].Permit = ["None":""]
+//    }
     
     if UserData.isEmpty != true {
         getTransactionHistory()
