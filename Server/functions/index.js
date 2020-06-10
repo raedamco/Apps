@@ -29,55 +29,6 @@ exports.addPaymentSource = functions.firestore.document('/stripe_customers/{user
 
 // [START chargecustomer]
 // Charge the Stripe customer whenever an amount is created in Cloud Firestore
-exports.createCharge = functions.https.onCall((data, context) => {
-    const details = data.details;
-    const amount = data.amount;
-    const idempotencyKey = data.idempotencyKey;
-    const currency = data.currency;
-    const customer = data.customer;
-    const source = data.source;
-    const name = data.name;
-
-    stripe.charges.create({
-        amount: amount,
-        customer: customer,
-        currency: currency,
-        description: details,
-    },
-    function(err, charge) {
-        switch (err.type) {
-          case 'StripeCardError':
-            // A declined card error
-            console.log(err.message); // => e.g. "Your card's expiration year is invalid."
-            break;
-          case 'StripeRateLimitError':
-            // Too many requests made to the API too quickly
-            console.log(err.message);
-            break;
-          case 'StripeInvalidRequestError':
-            // Invalid parameters were supplied to Stripe's API
-            console.log(err.message);
-            break;
-          case 'StripeAPIError':
-            // An error occurred internally with Stripe's API
-            console.log(err.message);
-            break;
-          case 'StripeConnectionError':
-            // Some kind of error occurred during the HTTPS communication
-            console.log(err.message);
-            break;
-          case 'StripeAuthenticationError':
-            // You probably used an incorrect API key
-            console.log(err.message);
-            break;
-          default:
-            // Handle any other types of unexpected errors
-            console.log(err.message);
-            break;
-        }
-    });
-});
-
 
 exports.createStripeCharge = functions.firestore.document('stripe_customers/{userId}/charges/{id}').onCreate(async (snap, context) => {
       const val = snap.data();
@@ -96,11 +47,8 @@ exports.createStripeCharge = functions.firestore.document('stripe_customers/{use
           charge.source = val.source;
         }
         const response = await stripe.charges.create(charge, {idempotency_key: idempotencyKey}, details);
-        // If the result is successful, write it back to the database
         return snap.ref.set(response, { merge: true });
       } catch(error) {
-        // We want to capture errors and render them in a user-friendly way, while
-        // still logging an exception with StackDriver
         console.log(error);
         await snap.ref.set({error: userFacingMessage(error)}, { merge: true });
         return reportError(error, {user: context.params.userId});
@@ -109,22 +57,16 @@ exports.createStripeCharge = functions.firestore.document('stripe_customers/{use
 // [END chargecustomer]]
 
 
-
-// To keep on top of errors, we should raise a verbose error report with Stackdriver rather
-// than simply relying on console.error. This will calculate users affected + send you email
-// alerts, if you've opted into receiving them.
 // [START reporterror]
 function reportError(err, context = {}) {
   const logName = 'errors';
   const log = logging.log(logName);
-  // https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/MonitoredResource
   const metadata = {
     resource: {
       type: 'cloud_function',
       labels: {function_name: process.env.FUNCTION_NAME},
     },
   };
-  // https://cloud.google.com/error-reporting/reference/rest/v1beta1/ErrorEvent
   const errorEvent = {
     message: err.stack,
     serviceContext: {
@@ -133,7 +75,6 @@ function reportError(err, context = {}) {
     },
     context: context,
   };
-  // Write the error log entry
   return new Promise((resolve, reject) => {
     log.write(log.entry(metadata, errorEvent), (error) => {
       if (error) {
@@ -145,7 +86,6 @@ function reportError(err, context = {}) {
 }
 // [END reporterror]
 
-// Sanitize the error message for the user
 function userFacingMessage(error) {
   return error.type ? error.message : 'An error occurred, developers have been alerted';
 }
@@ -177,7 +117,6 @@ exports.addUser = functions.auth.user().onCreate(async (user) => {
           ]
         }]
     })
-
     return
 });
 
@@ -208,68 +147,6 @@ exports.removeUser = functions.auth.user().onDelete(async (user) => {
   return admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).delete();
 });
 
-
-exports.paymentTimer = functions.https.onCall((data, context) => {
-    var requestTimer = data.StartTimer;
-    var TimeStart;
-    var TimeEnd;
-
-    if (requestTimer === true) {
-        TimeStart = new Date();
-        console.log("WORKING START");
-    }else{
-        TimeEnd = new Date();
-        console.log("WORKING END");
-        //Finalize transaction and store in database
-        // admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).collection("History").set(documentData);
-    }
-
-    const TransactionID = "TEST"; //get stripe transactionID
-
-    const Organization = data.Organization;
-    const Location = data.Location;
-    const Floor = data.Floor;
-    const Spot = data.Spot;
-
-    try {
-      const snapshot = admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(data.UID).get()
-      const snapval = snapshot.data();
-      const UserStripeID = snapval.StripeID
-
-      console.log(UserStripeID);
-    } catch(error) {
-      return console.log(error);
-    }
-
-    let parkingData = admin.firestore().collection('PSU').where('Location', '==', Location).get().then(doc => {
-        if (!doc.exists){
-          return console.log('No such document!');
-        }else{
-          return console.log('Document data:', doc.data()["Pricing.Minute"]);
-        }
-     }).catch(err => {
-         console.log('Error getting document', err);
-     });
-
-    // if (TimeStart !== null) {
-    //     let documentData = {
-    //       Time: {
-    //           Start: admin.firestore.Timestamp.fromDate(TimeStart),
-    //           End: admin.firestore.Timestamp.fromDate(TimeEnd),
-    //       },
-    //       TransactionID: TransactionID,
-    //       Data: {
-    //           Organization: Organization,
-    //           Location: Location,
-    //           Floor: Floor,
-    //           Spot: Spot,
-    //           Rate: Rate,
-    //       }
-    //     };
-    // }
-
-});
-
 exports.addVehicleData = functions.https.onCall((data, context) => {
     const UID = data.UID;
     const VehicleData = data.VehicleData;
@@ -296,3 +173,116 @@ exports.addPermitData = functions.https.onCall((data, context) => {
 
     return
 });
+
+
+exports.startPayment = functions.https.onCall((data, context) => {
+    const UID = data.UID;
+    const Location = data.Location;
+    const Organization = data.Organization;
+    const Floor = data.Floor;
+    const Spot = data.Spot;
+    const Rate = data.Rate;
+    const TimerStart = new Date();
+
+    try {
+        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).collection("History").doc().set({
+            Data: {
+                "Location": Location,
+                "Organization": Organization,
+                "Floor": Floor,
+                "Spot": Spot,
+                "Rate": Rate
+            },
+            Duration: {
+                Begin: admin.firestore.Timestamp.fromDate(TimerStart)
+            },
+      }, {merge: true});
+
+    } catch(error) {
+      return console.log(error);
+    }
+});
+
+
+
+exports.createCharge = functions.https.onCall((data, context) => {
+    try {
+        completeTransaction(data)
+    }catch(error){
+        console.log(error);
+    }
+});
+
+function completeTransaction(data){
+
+    const TimerEnd = new Date();
+
+    var UserData = {
+        Name: String(),
+        UID: data.UID,
+        StripeID: String(),
+    }
+
+    var TransactionDetails = {
+        Duration: String(),
+        Rate: String(),
+        Begin: String(),
+        End: String(),
+        Amount: String(),
+        TransactionID: String(),
+        DocumentID: String(),
+        Organizaiton: String(),
+        Location: String(),
+    }
+
+    //Get user data first
+    admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).get().then(doc => {
+        if (!doc.exists) {
+            return console.log('No such document!');
+        }else{
+            UserData.StripeID = doc.data().StripeID
+            UserData.Name = doc.data().Name
+            return finalizeTransaction();
+        }
+    }).catch(err => {
+        console.log('Error getting document', err);
+    });
+
+    function finalizeTransaction(){
+        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                TransactionDetails.DocumentID = doc.id
+                TransactionDetails.Begin = doc.data()["Duration"].Begin
+                TransactionDetails.Rate = doc.data()["Data"].Rate
+                TransactionDetails.Organizaiton = doc.data()["Data"].Organizaiton
+                TransactionDetails.Location = doc.data()["Data"].Location
+            });
+            return updateDatabaseDocument();
+        }).catch(function(error) {
+            console.log("Error getting documents: " + error);
+        });
+    }
+
+    function updateDatabaseDocument(){
+        TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
+        TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
+        TransactionDetails.Amount = (TransactionDetails.Duration * TransactionDetails.Rate)
+
+        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
+            Duration: {
+                End: TransactionDetails.End,
+                Minutes: TransactionDetails.Duration,
+            },
+            Transaction: {
+                Amount: TransactionDetails.Amount,
+                TransactionID: "Placeholder"
+            }
+        }, {merge: true});
+        //createStripeCharge();
+    }
+
+    return {
+      Amount: TransactionDetails.Amount,
+      Duration: TransactionDetails.Duration
+    };
+}

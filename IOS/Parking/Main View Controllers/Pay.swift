@@ -158,7 +158,6 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     
     @objc func startPayment(notification: NSNotification){
         checkInButton.removeFromSuperview()
-        startDatabaseTimer()
         currentLocation.text = NearByParking[indexPath.row].Organization
         
         self.view.addSubview(currentLocation)
@@ -184,23 +183,22 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func requestTimer(){
-        functions.httpsCallable("paymentTimer").call(["UID":UserData[indexPath.row].UID,
-                                                      "StartTimer":true,
+        functions.httpsCallable("startPayment").call(["UID":UserData[indexPath.row].UID,
                                                       "Organization": SelectedParkingData[indexPath.row].Organization,
-                                                      //"Location": SelectedParkingData[indexPath.row].Location
+                                                      "Floor": SelectedParkingData[indexPath.row].Floor,
+                                                      "Spot": SelectedParkingData[indexPath.row].Spot,
+                                                      "Location": "", //SelectedParkingData[indexPath.row].Location
+                                                      "Rate": SelectedParkingData[indexPath.row].Price
                                                     ]) { (result, error) in
-            if let error = error as NSError? {
-                if error.domain == FunctionsErrorDomain {
-                    let code = FunctionsErrorCode(rawValue: error.code)
-                    let message = error.localizedDescription
-                    let details = error.userInfo[FunctionsErrorDetailsKey]
-                    print(code as Any, message as Any, details as Any)
-                }
-          }
-            print(result?.data as? [String: Any]? as Any)
-//            ?["text"] as? String {
-//            self.resultField.text = text
-//          }
+        if let error = error as NSError? {
+            if error.domain == FunctionsErrorDomain {
+                let code = FunctionsErrorCode(rawValue: error.code)
+                let message = error.localizedDescription
+                let details = error.userInfo[FunctionsErrorDetailsKey]
+                print(code as Any, message as Any, details as Any)
+            }
+        }
+//            print(result?.data as? [String: Any]? as Any)
         }
     }
 

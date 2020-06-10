@@ -31,7 +31,6 @@
 		0793DDDB23260AC5002FBE09 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0793DDDA23260AC5002FBE09 /* Account.swift */; };
 		0793EBFA2339D2E60099C71C /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0793EBF92339D2E60099C71C /* WebViewController.swift */; };
 		0793EC042339F4450099C71C /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0793EC032339F4450099C71C /* Controller.swift */; };
-		0796DABC244BC7A700805018 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0796DABB244BC7A700805018 /* Timer.swift */; };
 		0796DABF244D60AD00805018 /* VarelaRound-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0796DABD244D603400805018 /* VarelaRound-Regular.ttf */; };
 		079C7746237731C0009E0F6F /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079C7745237731C0009E0F6F /* Results.swift */; };
 		07A42B80235BD9CD00A053B0 /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A42B7F235BD9CD00A053B0 /* SignIn.swift */; };
@@ -105,7 +104,6 @@
 		0793DDDA23260AC5002FBE09 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		0793EBF92339D2E60099C71C /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		0793EC032339F4450099C71C /* Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controller.swift; sourceTree = "<group>"; };
-		0796DABB244BC7A700805018 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		0796DABD244D603400805018 /* VarelaRound-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "VarelaRound-Regular.ttf"; sourceTree = "<group>"; };
 		079C7745237731C0009E0F6F /* Results.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
 		07A42B7F235BD9CD00A053B0 /* SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
@@ -319,7 +317,6 @@
 				07BF2DE4243838970017BCD3 /* User.swift */,
 				07BF2DE22438387C0017BCD3 /* Parking.swift */,
 				07BF2DE6243838D20017BCD3 /* Transactions.swift */,
-				0796DABB244BC7A700805018 /* Timer.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -541,7 +538,6 @@
 				07F0E7052379D5BE00046292 /* Classes.swift in Sources */,
 				0725B2D42325CC03007B400F /* Connection.swift in Sources */,
 				07A42B80235BD9CD00A053B0 /* SignIn.swift in Sources */,
-				0796DABC244BC7A700805018 /* Timer.swift in Sources */,
 				079C7746237731C0009E0F6F /* Results.swift in Sources */,
 				07EF7DA8235C3A4500D015CF /* BulletinTextField.swift in Sources */,
 				07EF7DA7235C3A4500D015CF /* BulletinBackground.swift in Sources */,

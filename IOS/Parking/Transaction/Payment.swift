@@ -38,27 +38,8 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
             paymentVC.delegate = self
             self.present(paymentVC, animated: true, completion: nil)
         }
-        requestTimerStop()
     }
     
-    func requestTimerStop(){
-            functions.httpsCallable("paymentTimer").call(["UID":UserData[indexPath.row].UID,
-                                                          "StartTimer":true,
-                                                          "Organization": SelectedParkingData[indexPath.row].Organization,
-                                                          //"Location":
-                                                        ]) { (result, error) in
-                if let error = error as NSError? {
-                    if error.domain == FunctionsErrorDomain {
-                        let code = FunctionsErrorCode(rawValue: error.code)
-                        let message = error.localizedDescription
-                        let details = error.userInfo[FunctionsErrorDetailsKey]
-                        print(code as Any, message as Any, details as Any)
-                    }
-              }
-                print(result?.data as? [String: Any]? as Any)
-            }
-    }
-
     func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
         dismiss(animated: true, completion: nil)
     }
@@ -70,15 +51,26 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
                 print(error!)
                 return
             }
+            //MARK: insert timer below
+            //let amount = round((Double(1) * Double(truncating: NearByParking[indexPath.row].Prices)) * 100)
             
-            let amount = round((Double(0) * Double(truncating: NearByParking[indexPath.row].Prices)) * 100)
-            print(amount)
-            functions.httpsCallable("createCharge").call(["amount": amount,
-                                                          "customer": UserData[indexPath.row].StripeID,
-                                                          "name": UserData[indexPath.row].Name,
-                                                          "idempotencyKey": stripeToken.tokenId,
-                                                          "details": NearByParking[indexPath.row].Organization,
-                                                          "currency": "usd"]) { (result, error) in
+            functions.httpsCallable("createCharge").call(["UID": UserData[indexPath.row].UID,"idempotencyKey": stripeToken.tokenId]) { (result, error) in
+                if let error = error as NSError? {
+                    if error.domain == FunctionsErrorDomain {
+                        let message = error.localizedDescription
+                        errorMessage = "\(message)"
+                        print(errorMessage)
+                    }
+                }
+            
+
+                if let finalAmount = (result?.data as? [String: Any])?["Amount"] as? String {
+                    print("Amount", finalAmount)
+                }
+
+                if let finalDuration = (result?.data as? [String: Any])?["Duration"] as? String {
+                    print("Duration", finalDuration)
+                }
             }
         }
         
