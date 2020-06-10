@@ -38,10 +38,12 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
             paymentVC.delegate = self
             self.present(paymentVC, animated: true, completion: nil)
         }
+        isRunning = !isRunning
     }
     
     func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
         dismiss(animated: true, completion: nil)
+        isRunning = !isRunning
     }
     
     func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
@@ -53,25 +55,7 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
             }
             //MARK: insert timer below
             //let amount = round((Double(1) * Double(truncating: NearByParking[indexPath.row].Prices)) * 100)
-            
-            functions.httpsCallable("createCharge").call(["UID": UserData[indexPath.row].UID,"idempotencyKey": stripeToken.tokenId]) { (result, error) in
-                if let error = error as NSError? {
-                    if error.domain == FunctionsErrorDomain {
-                        let message = error.localizedDescription
-                        errorMessage = "\(message)"
-                        print(errorMessage)
-                    }
-                }
-            
-
-                if let finalAmount = (result?.data as? [String: Any])?["Amount"] as? String {
-                    print("Amount", finalAmount)
-                }
-
-                if let finalDuration = (result?.data as? [String: Any])?["Duration"] as? String {
-                    print("Duration", finalDuration)
-                }
-            }
+            Server.requestCharge(idempotencyKey: stripeToken.tokenId)
         }
         
         completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
@@ -97,6 +81,10 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
         checkInButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
         checkInButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
         checkInButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
+    }
+    
+    @objc func resetTimer(notification: NSNotification){
+        mainTimer.reset()
     }
     
 }

@@ -21,6 +21,7 @@
 		0734C0A92325BBC000E74D0A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0734C0A72325BBC000E74D0A /* LaunchScreen.storyboard */; };
 		073D512224281642008450DD /* lightstyle.json in Resources */ = {isa = PBXBuildFile; fileRef = 073D512124281642008450DD /* lightstyle.json */; };
 		074191A9248E087800567DE5 /* Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074191A8248E087800567DE5 /* Bluetooth.swift */; };
+		074191AB2490CB7100567DE5 /* PaymentTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074191AA2490CB7100567DE5 /* PaymentTimer.swift */; };
 		074A8AF3242FF6DB00E219A9 /* Pay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074A8AF2242FF6DB00E219A9 /* Pay.swift */; };
 		0757296D243A53F600BDA702 /* Directions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0757296C243A53F600BDA702 /* Directions.swift */; };
 		0764113A237A109800EF4332 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07641139237A109800EF4332 /* WebKit.framework */; };
@@ -94,6 +95,7 @@
 		0734C0AA2325BBC000E74D0A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		073D512124281642008450DD /* lightstyle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = lightstyle.json; sourceTree = "<group>"; };
 		074191A8248E087800567DE5 /* Bluetooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bluetooth.swift; sourceTree = "<group>"; };
+		074191AA2490CB7100567DE5 /* PaymentTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTimer.swift; sourceTree = "<group>"; };
 		074A8AF2242FF6DB00E219A9 /* Pay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pay.swift; sourceTree = "<group>"; };
 		0757296C243A53F600BDA702 /* Directions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Directions.swift; sourceTree = "<group>"; };
 		07641139237A109800EF4332 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
@@ -172,6 +174,7 @@
 				07BF2DDF2438381B0017BCD3 /* Timer */,
 				07BF2DDD243837F40017BCD3 /* Objects */,
 				07BF2DE12438386C0017BCD3 /* Database */,
+				074191AC2490CB7F00567DE5 /* Server Functions */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -210,6 +213,14 @@
 				0764113D237A6B0600EF4332 /* GoogleService-Info.plist */,
 			);
 			path = Parking;
+			sourceTree = "<group>";
+		};
+		074191AC2490CB7F00567DE5 /* Server Functions */ = {
+			isa = PBXGroup;
+			children = (
+				074191AA2490CB7100567DE5 /* PaymentTimer.swift */,
+			);
+			path = "Server Functions";
 			sourceTree = "<group>";
 		};
 		076F4447246E9BD200EC9C85 /* Results */ = {
@@ -543,6 +554,7 @@
 				07EF7DA7235C3A4500D015CF /* BulletinBackground.swift in Sources */,
 				07EF7DAD235C3A4500D015CF /* BulletinModeSelector.swift in Sources */,
 				074A8AF3242FF6DB00E219A9 /* Pay.swift in Sources */,
+				074191AB2490CB7100567DE5 /* PaymentTimer.swift in Sources */,
 				0793DDDB23260AC5002FBE09 /* Account.swift in Sources */,
 				07EF7DAC235C3A4500D015CF /* BulletinFeedback.swift in Sources */,
 				0734C09B2325BBBF00E74D0A /* AppDelegate.swift in Sources */,

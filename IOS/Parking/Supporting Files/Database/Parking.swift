@@ -118,8 +118,8 @@ func retrieveNearByParking(latitude: Double, longitude: Double, meters: Double) 
                     NearByParking.append(ParkingNearby(Location: location, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floor: Floor, Spot: spot))
                 }
             }
-            
             NotificationCenter.default.post(name: NSNotification.Name("checkIn"), object: nil)
+//            Server.requestTimer()
         }
     }
 }

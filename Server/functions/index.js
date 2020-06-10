@@ -197,12 +197,12 @@ exports.startPayment = functions.https.onCall((data, context) => {
                 Begin: admin.firestore.Timestamp.fromDate(TimerStart)
             },
       }, {merge: true});
-
+        return {Status: true}
     } catch(error) {
-      return console.log(error);
+        console.log(error);
+        return {Status: false}
     }
 });
-
 
 
 exports.createCharge = functions.https.onCall((data, context) => {

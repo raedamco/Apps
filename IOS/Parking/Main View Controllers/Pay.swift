@@ -16,7 +16,7 @@ import Stripe
 import FirebaseFunctions
 
 class ParkViewController: UIViewController, CLLocationManagerDelegate {
-     
+
     private let locationManager = CLLocationManager()
     var userLocation = CLLocation()
     
@@ -29,6 +29,8 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     let currentLocation = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: font, FontSize: 26, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 1)
     let timeLabel = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: fontBold, FontSize: 30, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 0)
     
+    var mainTimer = customTimer()
+    var mainNSTimer = Timer()
     var records = [String]()
     
     // BLTNBoard START
@@ -70,6 +72,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(displayParkingInfo(notification:)), name: NSNotification.Name(rawValue: "checkIn"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(enterLocation(notification:)), name: NSNotification.Name(rawValue: "enterLocation"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(startPayment(notification:)), name: NSNotification.Name(rawValue: "startPayment"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(resetTimer(notification:)), name: NSNotification.Name(rawValue: "resetTimer"), object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -123,7 +126,6 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     @objc func searchLocation(){
         // MARK: CHECK IF USER HAS PAYMENT SETUP BEFORE ALLOWING THEM TO CHECK IN
         retrieveNearByParking(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude, meters: nearByDistance)
-        
     }
     
     @objc func enterLocation(notification: NSNotification){
@@ -157,6 +159,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @objc func startPayment(notification: NSNotification){
+        isRunning = !isRunning
         checkInButton.removeFromSuperview()
         currentLocation.text = NearByParking[indexPath.row].Organization
         
@@ -178,30 +181,23 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         paymentButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
         paymentButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
         paymentButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
-        
-        requestTimer()
     }
     
-    func requestTimer(){
-        functions.httpsCallable("startPayment").call(["UID":UserData[indexPath.row].UID,
-                                                      "Organization": SelectedParkingData[indexPath.row].Organization,
-                                                      "Floor": SelectedParkingData[indexPath.row].Floor,
-                                                      "Spot": SelectedParkingData[indexPath.row].Spot,
-                                                      "Location": "", //SelectedParkingData[indexPath.row].Location
-                                                      "Rate": SelectedParkingData[indexPath.row].Price
-                                                    ]) { (result, error) in
-        if let error = error as NSError? {
-            if error.domain == FunctionsErrorDomain {
-                let code = FunctionsErrorCode(rawValue: error.code)
-                let message = error.localizedDescription
-                let details = error.userInfo[FunctionsErrorDetailsKey]
-                print(code as Any, message as Any, details as Any)
-            }
-        }
-//            print(result?.data as? [String: Any]? as Any)
-        }
-    }
-
+    var isRunning = false {
+       didSet {
+           if isRunning == true {
+               mainTimer.start()
+               mainNSTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
+                   self.timeLabel.text = self.mainTimer.inString
+                   let chargeText = "$" + String(format:"%.2f", (Double(self.mainTimer.inInt) * Double(truncating: NearByParking[indexPath.row].Prices)))
+                   self.navigationItem.title = chargeText
+               }
+           }else{
+               mainNSTimer.invalidate()
+               mainTimer.pause()
+           }
+       }
+   }
 
     @objc func checkout(){
         proccessPayment()

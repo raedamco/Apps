@@ -386,7 +386,7 @@ enum BulletinDataSource {
             
             page.actionHandler = { item in
                 item.manager?.dismissBulletin(animated: true)
-                NotificationCenter.default.post(name: NSNotification.Name("startPayment"), object: nil)
+                Server.requestTimer()
             }
             
             page.alternativeHandler = { item in
