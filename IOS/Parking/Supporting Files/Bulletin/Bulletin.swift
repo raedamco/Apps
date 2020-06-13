@@ -343,8 +343,8 @@ enum BulletinDataSource {
     static func makeNoResults() -> BLTNPageItem {
         let page = BLTNPageItem(title: "No Results")
         page.image = UIImage(named: "Error")?.withTintColor(.red)
-        page.appearance.actionButtonColor = UIColor.white
-        page.appearance.actionButtonTitleColor = UIColor.black
+        page.appearance.actionButtonColor = UIColor.red
+        page.appearance.actionButtonTitleColor = standardContrastColor
         page.appearance.titleTextColor = standardContrastColor
         
         page.actionButtonTitle = "Dismiss"
@@ -453,7 +453,12 @@ enum BulletinDataSource {
         
         page.actionButtonTitle = "Dimiss"
 
-        page.descriptionText = "\(NearByParking[indexPath.row].Organization) \n \(NearByParking[indexPath.row].Name) \n \(NearByParking[indexPath.row].Floor) - \(NearByParking[indexPath.row].Spot) \n Rate: $\(NearByParking[indexPath.row].Prices)/min"
+        if SelectedParkingData[indexPath.row].Location != nil {
+           page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n Rate: $\(SelectedParkingData[indexPath.row].Price)/min"
+        }else{
+            page.descriptionText = "You are not currently parked near a location we can detect"
+        }
+        
         page.requiresCloseButton = false
         
         page.actionHandler = { item in

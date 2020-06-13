@@ -24,13 +24,11 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
 
     let checkInButton = createButton(Title: "Check In", FontName: fontBold, FontSize: 20, FontColor: standardBackgroundColor, BorderWidth: 0, CornerRaduis: 5, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(searchLocation))
     let paymentButton = createPaymentButton(Target: self, Action: #selector(checkout))
-    let transactionDetailButton = createButton(Title: "Transaction Details", FontName: fontBold, FontSize: 20, FontColor: standardBackgroundColor, BorderWidth: 0, CornerRaduis: 5, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(showTransactionDetails))
     
     let currentLocation = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: font, FontSize: 26, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 1)
     let timeLabel = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: fontBold, FontSize: 30, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 0)
     
-    var mainTimer = customTimer()
-    var mainNSTimer = Timer()
+    
     var records = [String]()
     
     // BLTNBoard START
@@ -73,11 +71,37 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(enterLocation(notification:)), name: NSNotification.Name(rawValue: "enterLocation"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(startPayment(notification:)), name: NSNotification.Name(rawValue: "startPayment"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resetTimer(notification:)), name: NSNotification.Name(rawValue: "resetTimer"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(transactionCompleted(notification:)), name: NSNotification.Name(rawValue: "endTransaction"), object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         setNeedsStatusBarAppearanceUpdate()
         checkConnection()
+        
+        if (TransactionData.count > 0) && (TransactionData[indexPath.row].Current) {
+            isRunning = !isRunning
+            checkInButton.removeFromSuperview()
+            currentLocation.text = SelectedParkingData[indexPath.row].Organization
+
+            self.view.addSubview(currentLocation)
+            self.view.addSubview(timeLabel)
+            self.view.addSubview(paymentButton)
+            
+            currentLocation.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+            currentLocation.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
+            currentLocation.widthAnchor.constraint(equalToConstant: self.view.frame.width - 50).isActive = true
+            currentLocation.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
+
+            timeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+            timeLabel.centerYAnchor.constraint(equalTo: self.currentLocation.bottomAnchor, constant: 90).isActive = true
+            timeLabel.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
+            timeLabel.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
+            
+            paymentButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+            paymentButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
+            paymentButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
+            paymentButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
+       }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -87,8 +111,13 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     
     func createViewLayout(){
         view.backgroundColor = standardBackgroundColor
-        setupNavigationBar(LargeText: true, Title: "Pay", SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(moreInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
-
+        if (TransactionData.count > 0) && (TransactionData[indexPath.row].Current) {
+            isRunning = !isRunning
+            setupNavigationBar(LargeText: true, Title: "$" + String(format:"%.2f", (Double(mainTimer.inInt) * Double(truncating: SelectedParkingData[indexPath.row].Price))), SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(moreInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
+        }else{
+            setupNavigationBar(LargeText: true, Title: "Pay", SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(moreInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
+        }
+        
         if CLLocationManager.locationServicesEnabled() {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
@@ -125,7 +154,14 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
      
     @objc func searchLocation(){
         // MARK: CHECK IF USER HAS PAYMENT SETUP BEFORE ALLOWING THEM TO CHECK IN
-        retrieveNearByParking(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude, meters: nearByDistance)
+        //retrieveNearByParking(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude, meters: nearByDistance)
+        if SelectedParkingData.count >= 1 {
+            self.bulletinManagerParkingInfo.allowsSwipeInteraction = false
+            self.bulletinManagerParkingInfo.showBulletin(above: self)
+        }else{
+            self.bulletinManagerNoParking.allowsSwipeInteraction = false
+            self.bulletinManagerNoParking.showBulletin(above: self)
+        }
     }
     
     @objc func enterLocation(notification: NSNotification){
@@ -139,18 +175,11 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
      }
     
     @objc func displayParkingInfo(notification: NSNotification){
-        if NearByParking.count >= 1 {
-            self.bulletinManagerParkingInfo.allowsSwipeInteraction = false
-            self.bulletinManagerParkingInfo.showBulletin(above: self)
-            
-        }else{
-            self.bulletinManagerNoParking.allowsSwipeInteraction = false
-            self.bulletinManagerNoParking.showBulletin(above: self)
-        }
+        
     }
     
     @objc func moreInfo(){
-        if NearByParking.isEmpty == true {
+        if SelectedParkingData.isEmpty == true {
             self.bulletinManagerNoParking.showBulletin(above: self)
         }else{
             self.bulletinManagerInfo.showBulletin(above: self)
@@ -161,7 +190,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     @objc func startPayment(notification: NSNotification){
         isRunning = !isRunning
         checkInButton.removeFromSuperview()
-        currentLocation.text = NearByParking[indexPath.row].Organization
+        currentLocation.text = SelectedParkingData[indexPath.row].Organization
         
         self.view.addSubview(currentLocation)
         self.view.addSubview(timeLabel)
@@ -184,30 +213,25 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     var isRunning = false {
-       didSet {
-           if isRunning == true {
-               mainTimer.start()
-               mainNSTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
-                   self.timeLabel.text = self.mainTimer.inString
-                   let chargeText = "$" + String(format:"%.2f", (Double(self.mainTimer.inInt) * Double(truncating: NearByParking[indexPath.row].Prices)))
-                   self.navigationItem.title = chargeText
+        didSet {
+        if isRunning == true {
+                mainTimer.start()
+                mainNSTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
+                    self.timeLabel.text = mainTimer.inString
+                    let chargeText = "$" + String(format:"%.2f", (Double(mainTimer.inInt) * Double(truncating: SelectedParkingData[indexPath.row].Price)))
+                    self.navigationItem.title = chargeText
                }
            }else{
                mainNSTimer.invalidate()
                mainTimer.pause()
            }
        }
-   }
-
+    }
+    
     @objc func checkout(){
         proccessPayment()
     }
-    
-    @objc func showTransactionDetails(){
-        //present(TransactionHistory, animated: false, completion: nil)
-    }
-
-    
+      
 }
 
 extension ParkViewController: GMSAutocompleteViewControllerDelegate {

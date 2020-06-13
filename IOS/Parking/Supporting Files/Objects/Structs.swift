@@ -31,6 +31,19 @@ struct User {
     }
 }
 
+struct Payment {
+    var Current: Bool
+    var Start: Date
+    var Amount: Double
+    
+    init(Current: Bool, Start: Date, Amount: Double){
+        self.Current = Current
+        self.Start = Start
+        self.Amount = Amount
+    }
+}
+
+
 struct Transactions {
     var TID: String
     var Cost: NSNumber
@@ -76,31 +89,6 @@ struct Parking {
     }
 }
 
-
-struct ParkingNearby {
-    var Location: GeoPoint
-    var Name: String
-    var Types: [String:Bool]
-    var Organization: String
-    var Prices: NSNumber
-    var Available: NSNumber
-    var Capacity: NSNumber
-    var Floor: String
-    var Spot: String
-    
-    init(Location: GeoPoint, Name: String!, Types: [String:Bool], Organization: String!, Prices: NSNumber, Capacity: NSNumber, Available: NSNumber,Floor: String,Spot: String) {
-        self.Location = Location
-        self.Name = Name
-        self.Types = Types
-        self.Organization = Organization
-        self.Prices = Prices
-        self.Capacity = Capacity
-        self.Available = Available
-        self.Floor = Floor
-        self.Spot = Spot
-    }
-}
-
 struct SelectedParking {
     var Location: GeoPoint
     var Name: String
@@ -110,7 +98,7 @@ struct SelectedParking {
     var Floor: String
     var Spot: String
     
-    init(Location: GeoPoint, Name: String!, Types: [String:Bool], Organization: String!, Price: NSNumber,Floor: String, Spot: String) {
+    init(Location: GeoPoint, Name: String!, Types: [String:Bool], Organization: String!, Price: NSNumber, Floor: String, Spot: String) {
         self.Location = Location
         self.Name = Name
         self.Types = Types

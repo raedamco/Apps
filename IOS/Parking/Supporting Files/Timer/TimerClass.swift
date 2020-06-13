@@ -8,6 +8,10 @@
 
 import Foundation
 
+var mainTimer = customTimer()
+var mainNSTimer = Timer()
+
+
 class customTimer {
     var startTime: TimeInterval?
     
@@ -34,11 +38,14 @@ class customTimer {
     }
     
     func start() {
-        if startTime == nil {
+        if (TransactionData.count > 0) && (TransactionData[indexPath.row].Current) {
+            startTime = TransactionData[indexPath.row].Start.timeIntervalSinceReferenceDate
+        }else if startTime == nil {
             startTime = currentTime
         } else {
             startTime = currentTime - freezedTime
         }
+        
     }
     
     func reset() {

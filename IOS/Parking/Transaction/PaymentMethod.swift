@@ -74,7 +74,7 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return TransactionsData.count
+        return TransactionsHistory.count
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -96,10 +96,10 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
         let formatter = DateFormatter()
         formatter.dateFormat = "MM/dd/yyyy"
         
-        cell.LocationLabel.text = TransactionsData[indexPath.row].Organization
-        cell.DateLabel.text = "Date: " + formatter.string(from: TransactionsData[indexPath.row].Day)
-        cell.CostLabel.text = "Cost $" + String(format:"%.2f", Double(truncating: TransactionsData[indexPath.row].Cost))
-        cell.DurationLabel.text = "Duration: " + String(describing: TransactionsData[indexPath.row].Duration)
+        cell.LocationLabel.text = TransactionsHistory[indexPath.row].Organization
+        cell.DateLabel.text = "Date: " + formatter.string(from: TransactionsHistory[indexPath.row].Day)
+        cell.CostLabel.text = "Cost $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Cost))
+        cell.DurationLabel.text = "Duration: " + String(describing: TransactionsHistory[indexPath.row].Duration)
 
         return cell
     }

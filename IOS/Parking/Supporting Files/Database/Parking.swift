@@ -12,7 +12,6 @@ import UIKit
 
 var ParkingData = [Parking]()
 var SelectedParkingData = [SelectedParking]()
-var NearByParking = [ParkingNearby]()
 
 var RouteData = [RouteInfo]()
 var DirectionsData = [DirectionsInfo]()
@@ -83,47 +82,6 @@ func getStructureData(){
         }
     }
 }
-
-
-func retrieveNearByParking(latitude: Double, longitude: Double, meters: Double) {
-    let r_earth : Double = 6378137
-
-    let kLat = (2 * Double.pi / 360) * r_earth
-    let kLon = (2 * Double.pi / 360) * r_earth * __cospi(latitude/180.0)
-
-    let deltaLat = meters / kLat
-    let deltaLon = meters / kLon
-
-    let swGeopoint = GeoPoint(latitude: latitude - deltaLat, longitude: longitude - deltaLon)
-    let neGeopoint = GeoPoint(latitude: latitude + deltaLat, longitude: longitude + deltaLon)
-
-    database.collection("PSU").whereField("Location", isGreaterThan: swGeopoint).whereField("Location", isLessThan: neGeopoint).getDocuments { snapshot, error in
-        if let error = error {
-            print("Error getting documents: \(error)")
-        }else{
-            for document in snapshot!.documents {
-                if document.exists {
-                    let organization = "Portland State University"
-                    let price = document.data()["Pricing"] as! [String: NSNumber]
-                    let rate = price["Minute"]!
-                    let name = document.data()["Name"] as! String
-                    let types = document.data()["Spot Types"] as! [String: Bool]
-                    let location = document.data()["Location"] as! GeoPoint
-                    let currentInfo = document.data()["Capacity"] as! [String: NSNumber]
-                    let available = currentInfo["Available"]!
-                    let capacity = currentInfo["Capacity"]!
-                    let Floor = "Floor 2"
-                    let spot = "Spot 2"
-                    
-                    NearByParking.append(ParkingNearby(Location: location, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floor: Floor, Spot: spot))
-                }
-            }
-            NotificationCenter.default.post(name: NSNotification.Name("checkIn"), object: nil)
-//            Server.requestTimer()
-        }
-    }
-}
-
 
 func ParkingDataUpdates(){
     database.collection("PSU").document("Parking Structure 1").collection("Floor 2").addSnapshotListener { querySnapshot, error in

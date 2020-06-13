@@ -40,7 +40,7 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
         NotificationCenter.default.addObserver(self, selector: #selector(closeView(notification:)), name: NSNotification.Name(rawValue: "closeTView"), object: nil)
-        if TransactionsData.isEmpty {
+        if TransactionsHistory.isEmpty {
             self.emptyAlert.allowsSwipeInteraction = false
             self.emptyAlert.showBulletin(above: self)
         }
@@ -77,7 +77,7 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return TransactionsData.count
+        return TransactionsHistory.count
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -99,10 +99,10 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
         let formatter = DateFormatter()
         formatter.dateFormat = "MM/dd/yyyy"
         
-        cell.LocationLabel.text = TransactionsData[indexPath.row].Organization
-        cell.DateLabel.text = "Date: " + formatter.string(from: TransactionsData[indexPath.row].Day)
-        cell.CostLabel.text = "Cost $" + String(format:"%.2f", Double(truncating: TransactionsData[indexPath.row].Cost)) + " | $" + String(format:"%.2f", Double(truncating: TransactionsData[indexPath.row].Cost)) + "/min"
-        cell.DurationLabel.text = "Duration: " + String(describing: TransactionsData[indexPath.row].Duration)
+        cell.LocationLabel.text = TransactionsHistory[indexPath.row].Organization
+        cell.DateLabel.text = "Date: " + formatter.string(from: TransactionsHistory[indexPath.row].Day)
+        cell.CostLabel.text = "Cost $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Cost)) + " | $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Cost)) + "/min"
+        cell.DurationLabel.text = "Duration: " + String(describing: TransactionsHistory[indexPath.row].Duration)
 
         return cell
     }

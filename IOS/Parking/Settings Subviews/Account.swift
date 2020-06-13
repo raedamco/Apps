@@ -14,7 +14,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     var tableView = UITableView()
     var itemsInSections = [["Email: ",""],[" | Licence:"],["Logout"]]
-    var sections = [["Account"],["Vehicles"],["Permits"],[""]]
+    var sections = [[""],["Vehicles"],["Permits"],[""]]
     
     // BLTNBoard START
        let backgroundStyles = BackgroundStyles()
@@ -32,7 +32,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         itemsInSections = [["\(UserData[indexPath.row].Email)",
                             "\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))",""],
-                           ["\(UserData[indexPath.row].License[indexPath.row])",""],
+                           ["",""], //\(UserData[indexPath.row].License[indexPath.row])
                            [""],
                            ["Logout"]
                           ]
@@ -138,7 +138,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     @objc func logout(){
         UserData.removeAll()
-        TransactionsData.removeAll()
+        TransactionsHistory.removeAll()
         try! Auth.auth().signOut()
         self.navigationController?.pushViewController(StartView(), animated: false)
         self.tabBarController?.tabBar.isHidden = true

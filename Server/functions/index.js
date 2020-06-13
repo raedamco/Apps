@@ -177,17 +177,20 @@ exports.addPermitData = functions.https.onCall((data, context) => {
 
 exports.startPayment = functions.https.onCall((data, context) => {
     const UID = data.UID;
-    const Location = data.Location;
+    const Lat = data.Latitude;
+    const Long = data.Longitude;
     const Organization = data.Organization;
     const Floor = data.Floor;
     const Spot = data.Spot;
     const Rate = data.Rate;
     const TimerStart = new Date();
 
+    console.log(Lat, Long)
     try {
         admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).collection("History").doc().set({
+            Current: true,
             Data: {
-                "Location": Location,
+                "Location": new admin.firestore.GeoPoint(Lat, Long),
                 "Organization": Organization,
                 "Floor": Floor,
                 "Spot": Spot,
@@ -208,8 +211,15 @@ exports.startPayment = functions.https.onCall((data, context) => {
 exports.createCharge = functions.https.onCall((data, context) => {
     try {
         completeTransaction(data)
+        console.log("trasaction completed successfully")
+        return {
+            Completed: true
+        }
     }catch(error){
-        console.log(error);
+        console.log("trasaction did not complete: ", error);
+        return {
+            Completed: false
+        }
     }
 });
 
@@ -269,6 +279,7 @@ function completeTransaction(data){
         TransactionDetails.Amount = (TransactionDetails.Duration * TransactionDetails.Rate)
 
         admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
+            Current: false,
             Duration: {
                 End: TransactionDetails.End,
                 Minutes: TransactionDetails.Duration,
@@ -280,9 +291,8 @@ function completeTransaction(data){
         }, {merge: true});
         //createStripeCharge();
     }
-
     return {
       Amount: TransactionDetails.Amount,
       Duration: TransactionDetails.Duration
-    };
+    }
 }

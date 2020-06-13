@@ -322,7 +322,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) //UIImage.init(named: "transparent.png")
                         self.navigationController?.navigationBar.shadowImage = UIImage()
                         self.navigationController?.navigationBar.isTranslucent = false
-                        self.navigationController?.view.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+                        //self.navigationController?.view.backgroundColor = standardBackgroundColor.withAlphaComponent(0.7)
                     }
                 }
             }

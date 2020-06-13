@@ -118,7 +118,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
         self.navigationController?.pushViewController(StartView(), animated: false)
         self.tabBarController?.tabBar.isHidden = true
         UserData.removeAll()
-        TransactionsData.removeAll()
+        TransactionsHistory.removeAll()
     }
 
 }

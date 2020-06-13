@@ -78,7 +78,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0700919F243018BA00A8AF40 /* TimerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerClass.swift; sourceTree = "<group>"; };
+		0700919F243018BA00A8AF40 /* TimerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerClass.swift; sourceTree = "<group>"; usesTabs = 0; };
 		070091A1243061D300A8AF40 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		070091A52431B5CE00A8AF40 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		0725B2CF2325BFAC007B400F /* Parking.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Parking.entitlements; sourceTree = "<group>"; };

@@ -17,8 +17,6 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
     
     func proccessPayment(){
         let paymentNetworks = [PKPaymentNetwork.amex, .discover, .masterCard, .visa]
-        let paymentItem = PKPaymentSummaryItem.init(label: "For PSU Parking", amount: NSDecimalNumber(value: Double(0)))
-        //NSDecimalNumber(value: Double(self.mainTimer.inInt) * Double(truncating: NearByParking[indexPath.row].Prices))
 
         if PKPaymentAuthorizationViewController.canMakePayments(usingNetworks: paymentNetworks) {
             let request = PKPaymentRequest()
@@ -27,7 +25,15 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
             request.merchantIdentifier = "merchant.parking"
             request.merchantCapabilities = PKMerchantCapability.capability3DS
             request.supportedNetworks = paymentNetworks
-            request.paymentSummaryItems = [paymentItem]
+            
+            if TransactionData.count > 0 {
+                let paymentItem = PKPaymentSummaryItem.init(label: "Parking at \(SelectedParkingData[indexPath.row].Organization)", amount: NSDecimalNumber(value: Double(TransactionData[indexPath.row].Amount)))
+                request.paymentSummaryItems = [paymentItem]
+            }else{
+                let totalAmount = NSDecimalNumber(value: Double(mainTimer.inInt) * Double(truncating: SelectedParkingData[indexPath.row].Price))
+                let paymentItem = PKPaymentSummaryItem.init(label: "Parking at \(SelectedParkingData[indexPath.row].Organization)", amount: totalAmount)
+                request.paymentSummaryItems = [paymentItem]
+            }
             
             guard let paymentVC = PKPaymentAuthorizationViewController(paymentRequest: request) else {
                 self.bulletinManagerPaymentError.allowsSwipeInteraction = false
@@ -53,21 +59,19 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
                 print(error!)
                 return
             }
-            //MARK: insert timer below
-            //let amount = round((Double(1) * Double(truncating: NearByParking[indexPath.row].Prices)) * 100)
             Server.requestCharge(idempotencyKey: stripeToken.tokenId)
+            
         }
         
         completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
-
+    }
+    
+    @objc func transactionCompleted(notification: NSNotification){
+        TransactionData.removeAll()
         dismiss(animated: true, completion: nil)
-
         self.bulletinManagerPaymentComplete.allowsSwipeInteraction = false
         self.bulletinManagerPaymentComplete.showBulletin(above: self)
-        self.transactionCompleted()
-    }
-
-    func transactionCompleted(){
+        
         setupNavigationBar(LargeText: true, Title: "Pay", SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(moreInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
         timeLabel.removeFromSuperview()
         currentLocation.removeFromSuperview()
