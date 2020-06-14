@@ -72,6 +72,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(startPayment(notification:)), name: NSNotification.Name(rawValue: "startPayment"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resetTimer(notification:)), name: NSNotification.Name(rawValue: "resetTimer"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(transactionCompleted(notification:)), name: NSNotification.Name(rawValue: "endTransaction"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(finishProcessing(notification:)), name: NSNotification.Name(rawValue: "finishProcessing"), object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -80,9 +81,9 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         
         if (TransactionData.count > 0) && (TransactionData[indexPath.row].Current) {
             isRunning = !isRunning
-            checkInButton.removeFromSuperview()
+            self.checkInButton.removeFromSuperview()
             currentLocation.text = SelectedParkingData[indexPath.row].Organization
-
+            
             self.view.addSubview(currentLocation)
             self.view.addSubview(timeLabel)
             self.view.addSubview(paymentButton)
@@ -116,6 +117,13 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
             setupNavigationBar(LargeText: true, Title: "$" + String(format:"%.2f", (Double(mainTimer.inInt) * Double(truncating: SelectedParkingData[indexPath.row].Price))), SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(moreInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
         }else{
             setupNavigationBar(LargeText: true, Title: "Pay", SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(moreInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
+            
+            self.view.addSubview(checkInButton)
+            
+            checkInButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+            checkInButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
+            checkInButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
+            checkInButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
         }
         
         if CLLocationManager.locationServicesEnabled() {
@@ -125,14 +133,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         } else {
             locationManager.requestWhenInUseAuthorization()
         }
-        
-        self.view.addSubview(checkInButton)
-        
-        checkInButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        checkInButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
-        checkInButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
-        checkInButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
-
+    
     }
      
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {

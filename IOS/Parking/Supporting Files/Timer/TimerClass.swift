@@ -38,10 +38,10 @@ class customTimer {
     }
     
     func start() {
-        if (TransactionData.count > 0) && (TransactionData[indexPath.row].Current) {
-            startTime = TransactionData[indexPath.row].Start.timeIntervalSinceReferenceDate
-        }else if startTime == nil {
+        if startTime == nil || TransactionData.isEmpty {
             startTime = currentTime
+        } else if (TransactionData.count > 0) && (TransactionData[indexPath.row].Current) {
+            startTime = TransactionData[indexPath.row].Start.timeIntervalSinceReferenceDate
         } else {
             startTime = currentTime - freezedTime
         }

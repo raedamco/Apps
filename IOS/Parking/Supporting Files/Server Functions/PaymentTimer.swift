@@ -61,6 +61,39 @@ class ServerTimer: NSObject {
            }
         }
     }
+    
+    func requestTotal(){
+        functions.httpsCallable("getTotal").call(["UID": UserData[indexPath.row].UID]) { (result, error) in
+            if let error = error as NSError? {
+                if error.domain == FunctionsErrorDomain {
+                    let message = error.localizedDescription
+                    errorMessage = "\(message)"
+                    print(errorMessage)
+                }
+            }
+            
+            guard let Amount = (result?.data as? [String: Any])?["Amount"] as? Double else { return }
+            guard let DocumentID = (result?.data as? [String: Any])?["Document"] as? String else { return }
+            
+            database.collection("Users").document("Commuters").collection("Users").document(UserData[indexPath.row].UID).collection("History").document(DocumentID).getDocument { (document, error) in
+                if let document = document, document.exists {
+                    guard let Time = document.data()!["Duration"] as? [String: Firebase.Timestamp] else { return }
+
+                    let StartTime = Date(timeIntervalSince1970: TimeInterval(Time["Begin"]!.seconds))
+                    TransactionData.removeAll()
+                    TransactionData.append(Payment(Current: true, Start: StartTime, Amount: Amount))
+                    NotificationCenter.default.post(name: NSNotification.Name("finishProcessing"), object: nil)
+                    print(TransactionData)
+                } else {
+                    print("Document does not exist")
+                }
+            }
+            
+        }
+        
+        
+        
+    }
 
 }
 

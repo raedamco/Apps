@@ -175,7 +175,7 @@ exports.addPermitData = functions.https.onCall((data, context) => {
 });
 
 
-exports.startPayment = functions.https.onCall((data, context) => {
+exports.startPayment = functions.https.onCall(async (data, context) => {
     const UID = data.UID;
     const Lat = data.Latitude;
     const Long = data.Longitude;
@@ -185,9 +185,8 @@ exports.startPayment = functions.https.onCall((data, context) => {
     const Rate = data.Rate;
     const TimerStart = new Date();
 
-    console.log(Lat, Long)
     try {
-        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).collection("History").doc().set({
+        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).collection("History").doc().set({
             Current: true,
             Data: {
                 "Location": new admin.firestore.GeoPoint(Lat, Long),
@@ -208,9 +207,9 @@ exports.startPayment = functions.https.onCall((data, context) => {
 });
 
 
-exports.createCharge = functions.https.onCall((data, context) => {
+exports.createCharge = functions.https.onCall(async (data, context) => {
     try {
-        completeTransaction(data)
+        await completeTransaction(data)
         console.log("trasaction completed successfully")
         return {
             Completed: true
@@ -296,3 +295,61 @@ function completeTransaction(data){
       Duration: TransactionDetails.Duration
     }
 }
+
+exports.getTotal = functions.https.onCall(async (data, context) => {
+    const TimerEnd = new Date();
+
+    var TransactionDetails = {
+        Duration: String(),
+        Rate: String(),
+        Begin: String(),
+        End: String(),
+        Amount: String(),
+        Current: Boolean(),
+        Document: String()
+    }
+
+    try{
+        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(data.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            TransactionDetails.Current = doc.data().Current
+            TransactionDetails.Begin = doc.data()["Duration"].Begin
+            TransactionDetails.Rate = doc.data()["Data"].Rate
+            TransactionDetails.Document = doc.id
+        });
+
+            if (TransactionDetails.Current){
+                console.log("Current")
+                console.log(TransactionDetails.Document)
+                TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
+                TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
+                TransactionDetails.Amount = (TransactionDetails.Duration * TransactionDetails.Rate)
+                return [TransactionDetails.Amount, TransactionDetails.Document,TransactionDetails.Current]
+            }else{
+                console.log("Not current")
+                return TransactionDetails.Current
+            }
+
+        }).catch(function(error) {
+            console.log("Error getting documents: " + error);
+        });
+
+        if (TransactionDetails.Current){
+            console.log(TransactionDetails.Document)
+            return {
+              Amount: TransactionDetails.Amount,
+              Document: TransactionDetails.Document,
+              Current: TransactionDetails.Current
+            }
+        }else{
+            return {
+                Current: TransactionDetails.Current
+            }
+        }
+
+    }catch(error){
+        return error
+    }
+
+
+});

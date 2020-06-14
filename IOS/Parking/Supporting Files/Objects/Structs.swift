@@ -43,6 +43,14 @@ struct Payment {
     }
 }
 
+struct FinalPayment {
+    var Amount: Double
+    
+    init(Amount: Double){
+        self.Amount = Amount
+    }
+}
+
 
 struct Transactions {
     var TID: String

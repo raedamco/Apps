@@ -12,6 +12,7 @@ import UIKit
 
 var TransactionsHistory = [Transactions]()
 var TransactionData = [Payment]()
+var FinalTransactionAmount = [FinalPayment]()
 
 func getTransactionHistory(){
     database.collection("Users").document("Commuters").collection("Users").document(UserData[indexPath.row].UID).collection("History").order(by: "Duration.Begin", descending: true).getDocuments { (snapshot, error) in
