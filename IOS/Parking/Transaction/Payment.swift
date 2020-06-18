@@ -12,33 +12,16 @@ import PassKit
 import Alamofire
 import Firebase
 
-extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate { //, STPApplePayContextDelegate
+extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate { //, STPApplePayContextDelegate //
     
     func proccessPayment(){
-//        let merchantIdentifier = "merchant.com.your_app_name"
-//        let paymentRequest = Stripe.paymentRequest(withMerchantIdentifier: merchantIdentifier, country: "US", currency: "USD")
-//
-//        // Configure the line items on the payment request
-//        paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: "iHats, Inc", amount: 50.00)]
-//
-//        // Initialize an STPApplePayContext instance
-//        if let applePayContext = STPApplePayContext(paymentRequest: paymentRequest, delegate: self) {
-//            // Present Apple Pay payment sheet
-//            applePayContext.presentApplePay(on: self)
-//        } else {
-//            // There is a problem with your Apple Pay configuration
-//        }
-//
-//
         Server.requestTotal()
         isRunning = !isRunning
     }
     
     @objc func finishProcessing(notification: NSNotification){
         let paymentNetworks = [PKPaymentNetwork.amex, .discover, .masterCard, .visa]
-        
         let paymentItem = PKPaymentSummaryItem.init(label: "For Parking at \(SelectedParkingData[indexPath.row].Organization)", amount: NSDecimalNumber(value: TransactionData[indexPath.row].Amount))
-        
         if PKPaymentAuthorizationViewController.canMakePayments(usingNetworks: paymentNetworks) {
             let request = PKPaymentRequest()
             request.currencyCode = "USD"
@@ -53,26 +36,47 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate { //,
                 self.bulletinManagerPaymentError.showBulletin(above: self)
                 return
             }
-            
+
             paymentVC.delegate = self
             self.present(paymentVC, animated: true, completion: nil)
         }
     }
     
-    func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
-        dismiss(animated: true, completion: nil)
-    }
-    
+//    func applePayContext(_ context: STPApplePayContext, didCreatePaymentMethod paymentMethod: STPPaymentMethod, paymentInformation: PKPayment, completion: @escaping STPIntentClientSecretCompletionBlock) {
+//        let clientSecret = ... // Retrieve the PaymentIntent client secret from your backend (see Server-side step above)
+//        // Call the completion block with the client secret or an error
+//        completion(clientSecret, error);
+//    }
+//
+//    func applePayContext(_ context: STPApplePayContext, didCompleteWith status: STPPaymentStatus, error: Error?) {
+//          switch status {
+//        case .success:
+//            // Payment succeeded, show a receipt view
+//            break
+//        case .error:
+//            // Payment failed, show the error
+//            break
+//        case .userCancellation:
+//            // User cancelled the payment
+//            break
+//        @unknown default:
+//            fatalError()
+//        }
+//    }
+
     func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
         STPAPIClient.shared().createToken(with: payment) { (stripeToken, error) in
             guard error == nil, let stripeToken = stripeToken else {
-                print(error!)
-                return
+               return print(error!)
             }
             Server.requestCharge(idempotencyKey: stripeToken.tokenId)
         }
-        
         completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
+    }
+    
+    func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
+        //verify transaction before dimissing
+        dismiss(animated: true, completion: nil)
     }
     
     @objc func transactionCompleted(notification: NSNotification){

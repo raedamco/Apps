@@ -9,10 +9,20 @@
 import Foundation
 import Firebase
 import CoreLocation
+import Alamofire
 
 var Server = ServerTimer()
 
 class ServerTimer: NSObject {
+    var baseURLString: String? = "https://us-central1-theory-parking.cloudfunctions.net"
+    var baseURL: URL {
+        if let urlString = self.baseURLString, let url = URL(string: urlString) {
+            return url
+        } else {
+            fatalError()
+        }
+    }
+    
     
     func requestTimer(){
         let requiredInfo: [String: Any] = ["UID":UserData[indexPath.row].UID,
@@ -24,77 +34,66 @@ class ServerTimer: NSObject {
                                            "Rate": SelectedParkingData[indexPath.row].Price
                                           ]
         
-        functions.httpsCallable("startPayment").call(requiredInfo) { (result, error) in
-            if let error = error as NSError? {
-                if error.domain == FunctionsErrorDomain {
-                    let code = FunctionsErrorCode(rawValue: error.code)
-                    let message = error.localizedDescription
-                    let details = error.userInfo[FunctionsErrorDetailsKey]
-                    print(code as Any, message as Any, details as Any)
-                }
-                //show BLTN as an error why timer could not start
-            }
-                
-            if let success = (result?.data as? [String: Any])?["Status"] as? Bool {
-                if success == true {
-                    print("Server timer succesfully started")
-                    NotificationCenter.default.post(name: NSNotification.Name("startPayment"), object: nil)
-                }
+        let url = self.baseURL.appendingPathComponent("startPayment")
+        AF.request(url, method: .post,parameters: requiredInfo).validate(statusCode: 200..<300).responseJSON { responseJSON in
+            switch responseJSON.result {
+                case .success(let json):
+                    let responseJSON = json as? [String: AnyObject]
+                    guard let Success = responseJSON?["Status"] as? Bool else { return }
+
+                    if Success == true {
+                        print("Server timer succesfully started")
+                        NotificationCenter.default.post(name: NSNotification.Name("startPayment"), object: nil)
+                    }
+                case .failure(let error): print(error.localizedDescription)
             }
         }
     }
     
     func requestCharge(idempotencyKey: String){
         DispatchQueue.main.async {
-            functions.httpsCallable("createCharge").call(["UID": UserData[indexPath.row].UID,"IdempotencyKey": idempotencyKey]) { (result, error) in
-                if let error = error as NSError? {
-                    if error.domain == FunctionsErrorDomain {
-                        let message = error.localizedDescription
-                        errorMessage = "\(message)"
-                        print(errorMessage)
-                    }
+            let url = self.baseURL.appendingPathComponent("createCharge")
+            AF.request(url, method: .post, parameters: ["UID": UserData[indexPath.row].UID,"IdempotencyKey": idempotencyKey]).validate(statusCode: 200..<300).responseJSON { responseJSON in
+                switch responseJSON.result {
+                    case .success(let json):
+                        let responseJSON = json as? [String: AnyObject]
+                        guard let Completed = responseJSON?["Completed"] as? Bool else { return }
+                    
+                        if Completed {
+                             NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
+                             NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
+                             NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
+                        }
+                    case .failure(let error): print(error.localizedDescription)
                 }
-                
-                guard let Completed = (result?.data as? [String: Any])?["Completed"] as? Bool else { return }
-                
-                if Completed {
-                    NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
-                    NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
-                    NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
-               }
             }
         }
     }
-    
-    func requestTotal(){
-        functions.httpsCallable("getTotal").call(["UID": UserData[indexPath.row].UID]) { (result, error) in
-            if let error = error as NSError? {
-                if error.domain == FunctionsErrorDomain {
-                    let message = error.localizedDescription
-                    errorMessage = "\(message)"
-                    print(errorMessage)
-                }
+
+    func requestTotal() {
+        let url = self.baseURL.appendingPathComponent("getTotal")
+        AF.request(url, method: .post,parameters: ["UID": UserData[indexPath.row].UID]).validate(statusCode: 200..<300).responseJSON { responseJSON in
+            switch responseJSON.result {
+                case .success(let json):
+                    let responseJSON = json as? [String: AnyObject]
+                    guard let Amount = responseJSON?["Amount"] as? Double else { return }
+                    guard let DocumentID = responseJSON?["Document"] as? String else { return }
+                
+                    database.collection("Users").document("Commuters").collection("Users").document(UserData[indexPath.row].UID).collection("History").document(DocumentID).getDocument { (document, error) in
+                        if let document = document, document.exists {
+                            guard let Time = document.data()!["Duration"] as? [String: Firebase.Timestamp] else { return }
+                            let StartTime = Date(timeIntervalSince1970: TimeInterval(Time["Begin"]!.seconds))
+                            TransactionData.removeAll()
+                            TransactionData.append(Payment(Current: true, Start: StartTime, Amount: Amount))
+                            NotificationCenter.default.post(name: NSNotification.Name("finishProcessing"), object: nil)
+                            print(TransactionData)
+                        } else {
+                            print("Document does not exist")
+                        }
+                    }
+                case .failure(let error): print(error.localizedDescription)
             }
-            
-            guard let Amount = (result?.data as? [String: Any])?["Amount"] as? Double else { return }
-            guard let DocumentID = (result?.data as? [String: Any])?["Document"] as? String else { return }
-//            guard let Current = (result?.data as? [String: Any])?["Current"] as? Bool else { return }
-            
-            database.collection("Users").document("Commuters").collection("Users").document(UserData[indexPath.row].UID).collection("History").document(DocumentID).getDocument { (document, error) in
-                if let document = document, document.exists {
-                    guard let Time = document.data()!["Duration"] as? [String: Firebase.Timestamp] else { return }
-                    let StartTime = Date(timeIntervalSince1970: TimeInterval(Time["Begin"]!.seconds))
-                    TransactionData.removeAll()
-                    TransactionData.append(Payment(Current: true, Start: StartTime, Amount: Amount))
-                    NotificationCenter.default.post(name: NSNotification.Name("finishProcessing"), object: nil)
-                    print(TransactionData)
-                } else {
-                    print("Document does not exist")
-                }
-            }
-            
         }
-        
     }
 
 }
