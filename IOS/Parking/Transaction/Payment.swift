@@ -11,7 +11,6 @@ import Stripe
 import PassKit
 import Alamofire
 import Firebase
-import FirebaseFunctions
 
 extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate { //, STPApplePayContextDelegate
     

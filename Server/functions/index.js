@@ -280,7 +280,7 @@ async function completeTransaction(data){
     async function updateDatabaseDocument(){
         TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
         TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
-        TransactionDetails.Amount = double(TransactionDetails.Duration * TransactionDetails.Rate)
+        TransactionDetails.Amount = TransactionDetails.Duration * TransactionDetails.Rate
         await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
             Current: false,
             Duration: {
@@ -297,7 +297,7 @@ async function completeTransaction(data){
     async function createStripeCharge(){
         try {
             const paymentIntent = await stripe.paymentIntents.create({
-              amount: (TransactionDetails.Amount * 100),
+              amount: TransactionDetails.Amount,
               currency: TransactionDetails.Currency,
               description: TransactionDetails.Details,
               payment_method_types: ['card'],
