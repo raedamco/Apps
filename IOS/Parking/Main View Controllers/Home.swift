@@ -221,6 +221,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         self.navigationbarAttributes(Hidden: true, Translucent: true)
         self.destinationTextField.isHidden = false
         self.mapView.clear()
+        self.reloadInputViews()
     }
     
     @objc func showRouteInfo(){
@@ -267,67 +268,57 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
     }
     
     func getRouteSteps(source: CLLocationCoordinate2D,destination: CLLocationCoordinate2D) {
-        let session = URLSession.shared
-
         let url = URL(string: "https://maps.googleapis.com/maps/api/directions/json?origin=\(source.latitude),\(source.longitude)&destination=\(destination.latitude),\(destination.longitude)&sensor=false&mode=driving&key=\(APIKey)")!
-
-        let task = session.dataTask(with: url, completionHandler: {
-            (data, response, error) in
-
-            guard error == nil else {
-                print(error!.localizedDescription)
-                return
-            }
-
-            guard let jsonResult = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String: Any] else {
-                print("error in JSONSerialization")
-                return
-            }
-
-            guard let routes = jsonResult["routes"] as? [Any] else { return }
-            guard let route = routes[0] as? [String: Any] else { return }
-            guard let legs = route["legs"] as? [Any] else { return }
-            guard let leg = legs[0] as? [String: Any] else { return }
-            guard let steps = leg["steps"] as? [Any] else { return }
-            guard let duration = leg["duration"] as? [String: Any] else { return }
-            guard let distance = leg["distance"] as? [String: Any] else { return }
-
-            RouteData.append(RouteInfo(Time: String(describing: duration["text"]! as Any), Distance: String(describing: distance["text"]! as Any)))
-
-            for item in steps {
-                guard let step = item as? [String: Any] else { return }
-                guard let stepTurns = step["html_instructions"] as? String else { return }
-                guard let stepDistance = step["distance"] as? [String: Any] else { return }
-                guard let stepTime = step["duration"] as? [String: Any] else { return }
-                guard let polyline = step["polyline"] as? [String: Any] else { return }
-                guard let polyLineString = polyline["points"] as? String else { return }
-            
-                //guard let maneuver = step["maneuver"] as? Any else { return }
-                //print(maneuver)
-                
-                DispatchQueue.main.async {
-                    self.drawPath(from: polyLineString)
-                    DirectionsData.append(DirectionsInfo(Time: String(describing: stepTime["text"]! as Any), Distance: String(describing: stepDistance["text"]! as Any), Manuver: stepTurns.html2String))
+        
+        AF.request(url, method: .post).validate(statusCode: 200..<300).responseJSON { responseJSON in
+            switch responseJSON.result {
+                case .success(let json): //print(json)
+                    let jsonResult = json as? [String: AnyObject]
                     
-                    if DirectionsData.count > 0 {
-                        self.navigationbarAttributes(Hidden: false, Translucent: false)
-                        
-                        let directionTitle = SelectedParkingData[indexPath.row].Name
-                            //DirectionsData[indexPath.row].Manuver + " in " + DirectionsData[indexPath.row].Distance //DirectionsData[indexPath.row].Manuver
-                        
-                        self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-                        let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
-                        self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
-                        
-                        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) //UIImage.init(named: "transparent.png")
-                        self.navigationController?.navigationBar.shadowImage = UIImage()
-                        self.navigationController?.navigationBar.isTranslucent = false
-                        //self.navigationController?.view.backgroundColor = standardBackgroundColor.withAlphaComponent(0.7)
-                    }
-                }
+                    guard let routes = jsonResult!["routes"] as? [Any] else { return }
+                    guard let route = routes[0] as? [String: Any] else { return }
+                    guard let legs = route["legs"] as? [Any] else { return }
+                    guard let leg = legs[0] as? [String: Any] else { return }
+                    guard let steps = leg["steps"] as? [Any] else { return }
+                    guard let duration = leg["duration"] as? [String: Any] else { return }
+                    guard let distance = leg["distance"] as? [String: Any] else { return }
+
+                    RouteData.append(RouteInfo(Time: String(describing: duration["text"]! as Any), Distance: String(describing: distance["text"]! as Any)))
+
+                    for item in steps {
+                        guard let step = item as? [String: Any] else { return }
+                        guard let stepTurns = step["html_instructions"] as? String else { return }
+                        guard let stepDistance = step["distance"] as? [String: Any] else { return }
+                        guard let stepTime = step["duration"] as? [String: Any] else { return }
+                        guard let polyline = step["polyline"] as? [String: Any] else { return }
+                        guard let polyLineString = polyline["points"] as? String else { return }
+                   
+//                        guard let maneuver = step["maneuver"] as? String else { return }
+//                        print(maneuver)
+                       
+                        DispatchQueue.main.async {
+                            self.drawPath(from: polyLineString)
+                            DirectionsData.append(DirectionsInfo(Time: String(describing: stepTime["text"]! as Any), Distance: String(describing: stepDistance["text"]! as Any), Manuver: stepTurns.html2String))
+                           
+                            if DirectionsData.count > 0 {
+                                self.navigationbarAttributes(Hidden: false, Translucent: false)
+                                let directionTitle = SelectedParkingData[indexPath.row].Name
+                                   //DirectionsData[indexPath.row].Manuver + " in " + DirectionsData[indexPath.row].Distance //DirectionsData[indexPath.row].Manuver
+                                self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
+                                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
+                                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
+                               
+                                self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) //UIImage.init(named: "transparent.png")
+                                self.navigationController?.navigationBar.shadowImage = UIImage()
+                                self.navigationController?.navigationBar.isTranslucent = false
+                               //self.navigationController?.view.backgroundColor = standardBackgroundColor.withAlphaComponent(0.7)
+                           }
+                       }
+                   }
+                case .failure(let error): print(error)
             }
-        })
-        task.resume()
+        }
+
         let cameraUpdate = GMSCameraUpdate.fit(GMSCoordinateBounds(coordinate: self.userLocation.coordinate, coordinate: self.destinationLocation.coordinate))
         self.mapView.moveCamera(cameraUpdate)
         let currentZoom = self.mapView.camera.zoom

@@ -24,7 +24,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
 
     let checkInButton = createButton(Title: "Check In", FontName: fontBold, FontSize: 20, FontColor: standardBackgroundColor, BorderWidth: 0, CornerRaduis: 5, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(searchLocation))
     let paymentButton = createPaymentButton(Target: self, Action: #selector(checkout))
-    
+    let applePayButton: PKPaymentButton = PKPaymentButton(paymentButtonType: .plain, paymentButtonStyle: .black)
     let currentLocation = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: font, FontSize: 26, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 1)
     let timeLabel = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: fontBold, FontSize: 30, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 0)
     
@@ -86,7 +86,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
             
             self.view.addSubview(currentLocation)
             self.view.addSubview(timeLabel)
-            self.view.addSubview(paymentButton)
+//            self.view.addSubview(paymentButton)
             
             currentLocation.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
             currentLocation.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
@@ -98,11 +98,14 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
             timeLabel.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
             timeLabel.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
             
-            paymentButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-            paymentButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
-            paymentButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
-            paymentButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
+//            paymentButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+//            paymentButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -180).isActive = true
+//            paymentButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
+//            paymentButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
+            applePayButton.isHidden = Stripe.deviceSupportsApplePay()
+            applePayButton.addTarget(self, action: #selector(checkout), for: .touchUpInside)
        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

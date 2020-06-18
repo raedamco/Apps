@@ -7,15 +7,30 @@
 //
 
 import Foundation
-import PassKit
 import Stripe
+import PassKit
 import Alamofire
 import Firebase
 import FirebaseFunctions
 
-extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
+extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate { //, STPApplePayContextDelegate
     
     func proccessPayment(){
+//        let merchantIdentifier = "merchant.com.your_app_name"
+//        let paymentRequest = Stripe.paymentRequest(withMerchantIdentifier: merchantIdentifier, country: "US", currency: "USD")
+//
+//        // Configure the line items on the payment request
+//        paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: "iHats, Inc", amount: 50.00)]
+//
+//        // Initialize an STPApplePayContext instance
+//        if let applePayContext = STPApplePayContext(paymentRequest: paymentRequest, delegate: self) {
+//            // Present Apple Pay payment sheet
+//            applePayContext.presentApplePay(on: self)
+//        } else {
+//            // There is a problem with your Apple Pay configuration
+//        }
+//
+//
         Server.requestTotal()
         isRunning = !isRunning
     }
@@ -50,14 +65,12 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
     }
     
     func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
-        
         STPAPIClient.shared().createToken(with: payment) { (stripeToken, error) in
             guard error == nil, let stripeToken = stripeToken else {
                 print(error!)
                 return
             }
             Server.requestCharge(idempotencyKey: stripeToken.tokenId)
-            
         }
         
         completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
@@ -70,7 +83,6 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
     
     @objc func resetTimer(notification: NSNotification){
         mainTimer.reset()
-        
         dismiss(animated: true, completion: nil)
         setupNavigationBar(LargeText: true, Title: "Pay", SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(moreInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
         timeLabel.removeFromSuperview()
@@ -84,7 +96,10 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate {
         checkInButton.widthAnchor.constraint(equalToConstant: self.view.frame.width - 110).isActive = true
         checkInButton.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
         TransactionData.removeAll()
+        self.view.reloadInputViews()
     }
+    
+    
     
 }
 

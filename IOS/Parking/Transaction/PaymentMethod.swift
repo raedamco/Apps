@@ -13,7 +13,7 @@ import Stripe
 import BLTNBoard
 
 class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
+    let customerContext = STPCustomerContext(keyProvider: MyAPIClient())
     let tableView = UITableView()
     
     // BLTNBoard START
@@ -92,15 +92,6 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         cell.accessoryView?.tintColor = standardContrastColor
         cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM/dd/yyyy"
-        
-        cell.LocationLabel.text = TransactionsHistory[indexPath.row].Organization
-        cell.DateLabel.text = "Date: " + formatter.string(from: TransactionsHistory[indexPath.row].Day)
-        cell.CostLabel.text = "Cost $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Cost))
-        cell.DurationLabel.text = "Duration: " + String(describing: TransactionsHistory[indexPath.row].Duration)
-
         return cell
     }
     
@@ -109,7 +100,8 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     @objc func addPayment() {
-        
+        self.navigationController?.pushViewController(CheckoutViewController(), animated: false)
+        self.tabBarController?.tabBar.isHidden = true
     }
     
     
@@ -122,4 +114,8 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
         self.tabBarController?.tabBar.isHidden = false
         self.navigationController?.pushViewController(PaymentViewController(), animated: false)
     }
+    
+    
 }
+
+

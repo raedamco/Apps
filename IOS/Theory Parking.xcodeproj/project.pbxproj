@@ -37,6 +37,8 @@
 		07A42B80235BD9CD00A053B0 /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A42B7F235BD9CD00A053B0 /* SignIn.swift */; };
 		07A42B82235BD9E100A053B0 /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A42B81235BD9E100A053B0 /* SignUp.swift */; };
 		07A42B84235BE5E500A053B0 /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A42B83235BE5E500A053B0 /* Start.swift */; };
+		07ACDAE924999D4700F170B0 /* Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAE824999D4700F170B0 /* Stripe.swift */; };
+		07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */; };
 		07ADFCBD23712A9900D5D81F /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ADFCBC23712A9900D5D81F /* Structs.swift */; };
 		07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07BF2DE32438387C0017BCD3 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE22438387C0017BCD3 /* Parking.swift */; };
@@ -111,6 +113,8 @@
 		07A42B7F235BD9CD00A053B0 /* SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
 		07A42B81235BD9E100A053B0 /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
 		07A42B83235BE5E500A053B0 /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
+		07ACDAE824999D4700F170B0 /* Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stripe.swift; sourceTree = "<group>"; };
+		07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPaymentCards.swift; sourceTree = "<group>"; };
 		07ADFCBC23712A9900D5D81F /* Structs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
 		07B13CAB23767AC70015E111 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		07BF2DE22438387C0017BCD3 /* Parking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parking.swift; sourceTree = "<group>"; };
@@ -158,6 +162,7 @@
 				070091A1243061D300A8AF40 /* Payment.swift */,
 				070091A52431B5CE00A8AF40 /* History.swift */,
 				07CAAC412439372D0027FF60 /* PaymentMethod.swift */,
+				07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */,
 			);
 			path = Transaction;
 			sourceTree = "<group>";
@@ -175,6 +180,7 @@
 				07BF2DDD243837F40017BCD3 /* Objects */,
 				07BF2DE12438386C0017BCD3 /* Database */,
 				074191AC2490CB7F00567DE5 /* Server Functions */,
+				07ACDAEA24999D4D00F170B0 /* Stripe */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -273,6 +279,14 @@
 				07A42B81235BD9E100A053B0 /* SignUp.swift */,
 			);
 			path = Account;
+			sourceTree = "<group>";
+		};
+		07ACDAEA24999D4D00F170B0 /* Stripe */ = {
+			isa = PBXGroup;
+			children = (
+				07ACDAE824999D4700F170B0 /* Stripe.swift */,
+			);
+			path = Stripe;
 			sourceTree = "<group>";
 		};
 		07BF2DDB243834930017BCD3 /* Map Style */ = {
@@ -556,6 +570,7 @@
 				074A8AF3242FF6DB00E219A9 /* Pay.swift in Sources */,
 				074191AB2490CB7100567DE5 /* PaymentTimer.swift in Sources */,
 				0793DDDB23260AC5002FBE09 /* Account.swift in Sources */,
+				07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */,
 				07EF7DAC235C3A4500D015CF /* BulletinFeedback.swift in Sources */,
 				0734C09B2325BBBF00E74D0A /* AppDelegate.swift in Sources */,
 				0764113C237A429800EF4332 /* Search.swift in Sources */,
@@ -568,6 +583,7 @@
 				07EF7DA6235C3A4500D015CF /* Bulletin.swift in Sources */,
 				074191A9248E087800567DE5 /* Bluetooth.swift in Sources */,
 				0793EBFA2339D2E60099C71C /* WebViewController.swift in Sources */,
+				07ACDAE924999D4700F170B0 /* Stripe.swift in Sources */,
 				0793EC042339F4450099C71C /* Controller.swift in Sources */,
 				07F0E70123794C6000046292 /* Filter.swift in Sources */,
 				07A42B82235BD9E100A053B0 /* SignUp.swift in Sources */,

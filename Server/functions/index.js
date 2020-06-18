@@ -8,6 +8,7 @@ const stripe = require('stripe')("sk_test_CFsR0YQ2XzltRxt6pmRCxoOH00rs0xeJ3I");
 var slack = require('slack-notify')('https://hooks.slack.com/services/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');
 // var logging = require('@google-cloud/logging')();
 
+
 // Add a payment source (card) for a user by writing a stripe payment source token to Cloud Firestore
 exports.addPaymentSource = functions.firestore.document('/stripe_customers/{userId}/tokens/{pushId}').onCreate(async (snap, context) => {
   const source = snap.data();
@@ -29,32 +30,31 @@ exports.addPaymentSource = functions.firestore.document('/stripe_customers/{user
 
 // [START chargecustomer]
 // Charge the Stripe customer whenever an amount is created in Cloud Firestore
-
-exports.createStripeCharge = functions.firestore.document('stripe_customers/{userId}/charges/{id}').onCreate(async (snap, context) => {
-      const val = snap.data();
-      try {
-        // Look up the Stripe customer id written in createStripeCustomer
-        const snapshot = await admin.firestore().collection(`stripe_customers`).doc(context.params.userId).get()
-        const snapval = snapshot.data();
-        const customer = snapval.customer_id
-        // Create a charge using the pushId as the idempotency key
-        // protecting against double charges
-        const amount = val.amount;
-        const details = context.params.details;
-        const idempotencyKey = context.params.id;
-        const charge = {amount, currency, customer};
-        if (val.source !== null) {
-          charge.source = val.source;
-        }
-        const response = await stripe.charges.create(charge, {idempotency_key: idempotencyKey}, details);
-        return snap.ref.set(response, { merge: true });
-      } catch(error) {
-        console.log(error);
-        await snap.ref.set({error: userFacingMessage(error)}, { merge: true });
-        return reportError(error, {user: context.params.userId});
-      }
-    });
-// [END chargecustomer]]
+// exports.createStripeCharge = functions.firestore.document('stripe_customers/{userId}/charges/{id}').onCreate(async (snap, context) => {
+//       const val = snap.data();
+//       try {
+//         // Look up the Stripe customer id written in createStripeCustomer
+//         const snapshot = await admin.firestore().collection(`stripe_customers`).doc(context.params.userId).get()
+//         const snapval = snapshot.data();
+//         const customer = snapval.customer_id
+//         // Create a charge using the pushId as the idempotency key
+//         // protecting against double charges
+//         const amount = val.amount;
+//         const details = context.params.details;
+//         const idempotencyKey = context.params.id;
+//         const charge = {amount, currency, customer};
+//         if (val.source !== null) {
+//           charge.source = val.source;
+//         }
+//         const response = await stripe.charges.create(charge, {idempotency_key: idempotencyKey}, details);
+//         return snap.ref.set(response, { merge: true });
+//       } catch(error) {
+//         console.log(error);
+//         await snap.ref.set({error: userFacingMessage(error)}, { merge: true });
+//         return reportError(error, {user: context.params.userId});
+//       }
+//     });
+// // [END chargecustomer]]
 
 
 // [START reporterror]
@@ -222,7 +222,7 @@ exports.createCharge = functions.https.onCall(async (data, context) => {
     }
 });
 
-function completeTransaction(data){
+async function completeTransaction(data){
 
     const TimerEnd = new Date();
 
@@ -233,6 +233,7 @@ function completeTransaction(data){
     }
 
     var TransactionDetails = {
+        IdempotencyKey: data.IdempotencyKey,
         Duration: String(),
         Rate: String(),
         Begin: String(),
@@ -242,23 +243,27 @@ function completeTransaction(data){
         DocumentID: String(),
         Organizaiton: String(),
         Location: String(),
+        Source: String(),
+        Currency: String("usd"),
+        Details: String("details for charge"),
     }
 
     //Get user data first
-    admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).get().then(doc => {
+    await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).get().then(doc => {
         if (!doc.exists) {
             return console.log('No such document!');
         }else{
-            UserData.StripeID = doc.data().StripeID
+            UserData.StripeID = String(doc.data().StripeID);
             UserData.Name = doc.data().Name
+            UserData.Email = doc.data().Email
             return finalizeTransaction();
         }
     }).catch(err => {
         console.log('Error getting document', err);
     });
 
-    function finalizeTransaction(){
-        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
+    async function finalizeTransaction(){
+        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
             querySnapshot.forEach(function(doc) {
                 TransactionDetails.DocumentID = doc.id
                 TransactionDetails.Begin = doc.data()["Duration"].Begin
@@ -272,29 +277,52 @@ function completeTransaction(data){
         });
     }
 
-    function updateDatabaseDocument(){
+    async function updateDatabaseDocument(){
         TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
         TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
-        TransactionDetails.Amount = (TransactionDetails.Duration * TransactionDetails.Rate)
-
-        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
+        TransactionDetails.Amount = double(TransactionDetails.Duration * TransactionDetails.Rate)
+        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
             Current: false,
             Duration: {
                 End: TransactionDetails.End,
                 Minutes: TransactionDetails.Duration,
             },
             Transaction: {
-                Amount: TransactionDetails.Amount,
-                TransactionID: "Placeholder"
+                Amount: TransactionDetails.Amount
             }
         }, {merge: true});
-        //createStripeCharge();
+        return createStripeCharge();
     }
-    return {
-      Amount: TransactionDetails.Amount,
-      Duration: TransactionDetails.Duration
-    }
+
+    async function createStripeCharge(){
+        try {
+            const paymentIntent = await stripe.paymentIntents.create({
+              amount: (TransactionDetails.Amount * 100),
+              currency: TransactionDetails.Currency,
+              description: TransactionDetails.Details,
+              payment_method_types: ['card'],
+            }, {
+              idempotencyKey: TransactionDetails.IdempotencyKey
+            }, function(err, charge) {
+                console.log(err)
+            });
+
+            TransactionDetails.TransactionID = "transaction id placeholder" //response.id
+            return updateDatabaseID(TransactionDetails.TransactionID)
+        } catch(error) {
+            return console.log(error);
+        }
+      }
+
+      function updateDatabaseID(response) {
+          admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
+              Transaction: {
+                  TransactionID: response
+              }
+          }, {merge: true});
+      }
 }
+
 
 exports.getTotal = functions.https.onCall(async (data, context) => {
     const TimerEnd = new Date();
@@ -318,24 +346,16 @@ exports.getTotal = functions.https.onCall(async (data, context) => {
             TransactionDetails.Document = doc.id
         });
 
-            if (TransactionDetails.Current){
-                console.log("Current")
-                console.log(TransactionDetails.Document)
-                TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
-                TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
-                TransactionDetails.Amount = (TransactionDetails.Duration * TransactionDetails.Rate)
-                return [TransactionDetails.Amount, TransactionDetails.Document,TransactionDetails.Current]
-            }else{
-                console.log("Not current")
-                return TransactionDetails.Current
-            }
+            TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
+            TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
+            TransactionDetails.Amount = (TransactionDetails.Duration * TransactionDetails.Rate)
+            return [TransactionDetails.Amount, TransactionDetails.Document,TransactionDetails.Current]
 
         }).catch(function(error) {
             console.log("Error getting documents: " + error);
         });
 
         if (TransactionDetails.Current){
-            console.log(TransactionDetails.Document)
             return {
               Amount: TransactionDetails.Amount,
               Document: TransactionDetails.Document,
@@ -343,6 +363,8 @@ exports.getTotal = functions.https.onCall(async (data, context) => {
             }
         }else{
             return {
+                Amount: TransactionDetails.Amount,
+                Document: TransactionDetails.Document,
                 Current: TransactionDetails.Current
             }
         }
@@ -350,6 +372,41 @@ exports.getTotal = functions.https.onCall(async (data, context) => {
     }catch(error){
         return error
     }
+});
 
 
+const express = require('express');
+const cors = require('cors');
+var bodyParser = require('body-parser');
+const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended:true
+}));
+
+exports.ephemeral_keys = functions.https.onRequest(async (req, res) => {
+    try {
+        let key = await stripe.ephemeralKeys.create(
+          {customer: req.body.customer_id},
+          {apiVersion: req.body.apiVersion}
+        );
+        let JSONResponse = JSON.stringify(key)
+        res.status(200).send(JSONResponse)
+    }catch(error){
+        res.status(500).end()
+    }
+});
+
+exports.create_setup_intent = functions.https.onRequest(async (req, res) => {
+    try {
+        const setupIntent = await stripe.setupIntents.create({
+          customer: req.body.customer_id,
+        });
+        res.status(200).send({
+          clientSecret: setupIntent.client_secret
+        });
+    }catch(error){
+        res.status(500).end()
+    }
 });

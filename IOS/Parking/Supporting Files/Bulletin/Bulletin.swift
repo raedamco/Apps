@@ -489,14 +489,9 @@ enum BulletinDataSource {
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
-            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
-            NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
-            
         }
         
         page.alternativeHandler = { item in
-            NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
-            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
             let detailPage = self.paymentDetails()
             item.manager?.push(item: detailPage)
         }

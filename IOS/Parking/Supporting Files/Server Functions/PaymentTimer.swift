@@ -45,20 +45,24 @@ class ServerTimer: NSObject {
     }
     
     func requestCharge(idempotencyKey: String){
-        functions.httpsCallable("createCharge").call(["UID": UserData[indexPath.row].UID,"idempotencyKey": idempotencyKey]) { (result, error) in
-            if let error = error as NSError? {
-                if error.domain == FunctionsErrorDomain {
-                    let message = error.localizedDescription
-                    errorMessage = "\(message)"
-                    print(errorMessage)
+        DispatchQueue.main.async {
+            functions.httpsCallable("createCharge").call(["UID": UserData[indexPath.row].UID,"IdempotencyKey": idempotencyKey]) { (result, error) in
+                if let error = error as NSError? {
+                    if error.domain == FunctionsErrorDomain {
+                        let message = error.localizedDescription
+                        errorMessage = "\(message)"
+                        print(errorMessage)
+                    }
                 }
+                
+                guard let Completed = (result?.data as? [String: Any])?["Completed"] as? Bool else { return }
+                
+                if Completed {
+                    NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
+                    NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
+                    NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
+               }
             }
-            
-            guard let Completed = (result?.data as? [String: Any])?["Completed"] as? Bool else { return }
-            
-            if Completed {
-               NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
-           }
         }
     }
     
@@ -74,11 +78,11 @@ class ServerTimer: NSObject {
             
             guard let Amount = (result?.data as? [String: Any])?["Amount"] as? Double else { return }
             guard let DocumentID = (result?.data as? [String: Any])?["Document"] as? String else { return }
+//            guard let Current = (result?.data as? [String: Any])?["Current"] as? Bool else { return }
             
             database.collection("Users").document("Commuters").collection("Users").document(UserData[indexPath.row].UID).collection("History").document(DocumentID).getDocument { (document, error) in
                 if let document = document, document.exists {
                     guard let Time = document.data()!["Duration"] as? [String: Firebase.Timestamp] else { return }
-
                     let StartTime = Date(timeIntervalSince1970: TimeInterval(Time["Begin"]!.seconds))
                     TransactionData.removeAll()
                     TransactionData.append(Payment(Current: true, Start: StartTime, Amount: Amount))
@@ -90,8 +94,6 @@ class ServerTimer: NSObject {
             }
             
         }
-        
-        
         
     }
 

@@ -9,9 +9,11 @@
 import UIKit
 import Firebase
 import BLTNBoard
+import Stripe
+
 
 class PaymentViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
+        
     let tableView = UITableView()
     var sections = ["Payment Methods", "Transaction History", "Rewards"]
     
