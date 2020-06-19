@@ -28,53 +28,9 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
         
         if let applePayContext = STPApplePayContext(paymentRequest: paymentRequest, delegate: self) {
             applePayContext.presentApplePay(on: self)
-        } else {
-            // There is a problem with your Apple Pay configuration
         }
     }
     
-    
-    func applePayContext(_ context: STPApplePayContext, didCreatePaymentMethod paymentMethod: STPPaymentMethod, paymentInformation: PKPayment, completion: @escaping STPIntentClientSecretCompletionBlock) {
-        var clientSecret = String()
-        
-        DispatchQueue.main.async {
-            let url = self.baseURL.appendingPathComponent("createCharge")
-            AF.request(url, method: .post, parameters: ["UID": UserData[indexPath.row].UID,"IdempotencyKey": self.idempotencyKey]).validate(statusCode: 200..<300).responseJSON { responseJSON in
-                switch responseJSON.result {
-                    case .success(let json):
-                        let responseJSON = json as? [String: AnyObject]
-                        guard let Completed = responseJSON?["Completed"] as? Bool else { return }
-                        clientSecret = responseJSON?["clientSecret"] as! String
-                        completion(clientSecret, nil);
-                        if Completed {
-                             NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
-                             NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
-                             NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
-                        }
-                    case .failure(let error): print(error.localizedDescription)
-                    completion(clientSecret, error);
-                }
-            }
-        }
-    }
-
-    func applePayContext(_ context: STPApplePayContext, didCompleteWith status: STPPaymentStatus, error: Error?) {
-          switch status {
-        case .success:
-            // Payment succeeded, show a receipt view
-            print("successful transaction")
-            break
-        case .error:
-            print(error?.localizedDescription as Any)
-            break
-        case .userCancellation:
-            print("user stopped transaction")
-            break
-        @unknown default:
-            fatalError()
-        }
-    }
-
     func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
         STPAPIClient.shared().createToken(with: payment) { (stripeToken, error) in
             guard error == nil, let stripeToken = stripeToken else {
@@ -85,9 +41,56 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
         completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
     }
     
+    func applePayContext(_ context: STPApplePayContext, didCreatePaymentMethod paymentMethod: STPPaymentMethod, paymentInformation: PKPayment, completion: @escaping STPIntentClientSecretCompletionBlock) {
+        var clientSecret = String()
+        
+        DispatchQueue.main.async {
+            let url = self.baseURL.appendingPathComponent("createCharge")
+            let requiredParameters = ["UID": UserData[indexPath.row].UID,
+                                      "IdempotencyKey": self.idempotencyKey,
+                                      "Details": "Parking at \(SelectedParkingData[indexPath.row].Organization)"
+                                     ]
+            
+            AF.request(url, method: .post, parameters:requiredParameters).validate(statusCode: 200..<300).responseJSON { responseJSON in
+                switch responseJSON.result {
+                    case .success(let json):
+                        let responseJSON = json as? [String: AnyObject]
+                        guard let Completed = responseJSON?["Completed"] as? Bool else { return }
+                        clientSecret = responseJSON?["ClientSecret"] as! String
+                        print("SECRET", clientSecret)
+                        completion(clientSecret, nil)
+                        if Completed {
+                             NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
+                             NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
+                             NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
+                        }
+                    case .failure(let error): print(error.localizedDescription)
+                    completion(clientSecret, error)
+                }
+            }
+        }
+    }
+
+    func applePayContext(_ context: STPApplePayContext, didCompleteWith status: STPPaymentStatus, error: Error?) {
+        switch status {
+            case .success:
+                print("successful transaction")
+                break
+            case .error:
+                print(error?.localizedDescription as Any)
+                break
+            case .userCancellation:
+                print("user stopped transaction")
+                isRunning = !isRunning
+                break
+            @unknown default:
+                fatalError()
+        }
+    }
+    
     func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
         //verify transaction before dimissing
-        dismiss(animated: true, completion: nil)
+//        dismiss(animated: true, completion: nil)
     }
     
     @objc func transactionCompleted(notification: NSNotification){

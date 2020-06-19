@@ -55,17 +55,19 @@ struct FinalPayment {
 struct Transactions {
     var TID: String
     var Cost: NSNumber
-    var Duration: String
+    var Duration: NSNumber
     var Day: Date
     var Organization: String
     var Floor: String
     var Spot: String
+    var Rate: NSNumber
     
-    init(Organization: String, Floor: String, Spot: String, TID: String, Cost: NSNumber, Duration: String, Day: Date) {
+    init(Organization: String, Floor: String, Spot: String, TID: String,Rate: NSNumber, Cost: NSNumber, Duration: NSNumber, Day: Date) {
         self.Organization = Organization
         self.Floor = Floor
         self.Spot = Spot
         self.TID = TID
+        self.Rate = Rate
         self.Cost = Cost
         self.Duration = Duration
         self.Day = Day

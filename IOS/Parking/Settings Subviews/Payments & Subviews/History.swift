@@ -15,13 +15,22 @@ import BLTNBoard
 class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let tableView = UITableView()
-    
+    var Location = String()
+    var Duration = String()
+    var Amount = String()
+    var Date = String()
+    var TransactionID = String()
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
     var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
     
     lazy var emptyAlert: BLTNItemManager = {
         let page = BulletinDataSource.noHistory()
+        return BLTNItemManager(rootItem: page)
+    }()
+    
+    lazy var ShowMoreData: BLTNItemManager = {
+        let page = BulletinDataSource.TransactionData(Location: Location, Duration: Duration, Amount: Duration, Date: Duration, TransactionID: TransactionID)
         return BLTNItemManager(rootItem: page)
     }()
     // BLTNBoard END
@@ -101,14 +110,22 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
         
         cell.LocationLabel.text = TransactionsHistory[indexPath.row].Organization
         cell.DateLabel.text = "Date: " + formatter.string(from: TransactionsHistory[indexPath.row].Day)
-        cell.CostLabel.text = "Cost $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Cost)) + " | $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Cost)) + "/min"
-        cell.DurationLabel.text = "Duration: " + String(describing: TransactionsHistory[indexPath.row].Duration)
+        cell.CostLabel.text = "Cost $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Cost)) + " | $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Rate)) + "/min"
+        cell.DurationLabel.text = "Duration: " + String(describing: TransactionsHistory[indexPath.row].Duration) + " minutes"
 
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedRow = TransactionsHistory[indexPath.row]
+        Location = selectedRow.Organization
+        Duration = String(describing: selectedRow.Duration)
+        Amount = String(describing: selectedRow.Cost)
+        Date = String(describing: selectedRow.Day)
+        TransactionID = selectedRow.TID
         
+        self.ShowMoreData.allowsSwipeInteraction = false
+        self.ShowMoreData.showBulletin(above: self)
     }
     
     @objc func closeView(gesture: UISwipeGestureRecognizer) {

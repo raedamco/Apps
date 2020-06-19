@@ -677,6 +677,8 @@ enum BulletinDataSource {
         return page
     }
     
+    
+    //TRANSACTIONS START
     static func noHistory() -> BLTNPageItem {
         let page = BLTNPageItem(title: "You have no previous transactions.")
         page.appearance.titleTextColor = standardContrastColor
@@ -694,5 +696,33 @@ enum BulletinDataSource {
         return page
     }
     
+
+    static func TransactionData(Location:String, Duration:String, Amount:String, Date: String, TransactionID: String) -> BLTNPageItem {
+        let page = BLTNPageItem(title: "Transaction Details")
+        
+        page.appearance.actionButtonColor = standardContrastColor
+        page.appearance.actionButtonTitleColor = standardBackgroundColor
+        page.appearance.alternativeButtonTitleColor = standardContrastColor
+        page.appearance.alternativeButtonFontSize = 18
+        page.appearance.actionButtonFontSize = 22
+        page.appearance.titleTextColor = standardContrastColor
+        
+        page.actionButtonTitle = "Dismiss"
+        page.alternativeButtonTitle = "Report error"
+        
+        page.descriptionText = "Date:\(Date) \nLocation:\(Location) \nDuration:\(Duration) \nAmount:\(Amount)"
+        page.requiresCloseButton = false
+        
+        page.actionHandler = { item in
+            item.manager?.dismissBulletin(animated: true)
+        }
+        
+        page.alternativeHandler = { item in
+            //send to view to create support ticket
+        }
+
+        return page
+    }
+    //TRANSACTIONS END
 }
 

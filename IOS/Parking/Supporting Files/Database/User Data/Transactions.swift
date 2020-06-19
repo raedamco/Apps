@@ -20,26 +20,59 @@ func getTransactionHistory(){
             print(error as Any)
         }else{
             for document in (snapshot?.documents)! {
-                guard let TID = document.data()["Transaction ID"] as? String else { return }
-                guard let Time = document.data()["Duration"] as? [String: Firebase.Timestamp] else { return }
+                //Transaction Details
+                guard let TransactionData = document.data()["Transaction"] as? [String: Any] else { return }
+                guard let TID = TransactionData["TransactionID"] as? String else { return }
+                guard let Amount = TransactionData["Amount"] as? NSNumber else { return }
+                
+                //Location & Organization Info
                 guard let Info = document.data()["Data"] as? [String: Any] else { return }
-
-                let Day = Date(timeIntervalSince1970: TimeInterval(Time["End"]!.seconds))
-                let StartTime = Date(timeIntervalSince1970: TimeInterval(Time["Start"]!.seconds))
-                let EndTime = Date(timeIntervalSince1970: TimeInterval(Time["End"]!.seconds))
-                let form = DateComponentsFormatter()
-                form.unitsStyle = .abbreviated
-                let Duration = form.string(from: StartTime, to: EndTime)
-
-                let Organization = Info["Organization"] as! String
-                let Floor = Info["Floor"] as! String
-                let Spot = Info["Spot"] as! String
-                let Rate = Info["Rate"] as! NSNumber
-
-                TransactionsHistory.append(Transactions(Organization: Organization, Floor: Floor, Spot: Spot, TID: TID, Cost: Rate, Duration: Duration!, Day: Day))
+                guard let Floor = Info["Floor"] as? String else { return }
+                guard let Organization = Info["Organization"] as? String else { return }
+                guard let Spot = Info["Spot"] as? String else { return }
+                guard let Rate = Info["Rate"] as? NSNumber else { return }
+                
+                //Date & Time info
+                guard let Time = document.data()["Duration"] as? [String: Any] else { return }
+                guard let Duration = Time["Minutes"] as? NSNumber else { return }
+                guard let EndDay = Time["End"] as? Firebase.Timestamp else { return }
+            
+                TransactionsHistory.append(Transactions(Organization: Organization, Floor: Floor, Spot: Spot, TID: TID, Rate: Rate, Cost: Amount, Duration: Duration, Day: EndDay.dateValue()))
             }
         }
     }
+    
+//    database.collection("Users").document("Commuters").collection("Users").document(UserData[indexPath.row].UID).collection("History").addSnapshotListener { querySnapshot, error in
+//        guard let snapshot = querySnapshot else {
+//            print("Error fetching snapshots: \(error!)")
+//            return
+//        }
+//
+//        snapshot.documentChanges.forEach { diff in
+//            if (diff.type == .added) {
+//                for document in (snapshot.documents) {
+//                    //Transaction Details
+//                    guard let TransactionData = document.data()["Transaction"] as? [String: Any] else { return }
+//                    guard let TID = TransactionData["TransactionID"] as? String else { return }
+//                    guard let Amount = TransactionData["Amount"] as? NSNumber else { return }
+//
+//                    //Location & Organization Info
+//                    guard let Info = document.data()["Data"] as? [String: Any] else { return }
+//                    guard let Floor = Info["Floor"] as? String else { return }
+//                    guard let Organization = Info["Organization"] as? String else { return }
+//                    guard let Spot = Info["Spot"] as? String else { return }
+//                    guard let Rate = Info["Rate"] as? NSNumber else { return }
+//
+//                    //Date & Time info
+//                    guard let Time = document.data()["Duration"] as? [String: Any] else { return }
+//                    guard let Duration = Time["Minutes"] as? NSNumber else { return }
+//                    guard let EndDay = Time["End"] as? Firebase.Timestamp else { return }
+//
+//                    TransactionsHistory.append(Transactions(Organization: Organization, Floor: Floor, Spot: Spot, TID: TID, Rate: Rate, Cost: Amount, Duration: Duration, Day: EndDay.dateValue()))
+//                }
+//            }
+//        }
+//    }
 }
 
 func checkCurrentTransaction(){

@@ -190,6 +190,7 @@ exports.startPayment = functions.https.onRequest(async (req, res) => {
 
 exports.createCharge = functions.https.onRequest(async (req, res) => {
     const TimerEnd = new Date();
+
     var UserData = {
         Name: String(),
         UID: req.body.UID,
@@ -218,7 +219,7 @@ exports.createCharge = functions.https.onRequest(async (req, res) => {
         console.log("trasaction completed successfully")
         res.status(200).send({
             Completed: true,
-            clientSecret: TransactionDetails.ClientSecret
+            ClientSecret: TransactionDetails.ClientSecret
         })
     }catch(error){
         console.log("trasaction did not complete: ", error);
@@ -238,73 +239,63 @@ exports.createCharge = functions.https.onRequest(async (req, res) => {
             }
         }).catch(err => {
             console.log('Error getting document', err);
-        });
+    });
 
-        async function finalizeTransaction(){
-            await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
-                querySnapshot.forEach(function(doc) {
-                    TransactionDetails.DocumentID = doc.id
-                    TransactionDetails.Begin = doc.data()["Duration"].Begin
-                    TransactionDetails.Rate = doc.data()["Data"].Rate
-                    TransactionDetails.Organizaiton = doc.data()["Data"].Organizaiton
-                    TransactionDetails.Location = doc.data()["Data"].Location
-                });
-                return updateDatabaseDocument();
-            }).catch(function(error) {
-                console.log("Error getting documents: " + error);
+    async function finalizeTransaction(){
+        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                TransactionDetails.DocumentID = doc.id
+                TransactionDetails.Begin = doc.data()["Duration"].Begin
+                TransactionDetails.Rate = doc.data()["Data"].Rate
+                TransactionDetails.Organizaiton = doc.data()["Data"].Organizaiton
+                TransactionDetails.Location = doc.data()["Data"].Location
             });
-        }
+            return updateDatabaseDocument();
+        }).catch(function(error) {
+            console.log("Error getting documents: " + error);
+        });
+    }
 
-        async function updateDatabaseDocument(){
-            TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
-            TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
-            TransactionDetails.Amount = parseInt((TransactionDetails.Duration * TransactionDetails.Rate) * 100)
-            await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
-                Current: false,
-                Duration: {
-                    End: TransactionDetails.End,
-                    Minutes: TransactionDetails.Duration,
-                },
+    async function updateDatabaseDocument(){
+        TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
+        TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
+        TransactionDetails.Amount = parseFloat((TransactionDetails.Duration * TransactionDetails.Rate) * 100)
+
+        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
+            Current: false,
+            Duration: {
+                End: TransactionDetails.End,
+                Minutes: TransactionDetails.Duration,
+            },
+            Transaction: {
+                Amount: (TransactionDetails.Amount/100)
+            }
+        }, {merge: true});
+        return createStripeCharge();
+    }
+
+    async function createStripeCharge(){
+        try {
+            const paymentIntent = await stripe.paymentIntents.create({
+              amount: TransactionDetails.Amount,
+              currency: TransactionDetails.Currency,
+              description: TransactionDetails.Details,
+              customer: UserData.StripeID
+            });
+            TransactionDetails.ClientSecret = paymentIntent.client_secret
+            TransactionDetails.TransactionID = paymentIntent.id
+            admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
                 Transaction: {
-                    Amount: TransactionDetails.Amount
+                    TransactionID: TransactionDetails.TransactionID
                 }
             }, {merge: true});
-            return createStripeCharge();
+        } catch(error) {
+            return console.log(error);
         }
-
-        async function createStripeCharge(){
-            try {
-                // const paymentIntent = await stripe.paymentIntents.create({
-                //     customer: UserData.StripeID,
-                //     amount: TransactionDetails.Amount,
-                //     currency: TransactionDetails.Currency,
-                //     description: TransactionDetails.Details,
-                //     payment_method_types: ['card'],
-                // }
-                const paymentIntent = await stripe.paymentIntents.create({
-                  amount: TransactionDetails.Amount,
-                  currency: TransactionDetails.Currency,
-                  description: TransactionDetails.Details,
-                  customer: UserData.StripeID
-                });
-                const clientSecret = paymentIntent.client_secret
-                TransactionDetails.ClientSecret = clientSecret
-                TransactionDetails.TransactionID = "transaction id placeholder" //response.id
-                return updateDatabaseID(TransactionDetails.TransactionID)
-            } catch(error) {
-                return console.log(error);
-            }
-          }
-
-          function updateDatabaseID(response) {
-              admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
-                  Transaction: {
-                      TransactionID: response
-                  }
-              }, {merge: true});
-          }
+      }
     }
 });
+
 exports.getTotal = functions.https.onRequest(async (req, res) => {
     const TimerEnd = new Date();
 
@@ -357,8 +348,6 @@ exports.getTotal = functions.https.onRequest(async (req, res) => {
 });
 
 
-
-
 //STRIPE FUNCTIONS BEGIN//
 exports.ephemeral_keys = functions.https.onRequest(async (req, res) => {
     try {
@@ -385,18 +374,4 @@ exports.create_setup_intent = functions.https.onRequest(async (req, res) => {
         res.status(500).end()
     }
 });
-
-// exports.Payment = functions.https.onRequest(async (req, res) => {
-//     try {
-//         const paymentIntent = await stripe.paymentIntents.create({
-//           amount: req.body.amount,
-//           currency: 'usd',
-//           customer: UserData.StripeID
-//         });
-//         const clientSecret = paymentIntent.client_secret
-//         res.status(200).send(clientSecret)
-//     }catch(error){
-//         res.status(500).end()
-//     }
-// });
 //STRIPE FUNCTIONS END//

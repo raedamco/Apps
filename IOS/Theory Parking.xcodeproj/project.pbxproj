@@ -40,11 +40,11 @@
 		07ACDAE924999D4700F170B0 /* Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAE824999D4700F170B0 /* Stripe.swift */; };
 		07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */; };
 		07ADFCBD23712A9900D5D81F /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ADFCBC23712A9900D5D81F /* Structs.swift */; };
-		07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07BF2DE32438387C0017BCD3 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE22438387C0017BCD3 /* Parking.swift */; };
 		07BF2DE5243838970017BCD3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE4243838970017BCD3 /* User.swift */; };
 		07BF2DE7243838D20017BCD3 /* Transactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE6243838D20017BCD3 /* Transactions.swift */; };
-		07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07CAAC422439372D0027FF60 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CAAC412439372D0027FF60 /* PaymentMethod.swift */; };
 		07E3644D2327925100B55203 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E3644C2327925100B55203 /* Preferences.swift */; };
 		07E4F81623416E3C001CC519 /* Payments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E4F81523416E3C001CC519 /* Payments.swift */; };
@@ -71,8 +71,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */,
-				07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */,
+				07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */,
+				07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -160,11 +160,36 @@
 			isa = PBXGroup;
 			children = (
 				070091A1243061D300A8AF40 /* Payment.swift */,
-				070091A52431B5CE00A8AF40 /* History.swift */,
-				07CAAC412439372D0027FF60 /* PaymentMethod.swift */,
-				07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */,
 			);
 			path = Transaction;
+			sourceTree = "<group>";
+		};
+		070A36A1249C93C1000A8471 /* Parking Data */ = {
+			isa = PBXGroup;
+			children = (
+				07BF2DE22438387C0017BCD3 /* Parking.swift */,
+			);
+			path = "Parking Data";
+			sourceTree = "<group>";
+		};
+		070A36A2249C9420000A8471 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				07BF2DE12438386C0017BCD3 /* User Data */,
+				070A36A1249C93C1000A8471 /* Parking Data */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
+		070A36A3249CA13C000A8471 /* Payments & Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				07E4F81523416E3C001CC519 /* Payments.swift */,
+				07CAAC412439372D0027FF60 /* PaymentMethod.swift */,
+				07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */,
+				070091A52431B5CE00A8AF40 /* History.swift */,
+			);
+			path = "Payments & Subviews";
 			sourceTree = "<group>";
 		};
 		0725B2D52325CCE7007B400F /* Supporting Files */ = {
@@ -178,9 +203,8 @@
 				07BF2DDE243838110017BCD3 /* Connectivity */,
 				07BF2DDF2438381B0017BCD3 /* Timer */,
 				07BF2DDD243837F40017BCD3 /* Objects */,
-				07BF2DE12438386C0017BCD3 /* Database */,
-				074191AC2490CB7F00567DE5 /* Server Functions */,
-				07ACDAEA24999D4D00F170B0 /* Stripe */,
+				070A36A2249C9420000A8471 /* Database */,
+				07ACDAEA24999D4D00F170B0 /* Stripe & Server */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -208,7 +232,7 @@
 			children = (
 				0725B2CF2325BFAC007B400F /* Parking.entitlements */,
 				0725B2D52325CCE7007B400F /* Supporting Files */,
-				07A42B7E235BD99D00A053B0 /* Account */,
+				07A42B7E235BD99D00A053B0 /* Account View Controllers */,
 				077FF17D2327885A00591058 /* Main View Controllers */,
 				076F4447246E9BD200EC9C85 /* Results */,
 				070091A72431B5D900A8AF40 /* Transaction */,
@@ -219,14 +243,6 @@
 				0764113D237A6B0600EF4332 /* GoogleService-Info.plist */,
 			);
 			path = Parking;
-			sourceTree = "<group>";
-		};
-		074191AC2490CB7F00567DE5 /* Server Functions */ = {
-			isa = PBXGroup;
-			children = (
-				074191AA2490CB7100567DE5 /* PaymentTimer.swift */,
-			);
-			path = "Server Functions";
 			sourceTree = "<group>";
 		};
 		076F4447246E9BD200EC9C85 /* Results */ = {
@@ -245,7 +261,7 @@
 			children = (
 				0793DDDA23260AC5002FBE09 /* Account.swift */,
 				07E3644C2327925100B55203 /* Preferences.swift */,
-				07E4F81523416E3C001CC519 /* Payments.swift */,
+				070A36A3249CA13C000A8471 /* Payments & Subviews */,
 				07F0E6FC23792A7200046292 /* Help.swift */,
 				07F0E6FE23792A8500046292 /* About.swift */,
 			);
@@ -271,22 +287,23 @@
 			path = Font;
 			sourceTree = "<group>";
 		};
-		07A42B7E235BD99D00A053B0 /* Account */ = {
+		07A42B7E235BD99D00A053B0 /* Account View Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				07A42B83235BE5E500A053B0 /* Start.swift */,
 				07A42B7F235BD9CD00A053B0 /* SignIn.swift */,
 				07A42B81235BD9E100A053B0 /* SignUp.swift */,
 			);
-			path = Account;
+			path = "Account View Controllers";
 			sourceTree = "<group>";
 		};
-		07ACDAEA24999D4D00F170B0 /* Stripe */ = {
+		07ACDAEA24999D4D00F170B0 /* Stripe & Server */ = {
 			isa = PBXGroup;
 			children = (
 				07ACDAE824999D4700F170B0 /* Stripe.swift */,
+				074191AA2490CB7100567DE5 /* PaymentTimer.swift */,
 			);
-			path = Stripe;
+			path = "Stripe & Server";
 			sourceTree = "<group>";
 		};
 		07BF2DDB243834930017BCD3 /* Map Style */ = {
@@ -336,14 +353,13 @@
 			path = Website;
 			sourceTree = "<group>";
 		};
-		07BF2DE12438386C0017BCD3 /* Database */ = {
+		07BF2DE12438386C0017BCD3 /* User Data */ = {
 			isa = PBXGroup;
 			children = (
 				07BF2DE4243838970017BCD3 /* User.swift */,
-				07BF2DE22438387C0017BCD3 /* Parking.swift */,
 				07BF2DE6243838D20017BCD3 /* Transactions.swift */,
 			);
-			path = Database;
+			path = "User Data";
 			sourceTree = "<group>";
 		};
 		07EF7D9C235C3A4500D015CF /* Bulletin */ = {

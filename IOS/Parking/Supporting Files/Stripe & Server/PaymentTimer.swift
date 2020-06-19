@@ -42,7 +42,6 @@ class ServerTimer: NSObject {
                     guard let Success = responseJSON?["Status"] as? Bool else { return }
 
                     if Success == true {
-                        print("Server timer succesfully started")
                         NotificationCenter.default.post(name: NSNotification.Name("startPayment"), object: nil)
                     }
                 case .failure(let error): print(error.localizedDescription)
@@ -66,7 +65,6 @@ class ServerTimer: NSObject {
                             TransactionData.removeAll()
                             TransactionData.append(Payment(Current: true, Start: StartTime, Amount: Amount))
                             NotificationCenter.default.post(name: NSNotification.Name("finishProcessing"), object: nil)
-                            print(TransactionData)
                         } else {
                             print("Document does not exist")
                         }
