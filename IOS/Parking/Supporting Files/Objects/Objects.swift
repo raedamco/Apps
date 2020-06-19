@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import Lottie
-import KMPlaceholderTextView
 import PassKit
 
 func createLabel(LabelText: String, TextColor: UIColor, FontName: String, FontSize: CGFloat, TextAlignment: NSTextAlignment, TextBreak: NSLineBreakMode, NumberOfLines: Int) -> UILabel{
@@ -160,19 +159,6 @@ func createLabeltemp(LabelText: String, TextColor: UIColor, FontName: String, Fo
     label.translatesAutoresizingMaskIntoConstraints = true
     label.sizeToFit()
     return label
-}
-
-func createTextBox() -> KMPlaceholderTextView {
-    let textView =  KMPlaceholderTextView()
-    textView.translatesAutoresizingMaskIntoConstraints = false
-    textView.layer.cornerRadius = 0
-    textView.layer.masksToBounds = true
-    textView.font = UIFont(name: font, size: 18)
-    textView.backgroundColor = standardBackgroundColor
-    //textView.placeholder = "Please provide more information."
-    textView.layer.borderColor = UIColor.white.cgColor
-    textView.layer.borderWidth = 3
-    return textView
 }
 
 func createViewOverlay() -> UIView {

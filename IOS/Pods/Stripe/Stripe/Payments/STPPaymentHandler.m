@@ -305,11 +305,19 @@ withAuthenticationContext:(id<STPAuthenticationContext>)authenticationContext
 + (BOOL)_isProcessingIntentSuccessForType:(STPPaymentMethodType)type {
     switch (type) {
         case STPPaymentMethodTypeSEPADebit:
+        case STPPaymentMethodTypeBacsDebit: // Bacs Debit takes 2-3 business days
+            // fall through
+        case STPPaymentMethodTypeAUBECSDebit:
             return YES;
         case STPPaymentMethodTypeCard:
         case STPPaymentMethodTypeiDEAL:
         case STPPaymentMethodTypeFPX:
         case STPPaymentMethodTypeCardPresent:
+        case STPPaymentMethodTypeGiropay:
+        case STPPaymentMethodTypeEPS:
+        case STPPaymentMethodTypePrzelewy24:
+        case STPPaymentMethodTypeBancontact:
+            // fall through
         case STPPaymentMethodTypeUnknown:
             return NO;
     }

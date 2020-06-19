@@ -24,11 +24,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>DropDown.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>EmptyDataSet-Swift.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -49,17 +44,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>FirebaseAnalyticsInterop.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>FirebaseAuth.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>FirebaseAuthInterop.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -70,11 +55,6 @@
 			<false/>
 		</dict>
 		<key>FirebaseCoreDiagnostics.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>FirebaseCoreDiagnosticsInterop.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -144,11 +124,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>KMPlaceholderTextView.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Pods-Theory Parking.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -160,11 +135,6 @@
 			<false/>
 		</dict>
 		<key>Protobuf.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>SKSTableView.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

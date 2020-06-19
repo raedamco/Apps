@@ -20,13 +20,21 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     var userLocation = CLLocation()
     
     var paymentSucceeded = false
-
+    var idempotencyKey = String()
     let checkInButton = createButton(Title: "Check In", FontName: fontBold, FontSize: 20, FontColor: standardBackgroundColor, BorderWidth: 0, CornerRaduis: 5, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(searchLocation))
     let paymentButton = createPaymentButton(Target: self, Action: #selector(checkout))
     let applePayButton: PKPaymentButton = PKPaymentButton(paymentButtonType: .plain, paymentButtonStyle: .black)
     let currentLocation = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: font, FontSize: 26, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 1)
     let timeLabel = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: fontBold, FontSize: 30, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 0)
     
+    var baseURLString: String? = "https://us-central1-theory-parking.cloudfunctions.net"
+    var baseURL: URL {
+        if let urlString = self.baseURLString, let url = URL(string: urlString) {
+            return url
+        } else {
+            fatalError()
+        }
+    }
     
     var records = [String]()
     

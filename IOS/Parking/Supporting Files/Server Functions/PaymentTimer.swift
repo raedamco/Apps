@@ -49,26 +49,6 @@ class ServerTimer: NSObject {
             }
         }
     }
-    
-    func requestCharge(idempotencyKey: String){
-        DispatchQueue.main.async {
-            let url = self.baseURL.appendingPathComponent("createCharge")
-            AF.request(url, method: .post, parameters: ["UID": UserData[indexPath.row].UID,"IdempotencyKey": idempotencyKey]).validate(statusCode: 200..<300).responseJSON { responseJSON in
-                switch responseJSON.result {
-                    case .success(let json):
-                        let responseJSON = json as? [String: AnyObject]
-                        guard let Completed = responseJSON?["Completed"] as? Bool else { return }
-                    
-                        if Completed {
-                             NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
-                             NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
-                             NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
-                        }
-                    case .failure(let error): print(error.localizedDescription)
-                }
-            }
-        }
-    }
 
     func requestTotal() {
         let url = self.baseURL.appendingPathComponent("getTotal")

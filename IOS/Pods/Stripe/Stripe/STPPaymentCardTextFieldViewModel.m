@@ -21,10 +21,10 @@
     _cardNumber = [sanitizedNumber stp_safeSubstringToIndex:maxLength];
 }
 
-- (NSString *)compressedCardNumber {
+- (nullable NSString *)compressedCardNumberWithPlaceholder:(nullable NSString *)placeholder {
     NSString *cardNumber = self.cardNumber;
     if (cardNumber.length == 0) {
-        cardNumber = self.defaultPlaceholder;
+        cardNumber = placeholder ?: self.defaultPlaceholder;
     }
 
     STPCardBrand currentBrand = [STPCardValidator brandForNumber:cardNumber];
@@ -38,7 +38,7 @@
         }
     } else {
         // use the card number format
-        NSArray<NSNumber *> *cardNumberFormat = [STPCardValidator cardNumberFormatForBrand:currentBrand];
+        NSArray<NSNumber *> *cardNumberFormat = [STPCardValidator cardNumberFormatForCardNumber:cardNumber];
 
         NSUInteger index = 0;
         for (NSNumber *segment in cardNumberFormat) {

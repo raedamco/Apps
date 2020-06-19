@@ -19,6 +19,7 @@
 #import "STPPostalCodeValidator.h"
 #import "Stripe.h"
 #import "STPLocalizationUtils.h"
+#import "STPAnalyticsClient.h"
 
 @interface STPPaymentCardTextField()<STPFormTextFieldDelegate>
 
@@ -103,6 +104,10 @@ CGFloat const STPPaymentCardTextFieldDefaultInsets = 13;
 CGFloat const STPPaymentCardTextFieldMinimumPadding = 10;
 
 #pragma mark initializers
+
++ (void)initialize {
+    [[STPAnalyticsClient sharedClient] addClassToProductUsageIfNecessary:[self class]];
+}
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
@@ -741,7 +746,7 @@ CGFloat const STPPaymentCardTextFieldMinimumPadding = 10;
     }
 
     STPCardBrand currentBrand = [STPCardValidator brandForNumber:cardNumber];
-    NSArray<NSNumber *> *sortedCardNumberFormat = [[STPCardValidator cardNumberFormatForBrand:currentBrand] sortedArrayUsingSelector:@selector(unsignedIntegerValue)];
+    NSArray<NSNumber *> *sortedCardNumberFormat = [[STPCardValidator cardNumberFormatForCardNumber:cardNumber] sortedArrayUsingSelector:@selector(unsignedIntegerValue)];
     NSUInteger fragmentLength = [STPCardValidator fragmentLengthForCardBrand:currentBrand];
     NSUInteger maxLength = MAX([[sortedCardNumberFormat lastObject] unsignedIntegerValue], fragmentLength);
 
@@ -1058,7 +1063,7 @@ typedef NS_ENUM(NSInteger, STPCardTextFieldState) {
         // Need to lower xOffset so pan is partially off-screen
 
         BOOL hasEnteredCardNumber = self.cardNumber.length > 0;
-        NSString *compressedCardNumber = self.viewModel.compressedCardNumber;
+        NSString *compressedCardNumber = [self.viewModel compressedCardNumberWithPlaceholder:self.numberPlaceholder];
         NSString *cardNumberToHide = [(hasEnteredCardNumber ? self.cardNumber : self.numberPlaceholder) stp_stringByRemovingSuffix:compressedCardNumber];
 
         if (cardNumberToHide.length > 0 && [STPCardValidator stringIsNumeric:cardNumberToHide]) {
