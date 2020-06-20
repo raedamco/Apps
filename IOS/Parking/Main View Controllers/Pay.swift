@@ -20,7 +20,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     
     var idempotencyKey = String()
     let checkInButton = createButton(Title: "Check In", FontName: fontBold, FontSize: 20, FontColor: standardBackgroundColor, BorderWidth: 0, CornerRaduis: 5, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(searchLocation))
-    let paymentButton = createPaymentButton(Target: self, Action: #selector(checkout))
+    let paymentButton = createPaymentButton(Target: self, Action: #selector(proccessPayment))
     let currentLocation = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: font, FontSize: 26, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 1)
     let timeLabel = createLabel(LabelText: "", TextColor: standardContrastColor, FontName: fontBold, FontSize: 30, TextAlignment: .center, TextBreak: .byWordWrapping, NumberOfLines: 0)
     
@@ -63,6 +63,11 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         let page = BulletinDataSource.makeErrorPage(message: "Unable to present Apple Pay authorization.")
         return BLTNItemManager(rootItem: page)
     }()
+    
+    lazy var bulletinManagerLoadingAnimation: BLTNItemManager = {
+        let page = BulletinDataSource.LoadingAnimation()
+        return BLTNItemManager(rootItem: page)
+    }()
     // BLTNBoard END
     
     override func viewDidLoad() {
@@ -77,6 +82,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(resetTimer(notification:)), name: NSNotification.Name(rawValue: "resetTimer"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(transactionCompleted(notification:)), name: NSNotification.Name(rawValue: "endTransaction"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(finishProcessing(notification:)), name: NSNotification.Name(rawValue: "finishProcessing"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(presentLoadingAnimation(notification:)), name: NSNotification.Name(rawValue: "presentLoadingAnimation"), object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -195,6 +201,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     
     @objc func startPayment(notification: NSNotification){
         isRunning = !isRunning
+        self.bulletinManagerLoadingAnimation.dismissBulletin()
         checkInButton.removeFromSuperview()
         currentLocation.text = SelectedParkingData[indexPath.row].Organization
         
@@ -233,11 +240,6 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
            }
        }
     }
-    
-    @objc func checkout(){
-        proccessPayment()
-    }
-      
 }
 
 extension ParkViewController: GMSAutocompleteViewControllerDelegate {
@@ -271,6 +273,12 @@ extension ParkViewController: GMSAutocompleteViewControllerDelegate {
             self.view.reloadInputViews()
         }
     }
+    
+    @objc func presentLoadingAnimation(notification: NSNotification){
+        self.bulletinManagerLoadingAnimation.allowsSwipeInteraction = false
+        self.bulletinManagerLoadingAnimation.showBulletin(above: self)
+    }
+    
 
 }
 

@@ -10,6 +10,7 @@ import Foundation
 import Firebase
 import CoreLocation
 import Alamofire
+import BLTNBoard
 
 var Server = ServerTimer()
 
@@ -23,6 +24,7 @@ class ServerTimer: NSObject {
         }
     }
     
+
     func requestTimer(){
         let requiredInfo: [String: Any] = ["UID":UserData[indexPath.row].UID,
                                            "Organization": SelectedParkingData[indexPath.row].Organization,
@@ -68,6 +70,43 @@ class ServerTimer: NSObject {
                         } else {
                             print("Document does not exist")
                         }
+                    }
+                case .failure(let error): print(error.localizedDescription)
+            }
+        }
+    }
+    
+
+    func addVehicle() {
+        let url = self.baseURL.appendingPathComponent("addVehicle")
+        let requiredParameters: [String:Any] = ["UID": UserData[indexPath.row].UID]
+        
+        AF.request(url, method: .post,parameters: requiredParameters).validate(statusCode: 200..<300).responseJSON { responseJSON in
+            switch responseJSON.result {
+                case .success(let json):
+                    let responseJSON = json as? [String: AnyObject]
+                    guard let Status = responseJSON?["Status"] as? Bool else { return }
+                    
+                    if Status {
+                        //Show user data was added animation
+                    }
+                case .failure(let error): print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func addPermit() {
+        let url = self.baseURL.appendingPathComponent("addPermit")
+        let requiredParameters: [String:Any] = ["UID": UserData[indexPath.row].UID]
+        
+        AF.request(url, method: .post,parameters: requiredParameters).validate(statusCode: 200..<300).responseJSON { responseJSON in
+            switch responseJSON.result {
+                case .success(let json):
+                    let responseJSON = json as? [String: AnyObject]
+                    guard let Status = responseJSON?["Status"] as? Bool else { return }
+                    
+                    if Status {
+                        //Show user data was added animation
                     }
                 case .failure(let error): print(error.localizedDescription)
             }

@@ -14,8 +14,8 @@ import Firebase
 
 class ConnectivityViewController: UIViewController {
     var connectionAnimation = AnimationView()
-    var explanationLabel = UILabel()
     let noConnectionAnimationView = AnimationView(name: "connectivity")
+    var explanationLabel = UILabel()
     let reachabilityManager = NetworkReachabilityManager()
     
     override func viewDidLoad() {

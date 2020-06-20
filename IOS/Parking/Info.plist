@@ -31,12 +31,16 @@
 	<string>We use Bluetooth to help validate your parking</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We use Bluetooth to help validate your parking</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Access to camera needed when using the camera to store card data for payment</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Your location is needed to guide you to a parking spot</string>
 	<key>NSLocationUsageDescription</key>
 	<string>Your location is needed to guide you to a parking spot</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Your location is needed to guide you to a parking spot</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo library access needed to share screenshots with support team about issues in app.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>VarelaRound-Regular.ttf</string>

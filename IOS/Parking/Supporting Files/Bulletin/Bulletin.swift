@@ -7,6 +7,8 @@ import UIKit
 import BLTNBoard
 import SafariServices
 import Firebase
+import Lottie
+
 
 enum BulletinDataSource {
 
@@ -387,6 +389,7 @@ enum BulletinDataSource {
             page.actionHandler = { item in
                 item.manager?.dismissBulletin(animated: true)
                 Server.requestTimer()
+                NotificationCenter.default.post(name: NSNotification.Name("presentLoadingAnimation"), object: nil)
             }
             
             page.alternativeHandler = { item in
@@ -608,7 +611,7 @@ enum BulletinDataSource {
                 }else{
                    Auth.auth().sendPasswordReset(withEmail: email!) { (error) in
                         if error == nil {
-                        let errorPage = self.makeErrorPage(message: error?.localizedDescription ?? "Error")
+                            let errorPage = self.makeErrorPage(message: error?.localizedDescription ?? "Error")
                             page.manager?.push(item: errorPage)
                             item.manager?.dismissBulletin(animated: true)
                        }else{
@@ -723,6 +726,18 @@ enum BulletinDataSource {
 
         return page
     }
+    
+    static func LoadingAnimation() -> BLTNPageItem {
+        let page = BLTNPageItem(title: "Connecting")
+        
+        page.appearance.titleTextColor = standardContrastColor
+//        page.imageView = AnimationView(name: "connectivity")
+        page.descriptionText = "Requesting server timer"
+        page.requiresCloseButton = false
+        page.isDismissable = false
+        return page
+    }
+    
     //TRANSACTIONS END
 }
 

@@ -14,18 +14,19 @@ import Firebase
 
 extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPApplePayContextDelegate {
     
-    func proccessPayment(){
+    @objc func proccessPayment(){
+        self.paymentButton.isEnabled = false
         Server.requestTotal()
         isRunning = !isRunning
     }
     
+    
+    
     @objc func finishProcessing(notification: NSNotification){
         let merchantIdentifier = "merchant.parking"
         let paymentRequest = Stripe.paymentRequest(withMerchantIdentifier: merchantIdentifier, country: "US", currency: "USD")
-
         let paymentItem = PKPaymentSummaryItem.init(label: "For Parking at \(SelectedParkingData[indexPath.row].Organization)", amount: NSDecimalNumber(value: TransactionData[indexPath.row].Amount))
         paymentRequest.paymentSummaryItems = [paymentItem]
-        
         if let applePayContext = STPApplePayContext(paymentRequest: paymentRequest, delegate: self) {
             applePayContext.presentApplePay(on: self)
         }
@@ -57,7 +58,6 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
                         let responseJSON = json as? [String: AnyObject]
                         guard let Completed = responseJSON?["Completed"] as? Bool else { return }
                         clientSecret = responseJSON?["ClientSecret"] as! String
-                        print("SECRET", clientSecret)
                         completion(clientSecret, nil)
                         if Completed {
                              NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
@@ -78,9 +78,11 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
                 break
             case .error:
                 print(error?.localizedDescription as Any)
+                self.paymentButton.isEnabled = true
                 break
             case .userCancellation:
                 print("user stopped transaction")
+                self.paymentButton.isEnabled = true
                 isRunning = !isRunning
                 break
             @unknown default:
