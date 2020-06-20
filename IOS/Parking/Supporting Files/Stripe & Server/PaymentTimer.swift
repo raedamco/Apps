@@ -23,7 +23,6 @@ class ServerTimer: NSObject {
         }
     }
     
-    
     func requestTimer(){
         let requiredInfo: [String: Any] = ["UID":UserData[indexPath.row].UID,
                                            "Organization": SelectedParkingData[indexPath.row].Organization,
@@ -31,7 +30,8 @@ class ServerTimer: NSObject {
                                            "Spot": SelectedParkingData[indexPath.row].Spot,
                                            "Latitude": SelectedParkingData[indexPath.row].Location.latitude,
                                            "Longitude": SelectedParkingData[indexPath.row].Location.longitude,
-                                           "Rate": SelectedParkingData[indexPath.row].Price
+                                           "Rate": SelectedParkingData[indexPath.row].Price,
+                                           "CompanyStripeID": SelectedParkingData[indexPath.row].CompanyStripeID
                                           ]
         
         let url = self.baseURL.appendingPathComponent("startPayment")

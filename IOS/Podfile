@@ -26,4 +26,5 @@ target 'Theory Parking' do
 	pod 'Fabric'
 	pod 'Stripe'
 	pod 'SwiftyJSON'
+	pod 'ZendeskSDK'
 end

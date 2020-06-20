@@ -383,6 +383,15 @@ PODS:
     - SwiftMessages/App (= 7.0.1)
   - SwiftMessages/App (7.0.1)
   - SwiftyJSON (5.0.0)
+  - ZendeskSDK (4.0.1):
+    - ZendeskSDK/Providers (= 4.0.1)
+    - ZendeskSDK/UI (= 4.0.1)
+  - ZendeskSDK/Core (4.0.1)
+  - ZendeskSDK/Providers (4.0.1):
+    - ZendeskSDK/Core
+  - ZendeskSDK/UI (4.0.1):
+    - ZendeskSDK/Core
+    - ZendeskSDK/Providers
 
 DEPENDENCIES:
   - Alamofire
@@ -405,6 +414,7 @@ DEPENDENCIES:
   - Stripe
   - SwiftMessages
   - SwiftyJSON
+  - ZendeskSDK
 
 SPEC REPOS:
   trunk:
@@ -444,6 +454,7 @@ SPEC REPOS:
     - Stripe
     - SwiftMessages
     - SwiftyJSON
+    - ZendeskSDK
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -482,7 +493,8 @@ SPEC CHECKSUMS:
   Stripe: dd5bfdd5f1daed4f9ddbfb47e9449ec302f9f708
   SwiftMessages: b577dc7043be8b299857ab35bb663dbff6483bd0
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
+  ZendeskSDK: a5d4a6b1f117ed3177d72bbcc09b51d7600dd299
 
-PODFILE CHECKSUM: 5328422b9a71b89f4aa3657ebefcc0221ffe9b33
+PODFILE CHECKSUM: 6af132ee9dcda316195d166dc8a53f275dbc4d0f
 
 COCOAPODS: 1.9.3

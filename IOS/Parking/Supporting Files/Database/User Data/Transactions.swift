@@ -115,8 +115,8 @@ func getCurrentParkingData(Location: GeoPoint, Organization: String, Spot: Strin
                 if document.exists {
                     let name = document.data()["Name"] as! String
                     let types = document.data()["Spot Types"] as! [String: Bool]
-                    
-                    SelectedParkingData.append(SelectedParking(Location: Location, Name: name, Types: types, Organization: Organization, Price: Rate, Floor: Floor, Spot: Spot))
+                    let CompanyStripeID = document.data()["CompanyStripeID"] as! String
+                    SelectedParkingData.append(SelectedParking(Location: Location, Name: name, Types: types, Organization: Organization, Price: Rate, Floor: Floor, Spot: Spot, CompanyStripeID: CompanyStripeID))
                 }
             }
         }

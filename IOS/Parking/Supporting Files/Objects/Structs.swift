@@ -85,8 +85,9 @@ struct Parking {
     var Capacity: NSNumber
     var Floors: [String]
     var Spots: [String]
+    var CompanyStripeID: String
     
-    init(Location: GeoPoint, Name: String!, Types: [String:Bool], Organization: String!, Prices: NSNumber, Capacity: NSNumber, Available: NSNumber,Floors: [String], Spots: [String]) {
+    init(Location: GeoPoint, Name: String!, Types: [String:Bool], Organization: String!, Prices: NSNumber, Capacity: NSNumber, Available: NSNumber,Floors: [String], Spots: [String], CompanyStripeID: String) {
         self.Location = Location
         self.Name = Name
         self.Types = Types
@@ -96,6 +97,7 @@ struct Parking {
         self.Available = Available
         self.Floors = Floors
         self.Spots = Spots
+        self.CompanyStripeID = CompanyStripeID
     }
 }
 
@@ -107,8 +109,9 @@ struct SelectedParking {
     var Price: NSNumber
     var Floor: String
     var Spot: String
+    var CompanyStripeID: String
     
-    init(Location: GeoPoint, Name: String!, Types: [String:Bool], Organization: String!, Price: NSNumber, Floor: String, Spot: String) {
+    init(Location: GeoPoint, Name: String!, Types: [String:Bool], Organization: String!, Price: NSNumber, Floor: String, Spot: String, CompanyStripeID: String) {
         self.Location = Location
         self.Name = Name
         self.Types = Types
@@ -116,6 +119,7 @@ struct SelectedParking {
         self.Price = Price
         self.Floor = Floor
         self.Spot = Spot
+        self.CompanyStripeID = CompanyStripeID
     }
     
 }

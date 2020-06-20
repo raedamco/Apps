@@ -43,8 +43,8 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
                     let currentInfo = document.data()["Capacity"] as! [String: NSNumber]
                     let available = currentInfo["Available"]!
                     let capacity = currentInfo["Capacity"]!
-                    
-                    ParkingData.append(Parking(Location: location, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floors: [], Spots: []))
+                    let CompanyStripeID = document.data()["CompanyStripeID"] as! String
+                    ParkingData.append(Parking(Location: location, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floors: [], Spots: [], CompanyStripeID: CompanyStripeID))
                 }
             }
             

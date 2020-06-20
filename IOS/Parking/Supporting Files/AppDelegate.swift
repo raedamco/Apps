@@ -13,7 +13,7 @@ import Firebase
 import Siren
 import UserNotifications
 import Stripe
-
+import ZendeskSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

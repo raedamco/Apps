@@ -156,6 +156,8 @@ exports.addPermitData = functions.https.onCall((data, context) => {
     return
 });
 
+
+//PAYMENTS START
 exports.startPayment = functions.https.onRequest(async (req, res) => {
     const UID = req.body.UID;
     const Lat = Number(req.body.Latitude);
@@ -164,11 +166,13 @@ exports.startPayment = functions.https.onRequest(async (req, res) => {
     const Floor = req.body.Floor;
     const Spot = req.body.Spot;
     const Rate = Number(req.body.Rate);
+    const CompanyStripeID = req.body.CompanyStripeID
     const TimerStart = new Date();
 
     try {
         await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).collection("History").doc().set({
             Current: true,
+            CompanyStripeID: CompanyStripeID,
             Data: {
                 "Location": new admin.firestore.GeoPoint(Lat, Long),
                 "Organization": Organization,
@@ -211,7 +215,8 @@ exports.createCharge = functions.https.onRequest(async (req, res) => {
         Source: String(),
         Currency: String("usd"),
         Details: String("details for charge"),
-        ClientSecret: String()
+        ClientSecret: String(),
+        CompanyStripeID: String()
     }
 
     try {
@@ -249,6 +254,7 @@ exports.createCharge = functions.https.onRequest(async (req, res) => {
                 TransactionDetails.Rate = doc.data()["Data"].Rate
                 TransactionDetails.Organizaiton = doc.data()["Data"].Organizaiton
                 TransactionDetails.Location = doc.data()["Data"].Location
+                TransactionDetails.CompanyStripeID = doc.data().CompanyStripeID
             });
             return updateDatabaseDocument();
         }).catch(function(error) {
@@ -280,7 +286,11 @@ exports.createCharge = functions.https.onRequest(async (req, res) => {
               amount: TransactionDetails.Amount,
               currency: TransactionDetails.Currency,
               description: TransactionDetails.Details,
-              customer: UserData.StripeID
+              customer: UserData.StripeID,
+              application_fee_amount: parseInt(TransactionDetails.Amount * 0.07),
+              transfer_data: {
+                destination: TransactionDetails.CompanyStripeID,
+              },
             });
             TransactionDetails.ClientSecret = paymentIntent.client_secret
             TransactionDetails.TransactionID = paymentIntent.id
