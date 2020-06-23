@@ -222,7 +222,6 @@ PODS:
   - BulletinBoard (4.1.1)
   - Crashlytics (3.14.0):
     - Fabric (~> 1.10.2)
-  - EmptyDataSet-Swift (5.0.0)
   - Fabric (1.10.2)
   - Firebase (6.27.0):
     - Firebase/Core (= 6.27.0)
@@ -379,9 +378,6 @@ PODS:
   - Protobuf (3.12.0)
   - Siren (5.4.4)
   - Stripe (19.3.0)
-  - SwiftMessages (7.0.1):
-    - SwiftMessages/App (= 7.0.1)
-  - SwiftMessages/App (7.0.1)
   - SwiftyJSON (5.0.0)
   - ZendeskCommonUISDK (5.0.0):
     - ZendeskSDKConfigurationsSDK (~> 1.1.5)
@@ -402,7 +398,6 @@ DEPENDENCIES:
   - Alamofire
   - BulletinBoard
   - Crashlytics
-  - EmptyDataSet-Swift
   - Fabric
   - Firebase
   - Firebase/Analytics
@@ -417,7 +412,6 @@ DEPENDENCIES:
   - lottie-ios
   - Siren
   - Stripe
-  - SwiftMessages
   - SwiftyJSON
   - ZendeskSupportSDK
 
@@ -428,7 +422,6 @@ SPEC REPOS:
     - BoringSSL-GRPC
     - BulletinBoard
     - Crashlytics
-    - EmptyDataSet-Swift
     - Fabric
     - Firebase
     - FirebaseAnalytics
@@ -457,7 +450,6 @@ SPEC REPOS:
     - Protobuf
     - Siren
     - Stripe
-    - SwiftMessages
     - SwiftyJSON
     - ZendeskCommonUISDK
     - ZendeskCoreSDK
@@ -473,7 +465,6 @@ SPEC CHECKSUMS:
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   BulletinBoard: 25cf38fa1dd9292936ea6122b95ec2ec9b773e9c
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
-  EmptyDataSet-Swift: eb382c0c87a2d9c678077385a595cec52da38171
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   Firebase: fc4cbf6f1592636431821ef9a3c557e4dfd9f268
   FirebaseAnalytics: 0ea640473474f036cabbc2576e20c2d63671c92f
@@ -502,7 +493,6 @@ SPEC CHECKSUMS:
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
   Siren: 43ebf58c6593ed947a951ab6a03bdc413ffa371a
   Stripe: dd5bfdd5f1daed4f9ddbfb47e9449ec302f9f708
-  SwiftMessages: b577dc7043be8b299857ab35bb663dbff6483bd0
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   ZendeskCommonUISDK: 0b5ae632c28545c6f7e0791902f5672494d5ccd0
   ZendeskCoreSDK: 804aff5229ae9500b8057b65fe53ad869856f427
@@ -512,6 +502,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: d21ce8eb3df1066338c7d3875bb818b32c3f124e
   ZendeskSupportSDK: 7e29a825e862aba217b7b89f7d3397f7deef586a
 
-PODFILE CHECKSUM: fb998ed6c900d3a49654d96755381be10ba5a205
+PODFILE CHECKSUM: 7a44fa8761fc1060f4b1c23305490080736d07d9
 
 COCOAPODS: 1.9.3
