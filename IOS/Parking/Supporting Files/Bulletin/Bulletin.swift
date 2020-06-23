@@ -143,13 +143,14 @@ enum BulletinDataSource {
 
         page.actionHandler = { item in
             if functionError == true {
-                let errorPage = self.makeErrorPage(message: "Error")
+                let errorPage = self.makeErrorPage(message: "Vehicle already in database")
                 page.manager?.push(item: errorPage)
-            }else{
-                let completionPage = self.successPage(text: "Vehicle Successfully Added")
+            }else if functionError == false{
+                let completionPage = self.successPage(text: "Vehicle successfully added")
                 item.manager?.push(item: completionPage)
             }
         }
+        
         return page
     }
     
@@ -344,13 +345,12 @@ enum BulletinDataSource {
 //SEARCH START//
     static func makeNoResults() -> BLTNPageItem {
         let page = BLTNPageItem(title: "No Results")
-        page.image = UIImage(named: "Error")?.withTintColor(.red)
-        page.appearance.actionButtonColor = UIColor.red
-        page.appearance.actionButtonTitleColor = standardContrastColor
-        page.appearance.titleTextColor = standardContrastColor
         
+        page.appearance.actionButtonColor = standardContrastColor
+        page.appearance.actionButtonTitleColor = standardBackgroundColor
+        page.appearance.titleTextColor = standardContrastColor
         page.actionButtonTitle = "Dismiss"
-        page.descriptionText = "We could not find any available parking spots near \(destinationName) at the time."
+        page.descriptionText = "No available parking near \(destinationName) at this time."
         page.requiresCloseButton = false
         
         page.actionHandler = { item in
@@ -365,21 +365,15 @@ enum BulletinDataSource {
     
 //CHECKIN START//
     static func parkingProviderInfo() -> BLTNPageItem {
-        let page = BLTNPageItem()
-        page.image = UIImage(named: "Info")?.withTintColor(standardContrastColor)
-        
+        let page = BLTNPageItem(title:"Confirm Location")
         page.appearance.actionButtonColor = standardContrastColor
         page.appearance.actionButtonTitleColor = standardBackgroundColor
         page.appearance.actionButtonFontSize = 22
-        
         page.appearance.titleTextColor = standardContrastColor
-        
         page.appearance.alternativeButtonTitleColor = standardContrastColor
         page.appearance.alternativeButtonFontSize = 20
-        
         page.descriptionLabel?.textAlignment = .left
         
-
         if SelectedParkingData.count > 0 {
             page.actionButtonTitle = "Yes"
             page.alternativeButtonTitle = "No"
@@ -388,7 +382,7 @@ enum BulletinDataSource {
             
             page.actionHandler = { item in
                 item.manager?.dismissBulletin(animated: true)
-                Server.requestTimer()
+                ServerTimer.requestTimer()
                 NotificationCenter.default.post(name: NSNotification.Name("presentLoadingAnimation"), object: nil)
             }
             
@@ -456,7 +450,7 @@ enum BulletinDataSource {
         
         page.actionButtonTitle = "Dimiss"
 
-        if SelectedParkingData[indexPath.row].Location != nil {
+        if !SelectedParkingData.isEmpty {
            page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n Rate: $\(SelectedParkingData[indexPath.row].Price)/min"
         }else{
             page.descriptionText = "You are not currently parked near a location we can detect"
@@ -732,7 +726,7 @@ enum BulletinDataSource {
         
         page.appearance.titleTextColor = standardContrastColor
 //        page.imageView = AnimationView(name: "connectivity")
-        page.descriptionText = "Requesting server timer"
+        page.descriptionText = "Requesting server timer..."
         page.requiresCloseButton = false
         page.isDismissable = false
         return page

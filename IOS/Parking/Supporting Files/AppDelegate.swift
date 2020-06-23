@@ -13,7 +13,7 @@ import Firebase
 import Siren
 import UserNotifications
 import Stripe
-import ZendeskSDK
+import ZendeskCoreSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -88,9 +88,7 @@ extension AppDelegate {
             if Connectivity.isConnectedToInternet {
                 self.handle = Auth.auth().addStateDidChangeListener { (auth, user) in
                     if (user != nil){
-                    
                         getUserData(Email: (user?.email)!)
-                        
                         self.window = UIWindow(frame: UIScreen.main.bounds)
                         self.window?.makeKeyAndVisible()
                         self.window!.rootViewController = TabBarViewController()

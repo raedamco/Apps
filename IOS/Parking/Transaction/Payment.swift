@@ -16,7 +16,7 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
     
     @objc func proccessPayment(){
         self.paymentButton.isEnabled = false
-        Server.requestTotal()
+        ServerTimer.requestTotal()
         isRunning = !isRunning
     }
     
@@ -86,7 +86,7 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
                 isRunning = !isRunning
                 break
             @unknown default:
-                fatalError()
+                print("error processing payment")
         }
     }
     

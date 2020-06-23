@@ -1,77 +1,27 @@
+//INITIALIZATION START
+//HTTP packages
+const express = require('express');
+const cors = require('cors');
+var bodyParser = require('body-parser');
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+
+//Firebase packages
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp({
   databaseURL: "https://theory-parking.firebaseio.com"
 });
 
-const express = require('express');
-const cors = require('cors');
-var bodyParser = require('body-parser');
-const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended:true
-}));
-
+//Private keys
 const stripe = require('stripe')("sk_test_CFsR0YQ2XzltRxt6pmRCxoOH00rs0xeJ3I");
 var slack = require('slack-notify')('https://hooks.slack.com/services/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');
-// var logging = require('@google-cloud/logging')();
+//INITIALIZATION END
 
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-// [START reporterror]
-function reportError(err, context = {}) {
-  const logName = 'errors';
-  const log = logging.log(logName);
-  const metadata = {
-    resource: {
-      type: 'cloud_function',
-      labels: {function_name: process.env.FUNCTION_NAME},
-    },
-  };
-  const errorEvent = {
-    message: err.stack,
-    serviceContext: {
-      service: process.env.FUNCTION_NAME,
-      resourceType: 'cloud_function',
-    },
-    context: context,
-  };
-  return new Promise((resolve, reject) => {
-    log.write(log.entry(metadata, errorEvent), (error) => {
-      if (error) {
-       return reject(error);
-      }
-      return resolve();
-    });
-  });
-}
-// [END reporterror]
-
-function userFacingMessage(error) {
-  return error.type ? error.message : 'An error occurred, developers have been alerted';
-}
-
-
-// Add a payment source (card) for a user by writing a stripe payment source token to Cloud Firestore
-exports.addPaymentSource = functions.firestore.document('/stripe_customers/{userId}/tokens/{pushId}').onCreate(async (snap, context) => {
-  const source = snap.data();
-  const token = source.token;
-  if (source === null){
-    return null;
-  }
-
-  try {
-    const snapshot = await admin.firestore().collection('stripe_customers').doc(context.params.userId).get();
-    const customer =  snapshot.data().customer_id;
-    const response = await stripe.customers.createSource(customer, {source: token});
-    return admin.firestore().collection('stripe_customers').doc(context.params.userId).collection("sources").doc(response.fingerprint).set(response, {merge: true});
-  } catch (error) {
-    await snap.ref.set({'error':userFacingMessage(error)},{merge:true});
-    return reportError(error, {user: context.params.userId});
-  }
-});
-
+//ACCOUNT START
 // When a user creates their account, set up their database log, stripe account, and notify slack
 exports.addUser = functions.auth.user().onCreate(async (user) => {
     var date = new Date();
@@ -90,18 +40,15 @@ exports.addUser = functions.auth.user().onCreate(async (user) => {
         'icon_emoji': ':tada:',
         'attachments': [{
           'color': '#30FCF1',
-          'fields': [
-            {
+          'fields': [{
                 'title': 'Joined On',
                 'value': date.toUTCString(),
                 'short': true
-            }
-          ]
+            }]
         }]
     })
     return
 });
-
 
 // When a user deletes their account, clean up after them and notify slack
 exports.removeUser = functions.auth.user().onDelete(async (user) => {
@@ -129,35 +76,140 @@ exports.removeUser = functions.auth.user().onDelete(async (user) => {
   return admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).delete();
 });
 
-exports.addVehicleData = functions.https.onCall((data, context) => {
-    const UID = data.UID;
-    const VehicleData = data.VehicleData;
+//Add vehicle data to user account upon call
+exports.addVehicleData = functions.https.onRequest(async (req, res) => {
+    const UID = req.body.UID;
+    const VehicleData = req.body.VehicleData;
 
     try {
-        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).set({
-            Vehicles: admin.firestore.FieldValue.arrayUnion(VehicleData)
-        }, {merge: true});
+        const snapshot = await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).get();
+        const snapval = snapshot.data();
+        const databaseVehicles = snapval.Vehicles;
+        //check if vehicle is already in database before adding, avoiding duplicates
+        if (databaseVehicles.indexOf(VehicleData) > -1) {
+            res.status(200).send({Success: false})
+        } else {
+            admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).set({
+                Vehicles: admin.firestore.FieldValue.arrayUnion(VehicleData)
+            }, {merge: true});
+            res.status(200).send({Success: true})
+        }
     }catch(error){
-        throw new functions.https.HttpsError('failed-precondition', 'Error adding data to database');
+        console.log(error)
+        res.status(500).end()
     }
 });
 
-exports.addPermitData = functions.https.onCall((data, context) => {
-    const UID = data.UID;
-    const PermitData = data.PermitData;
-    const PermitNumer = data.PermitNumber;
+//Add permit data to user account upon call
+exports.addPermitData = functions.https.onRequest(async (req, res) => {
+    const UID = req.body.UID;
+    const Permit = req.body.PermitData;
+    const PermitNumber = req.body.PermitNumber;
 
-    admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).set({
-        Permits: {
-            PermitData: PermitNumer
-        }
-    }, {merge: true});
+    try {
+        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).set({
+            Permits: {
+                Permit: PermitNumber
+            }
+        }, {merge: true});
+        res.status(200).send({Success: true})
+    }catch(error){
+        console.log(error)
+        res.status(500).end()
+    }
+});
+//ACCOUNT END
 
-    return
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+//ROUTE START
+//Add permit data to user account upon call
+/*
+exports.findParking = functions.https.onRequest(async (req, res) => {
+    const Occupant = req.body.UID
+
+    var ParkingDetails = {
+        Latitude: req.body.Latitude,
+        Longitude: req.body.Longitude,
+        Name: req.body.Name,
+        Organization: req.body.Organization,
+        AvailableSpot: [],
+        DesigantedSpot: String(),
+        Floor: "Floor 2"
+    }
+
+
+    try {
+        //Get rest of data from provided data & designate that spot to that UID in the database & make sure that the spots designated meets the user's criteria
+        const snapshot = await admin.firestore().collection(ParkingDetails.Organizaiton).doc(ParkingDetails.Name).collection("Floor 2").get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                const occupied = doc.data()["Occupancy"].Occupied
+                //Get available parking spots
+                if (occupied === false) {
+                    ParkingDetails.AvailableSpot.push(doc.id);
+                }
+            });
+            return
+        }).catch(function(error) {
+            console.log("Error getting documents: " + error);
+        });
+        //get first avaialble spot then update database to designate the spot to them
+        ParkingDetails.DesigantedSpot = (ParkingDetails.AvailableSpot[0]).toString()
+        // return updateDatabaseOccupant(ParkingDetails.Organizaiton, ParkingDetails.Name, ParkingDetails.Floor, ParkingDetails.DesigantedSpot, Occupant)
+    }catch(error){
+        console.log(error)
+        res.status(500).end()
+    }
+
+
+
+    async function updateDatabaseOccupant(Organization, Location, Floor, Spot, Occupant){
+        await admin.firestore().collection(Organization).doc(Location).collection(Floor).doc(Spot).set({
+            Occupancy: {
+                Occupant: Occupant
+            }
+        }, {merge: true});
+
+        res.status(200).send({
+            Organizaiton: Organizaiton,
+            Location: Location,
+            Floor: Floor,
+            Spot: Spot
+        })
+    }
 });
 
+exports.cancelParkingRequest = functions.https.onRequest(async (req, res) => {
+    const Occupant = req.body.UID
+
+    var ParkingDetails = {
+        Location: req.body.Location,
+        Name: req.body.Name,
+        Organization: req.body.Organization,
+        Floor: req.body.Floor,
+        Spot: req.body.Spot,
+    }
+
+    try {
+        await admin.firestore().collection("PSU").doc("Parking Structure 1").collection("Floor 2").doc(ParkingDetails.Spot).set({
+            Occupancy: {
+                Occupant: String()
+            },
+        }, {merge: true});
+        return res.status(200).send({Status: true})
+    }catch(error){
+        console.log(error)
+        res.status(500).end()
+    }
+
+});
+*/
+//ROUTE END
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //PAYMENTS START
+//Client request to start a server timer (Store data in database to start timer), if successful, allow client to start in app timer for user to keep track of cost and time
 exports.startPayment = functions.https.onRequest(async (req, res) => {
     const UID = req.body.UID;
     const Lat = Number(req.body.Latitude);
@@ -191,7 +243,59 @@ exports.startPayment = functions.https.onRequest(async (req, res) => {
     }
 });
 
+//Send transaction details to client when asking to complete transaction
+exports.getTotal = functions.https.onRequest(async (req, res) => {
+    const TimerEnd = new Date();
 
+    var TransactionDetails = {
+        Duration: String(),
+        Rate: Number(),
+        Begin: String(),
+        End: String(),
+        Amount: Number(),
+        Current: Boolean(),
+        Document: String()
+    }
+
+    try{
+        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(req.body.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            TransactionDetails.Current = doc.data().Current
+            TransactionDetails.Begin = doc.data()["Duration"].Begin
+            TransactionDetails.Rate = doc.data()["Data"].Rate
+            TransactionDetails.Document = doc.id
+        });
+
+            TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
+            TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
+            TransactionDetails.Amount = (TransactionDetails.Duration * TransactionDetails.Rate)
+            return [TransactionDetails.Amount, TransactionDetails.Document,TransactionDetails.Current]
+
+        }).catch(function(error) {
+            console.log("Error getting documents: " + error);
+        });
+
+        if (TransactionDetails.Current){
+            res.status(200).send({
+                Amount: TransactionDetails.Amount,
+                Document: TransactionDetails.Document,
+                Current: TransactionDetails.Current
+            })
+        }else{
+            res.status(500).send({
+                Amount: TransactionDetails.Amount,
+                Document: TransactionDetails.Document,
+                Current: TransactionDetails.Current
+            }).end()
+        }
+
+    }catch(error){
+        console.log(error)
+        return res.status(500).end()
+    }
+});
+
+//Final step in transaction: finalize database update and send charge to Stripe
 exports.createCharge = functions.https.onRequest(async (req, res) => {
     const TimerEnd = new Date();
 
@@ -305,60 +409,11 @@ exports.createCharge = functions.https.onRequest(async (req, res) => {
       }
     }
 });
+//PAYMENTS END
 
-exports.getTotal = functions.https.onRequest(async (req, res) => {
-    const TimerEnd = new Date();
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-    var TransactionDetails = {
-        Duration: String(),
-        Rate: Number(),
-        Begin: String(),
-        End: String(),
-        Amount: Number(),
-        Current: Boolean(),
-        Document: String()
-    }
-
-    try{
-        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(req.body.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-            TransactionDetails.Current = doc.data().Current
-            TransactionDetails.Begin = doc.data()["Duration"].Begin
-            TransactionDetails.Rate = doc.data()["Data"].Rate
-            TransactionDetails.Document = doc.id
-        });
-
-            TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
-            TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
-            TransactionDetails.Amount = (TransactionDetails.Duration * TransactionDetails.Rate)
-            return [TransactionDetails.Amount, TransactionDetails.Document,TransactionDetails.Current]
-
-        }).catch(function(error) {
-            console.log("Error getting documents: " + error);
-        });
-
-        if (TransactionDetails.Current){
-            res.status(200).send({
-                Amount: TransactionDetails.Amount,
-                Document: TransactionDetails.Document,
-                Current: TransactionDetails.Current
-            })
-        }else{
-            res.status(500).send({
-                Amount: TransactionDetails.Amount,
-                Document: TransactionDetails.Document,
-                Current: TransactionDetails.Current
-            }).end()
-        }
-
-    }catch(error){
-        console.log(error)
-        return res.status(500).end()
-    }
-});
-
-
-//STRIPE FUNCTIONS BEGIN//
+//STRIPE START
 exports.ephemeral_keys = functions.https.onRequest(async (req, res) => {
     try {
         let key = await stripe.ephemeralKeys.create(
@@ -384,4 +439,4 @@ exports.create_setup_intent = functions.https.onRequest(async (req, res) => {
         res.status(500).end()
     }
 });
-//STRIPE FUNCTIONS END//
+//STRIPE END

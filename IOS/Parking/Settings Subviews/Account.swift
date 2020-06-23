@@ -13,8 +13,9 @@ import BLTNBoard
 class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var tableView = UITableView()
-    var itemsInSections = [["Email: ",""],[" | Licence:"],["Logout"]]
-    var sections = [[""],["Vehicles"],["Permits"],[""]]
+    var itemsInSections = [["\(UserData[indexPath.row].Email)","\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))",""],
+                           [UserData[indexPath.row].License[indexPath.row]],[""],["Logout"]]
+    var sections = ["","Vehicles","Permits",""]
     
     // BLTNBoard START
        let backgroundStyles = BackgroundStyles()
@@ -29,14 +30,6 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         createViewLayout()
-        
-        itemsInSections = [["\(UserData[indexPath.row].Email)",
-                            "\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))",""],
-                           ["",""], //\(UserData[indexPath.row].License[indexPath.row])
-                           [""],
-                           ["Logout"]
-                          ]
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,13 +65,11 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if itemsInSections[indexPath.section][indexPath.row] == "Vehicles" {
-            return UserData[indexPath.row].License.count
+        if sections[indexPath.row] == "Vehicles"{
+            return 3//UserData[indexPath.row].License.count
         }else{
             return itemsInSections[section].count
         }
-        
-        
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -94,7 +85,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "\(sections[section][indexPath.row])"
+        if section < sections.count {
+            return sections[section]
+        }
+        return nil
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -105,13 +99,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         cell.accessoryType = UITableViewCell.AccessoryType.none
         cell.backgroundColor = standardBackgroundColor
         cell.textLabel?.textColor = standardContrastColor
-        
-        if itemsInSections[indexPath.section][indexPath.row] == "Vehicles" {
-            for licence in UserData[indexPath.row].License {
-                cell.textLabel?.text = licence
-            }
-        }
-        
+
         if cell.textLabel!.text == "Logout" {
             cell.textLabel?.textAlignment = .center
         }

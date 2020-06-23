@@ -12,9 +12,9 @@ import CoreLocation
 import Alamofire
 import BLTNBoard
 
-var Server = ServerTimer()
+var ServerTimer = ServerPayment()
 
-class ServerTimer: NSObject {
+class ServerPayment: NSObject {
     var baseURLString: String? = "https://us-central1-theory-parking.cloudfunctions.net"
     var baseURL: URL {
         if let urlString = self.baseURLString, let url = URL(string: urlString) {
@@ -42,9 +42,9 @@ class ServerTimer: NSObject {
                 case .success(let json):
                     let responseJSON = json as? [String: AnyObject]
                     guard let Success = responseJSON?["Status"] as? Bool else { return }
-
                     if Success == true {
                         NotificationCenter.default.post(name: NSNotification.Name("startPayment"), object: nil)
+                        TransactionData.append(Payment(Current: true, Start: Date(), Amount: 0))
                     }
                 case .failure(let error): print(error.localizedDescription)
             }

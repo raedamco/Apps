@@ -114,6 +114,7 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
             self.tabBarController?.tabBar.isHidden = false
             self.navigationController?.popViewController(animated: true)
             let selectedRow = ParkingData[indexPath.row]
+//            Server.requestSpot()
             SelectedParkingData.append(SelectedParking(Location: selectedRow.Location, Name: selectedRow.Name, Types: selectedRow.Types, Organization: selectedRow.Organization, Price: selectedRow.Prices, Floor: "Floor " + ParkingData[indexPath.row].Floors.first!, Spot: "Spot " + ParkingData[indexPath.row].Spots.first!, CompanyStripeID: selectedRow.CompanyStripeID))
         }
         ParkingData.removeAll()

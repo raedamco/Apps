@@ -9,9 +9,11 @@
 import Foundation
 import Firebase
 import UIKit
+import Alamofire
 
 var UserData = [User]()
 
+//Get user data from database
 func getUserData(Email: String){
     database.collection("Users").document("Commuters").collection("Users").whereField("Email", isEqualTo: Email).getDocuments { (snapshot, error) in
         if error != nil {
@@ -34,6 +36,7 @@ func getUserData(Email: String){
             getTransactionHistory()
         }
     }
-    
 }
+
+
 

@@ -335,7 +335,7 @@ extension HomeViewController {
         mapView.settings.rotateGestures = false
         var style = String()
         
-        if DarkMode == true {
+        if DarkMode == true || userDefaults.bool(forKey: "THEME") == true {
             style = "darkstyle"
         }else{
             style = "lightstyle"

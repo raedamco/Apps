@@ -383,15 +383,20 @@ PODS:
     - SwiftMessages/App (= 7.0.1)
   - SwiftMessages/App (7.0.1)
   - SwiftyJSON (5.0.0)
-  - ZendeskSDK (4.0.1):
-    - ZendeskSDK/Providers (= 4.0.1)
-    - ZendeskSDK/UI (= 4.0.1)
-  - ZendeskSDK/Core (4.0.1)
-  - ZendeskSDK/Providers (4.0.1):
-    - ZendeskSDK/Core
-  - ZendeskSDK/UI (4.0.1):
-    - ZendeskSDK/Core
-    - ZendeskSDK/Providers
+  - ZendeskCommonUISDK (5.0.0):
+    - ZendeskSDKConfigurationsSDK (~> 1.1.5)
+  - ZendeskCoreSDK (2.4.0)
+  - ZendeskMessagingAPISDK (3.6.0):
+    - ZendeskSDKConfigurationsSDK (~> 1.1.5)
+  - ZendeskMessagingSDK (3.6.0):
+    - ZendeskCommonUISDK (~> 5.0.0)
+    - ZendeskMessagingAPISDK (~> 3.6.0)
+  - ZendeskSDKConfigurationsSDK (1.1.5)
+  - ZendeskSupportProvidersSDK (5.0.5):
+    - ZendeskCoreSDK (~> 2.4.0)
+  - ZendeskSupportSDK (5.0.5):
+    - ZendeskMessagingSDK (~> 3.6.0)
+    - ZendeskSupportProvidersSDK (~> 5.0.5)
 
 DEPENDENCIES:
   - Alamofire
@@ -414,7 +419,7 @@ DEPENDENCIES:
   - Stripe
   - SwiftMessages
   - SwiftyJSON
-  - ZendeskSDK
+  - ZendeskSupportSDK
 
 SPEC REPOS:
   trunk:
@@ -454,7 +459,13 @@ SPEC REPOS:
     - Stripe
     - SwiftMessages
     - SwiftyJSON
-    - ZendeskSDK
+    - ZendeskCommonUISDK
+    - ZendeskCoreSDK
+    - ZendeskMessagingAPISDK
+    - ZendeskMessagingSDK
+    - ZendeskSDKConfigurationsSDK
+    - ZendeskSupportProvidersSDK
+    - ZendeskSupportSDK
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -493,8 +504,14 @@ SPEC CHECKSUMS:
   Stripe: dd5bfdd5f1daed4f9ddbfb47e9449ec302f9f708
   SwiftMessages: b577dc7043be8b299857ab35bb663dbff6483bd0
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
-  ZendeskSDK: a5d4a6b1f117ed3177d72bbcc09b51d7600dd299
+  ZendeskCommonUISDK: 0b5ae632c28545c6f7e0791902f5672494d5ccd0
+  ZendeskCoreSDK: 804aff5229ae9500b8057b65fe53ad869856f427
+  ZendeskMessagingAPISDK: 29ce93e76b4833a2257d837de17a0efaeef867e5
+  ZendeskMessagingSDK: bdb534cc75853fab1bc201ce97faadf9accdd1ab
+  ZendeskSDKConfigurationsSDK: 0c610c22c9e3cafcd31591344b8cc3b4398e49b2
+  ZendeskSupportProvidersSDK: d21ce8eb3df1066338c7d3875bb818b32c3f124e
+  ZendeskSupportSDK: 7e29a825e862aba217b7b89f7d3397f7deef586a
 
-PODFILE CHECKSUM: 6af132ee9dcda316195d166dc8a53f275dbc4d0f
+PODFILE CHECKSUM: fb998ed6c900d3a49654d96755381be10ba5a205
 
 COCOAPODS: 1.9.3

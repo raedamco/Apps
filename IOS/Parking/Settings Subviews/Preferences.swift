@@ -12,7 +12,7 @@ import BLTNBoard
 class PreferencesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var ble: BLE!
     var tableView = UITableView()
-    var sections = ["Location","Bluetooth","Notifications","Automated Payment","Theme"]
+    var sections = ["Location","Bluetooth","Notifications","Automation","Theme"]
 
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
@@ -119,7 +119,7 @@ class PreferencesViewController: UIViewController, UITableViewDelegate, UITableV
         }else if sections[indexPath.row] == "Notifications"{
             self.bulletinManagerNotification.allowsSwipeInteraction = false
             self.bulletinManagerNotification.showBulletin(above: self)
-        }else if sections[indexPath.row] == "Automated Payment"{
+        }else if sections[indexPath.row] == "Automation"{
             self.bulletinManagerAutoCheckIn.allowsSwipeInteraction = false
             self.bulletinManagerAutoCheckIn.showBulletin(above: self)
         }else if sections[indexPath.row] == "Theme"{

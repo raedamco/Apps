@@ -15,7 +15,7 @@ import Stripe
 class PaymentViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     let tableView = UITableView()
-    var sections = ["Payment Methods", "Transaction History", "Rewards"]
+    var sections = ["Transaction History", "Payment Methods", "Rewards"]
     
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()

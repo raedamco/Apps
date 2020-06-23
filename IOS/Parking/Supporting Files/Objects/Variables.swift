@@ -46,6 +46,6 @@ let titleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.fo
 let buttonAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 17)!]
 let largeTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 35)!]
 
-//DISTANCES
+//DISTANCES (METERS)
 let blockDistance = 0.012427423844747
 let nearByDistance = Double(1000000)

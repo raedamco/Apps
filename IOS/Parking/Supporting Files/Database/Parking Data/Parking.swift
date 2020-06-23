@@ -34,7 +34,7 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
         }else{
             for document in snapshot!.documents {
                 if document.exists {
-                    let organization = "Portland State University"
+                    let organization = document.data()["Organization"] as! String
                     let price = document.data()["Pricing"] as! [String: NSNumber]
                     let rate = price["Minute"]!
                     let name = document.data()["Name"] as! String
@@ -92,10 +92,10 @@ func ParkingDataUpdates(){
         
         snapshot.documentChanges.forEach { diff in
             if (diff.type == .added) {
-                let info = diff.document.data()["Info"] as! [String: Any]
-                let occupancy = diff.document.data()["Occupancy"] as! [String: Any]
-                let spotID = info["Spot ID"] as! NSNumber
-                let occupied = occupancy["Occupied"] as! Bool
+                guard let occupancy = diff.document.data()["Occupancy"] as? [String: Any] else { return }
+                guard let occupied = occupancy["Occupied"] as? Bool else { return }
+                guard let info = diff.document.data()["Info"] as? [String: Any] else { return }
+                guard let spotID = info["Spot ID"] as? NSNumber else { return }
                 
                 if occupied == false {
                     ParkingData[indexPath.row].Spots.append(String(describing: spotID))
@@ -103,10 +103,10 @@ func ParkingDataUpdates(){
             }
             
             if (diff.type == .modified) {
-                let occupancy = diff.document.data()["Occupancy"] as! [String: Any]
-                let occupied = occupancy["Occupied"] as! Bool
-                let info = diff.document.data()["Info"] as! [String: Any]
-                let spotID = info["Spot ID"] as! NSNumber
+                guard let occupancy = diff.document.data()["Occupancy"] as? [String: Any] else { return }
+                guard let occupied = occupancy["Occupied"] as? Bool else { return }
+                guard let info = diff.document.data()["Info"] as? [String: Any] else { return }
+                guard let spotID = info["Spot ID"] as? NSNumber else { return }
                 
                 if (ParkingData.isEmpty == false && ParkingData[indexPath.row].Spots.contains(diff.document.documentID) && occupied == true) {
                     if let index = ParkingData[indexPath.row].Spots.firstIndex(of: diff.document.documentID) {
