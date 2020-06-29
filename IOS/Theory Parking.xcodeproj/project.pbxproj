@@ -42,11 +42,11 @@
 		07ACDAE924999D4700F170B0 /* Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAE824999D4700F170B0 /* Stripe.swift */; };
 		07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */; };
 		07ADFCBD23712A9900D5D81F /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ADFCBC23712A9900D5D81F /* Structs.swift */; };
-		07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07BF2DE32438387C0017BCD3 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE22438387C0017BCD3 /* Parking.swift */; };
 		07BF2DE5243838970017BCD3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE4243838970017BCD3 /* User.swift */; };
 		07BF2DE7243838D20017BCD3 /* Transactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE6243838D20017BCD3 /* Transactions.swift */; };
-		07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07CAAC422439372D0027FF60 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CAAC412439372D0027FF60 /* PaymentMethod.swift */; };
 		07E3644D2327925100B55203 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E3644C2327925100B55203 /* Preferences.swift */; };
 		07E4F81623416E3C001CC519 /* Payments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E4F81523416E3C001CC519 /* Payments.swift */; };
@@ -63,7 +63,7 @@
 		07F0E6FF23792A8500046292 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F0E6FE23792A8500046292 /* About.swift */; };
 		07F0E70123794C6000046292 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F0E70023794C6000046292 /* Filter.swift */; };
 		07F0E7052379D5BE00046292 /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F0E7042379D5BE00046292 /* Classes.swift */; };
-		6ABB06FE454C70EC3FEED4BD /* Pods_Theory_Parking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66708B66685AA3BDF7705ED9 /* Pods_Theory_Parking.framework */; };
+		2835D84C4AF93F334F6632F3 /* Pods_Theory_Parking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F2947B27E7283631A351BAB /* Pods_Theory_Parking.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -73,8 +73,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */,
-				07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */,
+				07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */,
+				07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,9 +141,9 @@
 		07F0E6FE23792A8500046292 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		07F0E70023794C6000046292 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		07F0E7042379D5BE00046292 /* Classes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
-		0FFE6F3244E28CB949B81A61 /* Pods-Theory Parking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.debug.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.debug.xcconfig"; sourceTree = "<group>"; };
-		66708B66685AA3BDF7705ED9 /* Pods_Theory_Parking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Theory_Parking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C3E8900AAC6729B98B4707A4 /* Pods-Theory Parking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.release.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.release.xcconfig"; sourceTree = "<group>"; };
+		8F2947B27E7283631A351BAB /* Pods_Theory_Parking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Theory_Parking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAB8E94E155B782DDDE5368A /* Pods-Theory Parking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.debug.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.debug.xcconfig"; sourceTree = "<group>"; };
+		FB5546788BCABD8F2245B7A5 /* Pods-Theory Parking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.release.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,7 +153,7 @@
 			files = (
 				07641140237A6DA200EF4332 /* PassKit.framework in Frameworks */,
 				0764113A237A109800EF4332 /* WebKit.framework in Frameworks */,
-				6ABB06FE454C70EC3FEED4BD /* Pods_Theory_Parking.framework in Frameworks */,
+				2835D84C4AF93F334F6632F3 /* Pods_Theory_Parking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,8 +386,8 @@
 		1C301C15EF6F40E27F459DE5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0FFE6F3244E28CB949B81A61 /* Pods-Theory Parking.debug.xcconfig */,
-				C3E8900AAC6729B98B4707A4 /* Pods-Theory Parking.release.xcconfig */,
+				BAB8E94E155B782DDDE5368A /* Pods-Theory Parking.debug.xcconfig */,
+				FB5546788BCABD8F2245B7A5 /* Pods-Theory Parking.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -399,7 +399,7 @@
 				07641139237A109800EF4332 /* WebKit.framework */,
 				07B13CAB23767AC70015E111 /* Alamofire.framework */,
 				07EF7D95235C357600D015CF /* Lottie.framework */,
-				66708B66685AA3BDF7705ED9 /* Pods_Theory_Parking.framework */,
+				8F2947B27E7283631A351BAB /* Pods_Theory_Parking.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -411,14 +411,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0734C0AD2325BBC000E74D0A /* Build configuration list for PBXNativeTarget "Theory Parking" */;
 			buildPhases = (
-				78DF9FB72CC9B4BA7D5656EE /* [CP] Check Pods Manifest.lock */,
+				CDB2CFFDEBB8D2F43E86B297 /* [CP] Check Pods Manifest.lock */,
 				0734C0932325BBBF00E74D0A /* Sources */,
 				0734C0942325BBBF00E74D0A /* Frameworks */,
 				0734C0952325BBBF00E74D0A /* Resources */,
 				07247F4123306DF800F3B32C /* Run Script */,
 				07B2CF6D236E959000BBD923 /* Embed Frameworks */,
-				6AF493911765E917D150EDD9 /* [CP] Embed Pods Frameworks */,
-				8B444483342E019CF18494C7 /* [CP] Copy Pods Resources */,
+				95C8789D6DB2A0D4D05150D5 /* [CP] Embed Pods Frameworks */,
+				9B664CC3039F314B020D87FC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -497,7 +497,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/run\"\n";
 		};
-		6AF493911765E917D150EDD9 /* [CP] Embed Pods Frameworks */ = {
+		95C8789D6DB2A0D4D05150D5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -514,7 +514,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		78DF9FB72CC9B4BA7D5656EE /* [CP] Check Pods Manifest.lock */ = {
+		9B664CC3039F314B020D87FC /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CDB2CFFDEBB8D2F43E86B297 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -534,23 +551,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8B444483342E019CF18494C7 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -739,7 +739,7 @@
 		};
 		0734C0AE2325BBC000E74D0A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0FFE6F3244E28CB949B81A61 /* Pods-Theory Parking.debug.xcconfig */;
+			baseConfigurationReference = BAB8E94E155B782DDDE5368A /* Pods-Theory Parking.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
@@ -766,7 +766,7 @@
 		};
 		0734C0AF2325BBC000E74D0A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C3E8900AAC6729B98B4707A4 /* Pods-Theory Parking.release.xcconfig */;
+			baseConfigurationReference = FB5546788BCABD8F2245B7A5 /* Pods-Theory Parking.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;

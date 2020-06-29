@@ -13,8 +13,7 @@ import BLTNBoard
 class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var tableView = UITableView()
-    var itemsInSections = [["\(UserData[indexPath.row].Email)","\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))",""],
-                           [UserData[indexPath.row].License[indexPath.row]],[""],["Logout"]]
+    var itemsInSections = [["\(UserData[indexPath.row].Email)","\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))",""],[UserData[indexPath.row].License[indexPath.row]],[""],["Logout"]]
     var sections = ["","Vehicles","Permits",""]
     
     // BLTNBoard START
@@ -65,8 +64,8 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if sections[indexPath.row] == "Vehicles"{
-            return 3//UserData[indexPath.row].License.count
+        if sections[section] == "Vehicles"{
+            return itemsInSections[section].count//UserData[indexPath.row].License.count
         }else{
             return itemsInSections[section].count
         }
@@ -107,10 +106,13 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         return cell
     }
     
+    
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if itemsInSections[indexPath.section][indexPath.row] == "Logout" {
             logout()
         }
+       
         
     }
     

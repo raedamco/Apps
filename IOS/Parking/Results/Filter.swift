@@ -77,55 +77,57 @@ class FilterView: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "filterCell", for: indexPath) as! filterCell
-        cell.selectionStyle = UITableViewCell.SelectionStyle.none
-        cell.backgroundColor = standardBackgroundColor
-        cell.textLabel?.textColor = standardContrastColor
-        cell.accessoryView?.tintColor = standardContrastColor
-        
-        
-        if (indexPath.row == 0 && tableViewData[indexPath.section].opened) {
+        if (indexPath.row == 0) {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "filterCell", for: indexPath) as! filterCell
+            cell.selectionStyle = UITableViewCell.SelectionStyle.none
             cell.textLabel?.text = tableViewData[indexPath.section].title
-            cell.textLabel?.font = UIFont(name: font, size: 18)
-            cell.indentationLevel = 0
-            cell.accessoryView = UIImageView.init(image: UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate))
+            cell.backgroundColor = standardBackgroundColor
+            cell.textLabel?.textColor = standardContrastColor
             cell.accessoryView?.tintColor = standardContrastColor
-            
-        }else if (indexPath.row == 0 && tableViewData[indexPath.section].opened == false){
-            cell.textLabel?.text = tableViewData[indexPath.section].title
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "filterCell", for: indexPath) as! filterCell
+            cell.textLabel?.text = String(describing: tableViewData[indexPath.section].sectionData[indexPath.row - 1])
             cell.textLabel?.font = UIFont(name: font, size: 18)
-            cell.indentationLevel = 0
-            cell.accessoryView = UIImageView.init(image: UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate))
-            cell.accessoryView?.tintColor = standardContrastColor
-            
-        }else if (indexPath.row != 0 && tableViewData[indexPath.section].text == true){
-            cell.textLabel?.text = tableViewData[indexPath.section].sectionData[indexPath.row - 1] as? String
-            cell.textLabel?.font = UIFont(name: font, size: 15)
-            cell.indentationLevel = 2
-            cell.accessoryView?.isHidden = true
+            return cell
         }
-        
-        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath)
-
-        if (indexPath.row == 0 && tableViewData[indexPath.section].opened == true) {
-            tableViewData[indexPath.section].opened = false
-            let sections = IndexSet(integer: indexPath.section)
-            tableView.reloadSections(sections, with: .none)
-        }else if (indexPath.row == 0 && tableViewData[indexPath.section].opened == false){
-            tableViewData[indexPath.section].opened = true
-            let sections = IndexSet(integer: indexPath.section)
-            tableView.reloadSections(sections, with: .none)
-        }else if (indexPath.row != 0 && cell?.isSelected == false){
+        if indexPath.row == 0 {
+            if tableViewData[indexPath.section].opened == true {
+                tableViewData[indexPath.section].opened = false
+                let sections = IndexSet(integer: indexPath.section)
+                tableView.reloadSections(sections, with: .none)
+            }else{
+                tableViewData[indexPath.section].opened = true
+                let sections = IndexSet(integer: indexPath.section)
+                tableView.reloadSections(sections, with: .none)
+            }
+        }else{
+            let cell = tableView.cellForRow(at: indexPath)
             cell?.accessoryView?.isHidden = false
             cell?.accessoryView = UIImageView.init(image: UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate))
             cell?.accessoryView?.tintColor = standardContrastColor
         }
-        tableView.beginUpdates()
-        tableView.endUpdates()
+        
+//        let cell = tableView.cellForRow(at: indexPath)
+//
+//        if (indexPath.row == 0 && tableViewData[indexPath.section].opened == true) {
+//            tableViewData[indexPath.section].opened = false
+//            let sections = IndexSet(integer: indexPath.section)
+//            tableView.reloadSections(sections, with: .none)
+//        }else if (indexPath.row == 0 && tableViewData[indexPath.section].opened == false){
+//            tableViewData[indexPath.section].opened = true
+//            let sections = IndexSet(integer: indexPath.section)
+//            tableView.reloadSections(sections, with: .none)
+//        }else if (indexPath.row != 0 && cell?.isSelected == false){
+//            cell?.accessoryView?.isHidden = false
+//            cell?.accessoryView = UIImageView.init(image: UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate))
+//            cell?.accessoryView?.tintColor = standardContrastColor
+//        }
+//        tableView.beginUpdates()
+//        tableView.endUpdates()
         
     }
     

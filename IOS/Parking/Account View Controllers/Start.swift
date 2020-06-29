@@ -43,7 +43,7 @@ class StartView: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
-        setupNavigationBar(LargeText: true, Title: "theory parking", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
+        setupNavigationBar(LargeText: true, Title: "raedam", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
     }
     
     func createScreenLayout(){

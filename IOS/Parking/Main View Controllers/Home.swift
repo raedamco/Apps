@@ -182,12 +182,10 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
     @objc func createRoute(notification: NSNotification){
         destinationLocation = CLLocation(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
         
-        let destinationLocation2D = CLLocationCoordinate2D(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
-        
         dismiss(animated: true, completion: {
             self.mapView.settings.compassButton = true
             self.mapView.settings.myLocationButton = true
-            self.addMarker(position: destinationLocation2D)
+            self.addMarker(position: self.destinationLocation.coordinate)
             self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
  
         })
@@ -218,8 +216,11 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
     @objc func cancelRoute(notification: NSNotification){
         self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
         SelectedParkingData.removeAll()
-        self.navigationbarAttributes(Hidden: true, Translucent: true)
-        self.destinationTextField.isHidden = false
+//        self.navigationbarAttributes(Hidden: true, Translucent: true)
+        self.setupNavigationBar(LargeText: true, Title: "", SystemImageR: true, ImageR: false, ImageTitleR: "", TargetR: self, ActionR: nil, SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
+        
+        self.navigationController?.navigationItem.titleView = destinationTextField
+//        self.destinationTextField.isHidden = false
         self.mapView.clear()
         self.reloadInputViews()
     }
@@ -282,10 +283,11 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                     guard let steps = leg["steps"] as? [Any] else { return }
                     guard let duration = leg["duration"] as? [String: Any] else { return }
                     guard let distance = leg["distance"] as? [String: Any] else { return }
-
+                    
                     RouteData.append(RouteInfo(Time: String(describing: duration["text"]! as Any), Distance: String(describing: distance["text"]! as Any)))
 
                     for item in steps {
+                        
                         guard let step = item as? [String: Any] else { return }
                         guard let stepTurns = step["html_instructions"] as? String else { return }
                         guard let stepDistance = step["distance"] as? [String: Any] else { return }
@@ -293,8 +295,14 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
                         guard let polyline = step["polyline"] as? [String: Any] else { return }
                         guard let polyLineString = polyline["points"] as? String else { return }
                    
-//                        guard let maneuver = step["maneuver"] as? String else { return }
-//                        print(maneuver)
+                        do {
+                            let manuever = step["maneuver"] as? String
+                            print(manuever)
+                        }catch{
+                            "Error with manuver: \(error)"
+                        }
+
+                        
                        
                         DispatchQueue.main.async {
                             self.drawPath(from: polyLineString)
@@ -377,3 +385,55 @@ extension HomeViewController {
         }
     }
 }
+//
+//
+////Map & user permissions
+//extension HomeViewController {
+//
+//    func mapSettings(){
+//        mapView.isZoomEnabled = true
+//        mapView.isPitchEnabled = true
+//        mapView.isRotateEnabled = true
+//        mapView.isScrollEnabled = true
+//        mapView.showsTraffic = true
+//        mapView.showsUserLocation = true
+//        mapView.showsBuildings = true
+//    }
+//
+//    func checkUserPermissions(){
+//        if CLLocationManager.locationServicesEnabled() {
+//            locationManager.delegate = self
+//            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+//            locationManager.startUpdatingLocation()
+//            mapSettings()
+//        }else{
+//            locationManager.requestWhenInUseAuthorization()
+//            //Force user to enable location
+//        }
+//    }
+//
+//    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+//        guard status == .authorizedWhenInUse else {
+//            return
+//        }
+//        locationManager.startUpdatingLocation()
+//    }
+//
+//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        if let location = locations.last{
+//            let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+//            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+//            self.mapView.setRegion(region, animated: true)
+//            userLocation = location
+//            locationManager.stopUpdatingLocation()
+//
+//            if location.distance(from: destinationLocation) <= blockDistance {
+//                updateDirectionsView()
+//            }
+//        }
+//    }
+//
+//    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading){
+//        //rotate map to face user direction
+//    }
+//}

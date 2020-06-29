@@ -25,4 +25,5 @@ target 'Theory Parking' do
 	pod 'Fabric'
 	pod 'Stripe'	
 	pod 'ZendeskSupportSDK'
+	pod 'DropDown'
 end

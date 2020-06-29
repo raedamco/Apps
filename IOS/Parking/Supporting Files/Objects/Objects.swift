@@ -143,22 +143,8 @@ func createPopupView(Radius: CGFloat, BorderColor: CGColor, BorderWidth: CGFloat
     view.layer.borderColor = BorderColor
     view.layer.borderWidth = BorderWidth
     view.translatesAutoresizingMaskIntoConstraints = false
-    view.backgroundColor = standardBackgroundColor
+    view.backgroundColor = standardBackgroundColor.withAlphaComponent(0.7)
     return view
-}
-
-func createLabeltemp(LabelText: String, TextColor: UIColor, FontName: String, FontSize: CGFloat, TextAlignment: NSTextAlignment, TextBreak: NSLineBreakMode, NumberOfLines: Int) -> UILabel{
-    let label = UILabel()
-    label.text = LabelText
-    label.font = UIFont(name: FontName, size: FontSize)
-    label.textAlignment = TextAlignment
-    label.lineBreakMode = TextBreak
-    label.numberOfLines = NumberOfLines
-    label.textColor = TextColor
-    label.adjustsFontSizeToFitWidth = true
-    label.translatesAutoresizingMaskIntoConstraints = true
-    label.sizeToFit()
-    return label
 }
 
 func createViewOverlay() -> UIView {
@@ -175,7 +161,6 @@ func setNavigationBarAttributes(self: UIViewController){
     self.navigationItem.rightBarButtonItem?.setTitleTextAttributes(buttonAttributes, for: UIControl.State())
     self.navigationController?.setNavigationBarHidden(true, animated: false)
 }
-
 
 func popupNavigationBarAttributes(self: UIViewController, title: String, action: Selector) {
     self.view.backgroundColor = standardBackgroundColor
