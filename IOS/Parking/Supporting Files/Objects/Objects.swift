@@ -236,3 +236,13 @@ func getMinutesDifferenceFromTwoDates(start: Date, end: Date) -> Int{
     let minutes = (diff - hours * 3600) / 60
     return minutes
 }
+
+func convertToMiles(Value: Double) -> String {
+    let conversion = Measurement(value: Value, unit: UnitLength.meters).converted(to: UnitLength.miles)
+    return MeasurementFormatter().string(from: conversion)
+}
+
+func convertToMinutes(Value: Double) -> String {
+    let conversion = Measurement(value: Value, unit: UnitLength.meters).converted(to: UnitLength.miles)
+    return MeasurementFormatter().string(from: conversion)
+}

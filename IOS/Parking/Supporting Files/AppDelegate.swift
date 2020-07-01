@@ -14,6 +14,7 @@ import Siren
 import UserNotifications
 import Stripe
 import ZendeskCoreSDK
+import DropDown
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -79,8 +80,9 @@ extension AppDelegate {
         authAccountConnection()
         GMSServices.provideAPIKey("AIzaSyDONTZJEYMYC0tXKKdXt8RiO0n4lbIG9RM")
         GMSPlacesClient.provideAPIKey("AIzaSyDONTZJEYMYC0tXKKdXt8RiO0n4lbIG9RM")
-        Stripe.setDefaultPublishableKey("pk_test_OSJOLg8IC2NbnY9opPzWoPSG00teCAN94U")
+        Stripe.setDefaultPublishableKey("pk_test_51H0FFyDtW0T37E4Pz0sYdXJePKCU232UipcIWTmXe41RrFI399to65b2L6rRP1qCpHspIe1Hw3utjYAIoONCT5ZI00ATVEgwEQ")
         style()
+        DropDown.startListeningToKeyboard()
     }
     
     func authAccountConnection(){

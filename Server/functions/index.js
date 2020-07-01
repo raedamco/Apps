@@ -15,7 +15,7 @@ admin.initializeApp({
 });
 
 //Private keys
-const stripe = require('stripe')("sk_test_CFsR0YQ2XzltRxt6pmRCxoOH00rs0xeJ3I");
+const stripe = require('stripe')("sk_test_51H0FFyDtW0T37E4P27PEfuEPvDUyGvmkNhInroQ9mAH7sdKzeM0A2hqLEC3advWxPHO0oCMJtHKk7USLmMIqc4aW00RhpYqsgR"); //Secret Key
 var slack = require('slack-notify')('https://hooks.slack.com/services/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');
 //INITIALIZATION END
 
