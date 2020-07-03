@@ -5,42 +5,26 @@
 //  Created for Theory Parking on 9/8/19.
 //  Copyright © 2020 Theory Parking. All rights reserved.
 //
-
 import UIKit
 import MapKit
-//import GoogleMaps
-//import GooglePlaces
+import GoogleMaps
+import GooglePlaces
 import Alamofire
 import SwiftyJSON
 import BLTNBoard
-import AVFoundation
-import DropDown
-import CoreLocation
 
 var selectedParkingLocation = CLLocation()
 
-class HomeViewController: UIViewController, CLLocationManagerDelegate, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, MKLocalSearchCompleterDelegate {
-   
-    func updateSearchResults(for searchController: UISearchController) {
-//        getDirections(to: <#T##MKMapItem#>)
-    }
-    
-    var autoCompleteData = [String]()
-    var dropButton = DropDown()
-    var searchCompleter = MKLocalSearchCompleter()
-    var searchResults = [MKLocalSearchCompletion]()
-    
+class HomeViewController: UIViewController, CLLocationManagerDelegate {
+     
     private let locationManager = CLLocationManager()
-    let mapView = MKMapView()
+    let destinationTextField = createButton(Title: "Destination", FontName: font, FontSize: 20, FontColor: standardContrastColor, BorderWidth: 0, CornerRaduis: 5, BackgroundColor: standardBackgroundColor.withAlphaComponent(0.7), BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(searchLocation))
+    let mapView = GMSMapView()
     var userLocation = CLLocation()
     var destinationLocation = CLLocation()
-    var steps = [MKRoute.Step]()
-    let speechSynthesizer = AVSpeechSynthesizer()
-    var currentDirections = String()
-    var stepCounter = 0
-    let search = UISearchController(searchResultsController: nil)
+    var polyline = GMSPolyline()
     let APIKey = "AIzaSyBLF8x5SR3UJbI-ybS04Bd9TPUebvziMlw"
-
+    
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
     var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
@@ -63,12 +47,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, UISearchR
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        locationManager.startUpdatingLocation()
-        mapSettings()
-        mapView.setRegion(MKCoordinateRegion(center: userLocation.coordinate, latitudinalMeters: 200, longitudinalMeters: 200), animated: true)
+        createViewLayout()
         NotificationCenter.default.addObserver(self, selector: #selector(createRoute(notification:)), name: NSNotification.Name(rawValue: "createRoute"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(confirmRoute(notification:)), name: NSNotification.Name(rawValue: "confirmRoute"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(startRoute(notification:)), name: NSNotification.Name(rawValue: "startRoute"), object: nil)
@@ -76,120 +55,140 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate, UISearchR
         NotificationCenter.default.addObserver(self, selector: #selector(infoRoute(notification:)), name: NSNotification.Name(rawValue: "moreInfo"), object: nil)
      }
     
+    func updateMapStyle(){
+        if self.traitCollection.userInterfaceStyle == .dark {
+            styleMap(DarkMode: true)
+            self.view.reloadInputViews()
+        }else{
+            styleMap(DarkMode: false)
+            self.view.reloadInputViews()
+        }
+    }
+     
      override func viewDidAppear(_ animated: Bool) {
         setNeedsStatusBarAppearanceUpdate()
         checkConnection()
+        updateMapStyle()
+        
      }
-
+     
      override func viewWillAppear(_ animated: Bool) {
-        view = mapView
-        createSearchBar()
+        updateMapStyle()
         
-        searchCompleter.delegate = self
+        self.view.addSubview(destinationTextField)
+        destinationTextField.target(forAction: #selector(self.searchLocation), withSender: self)
+        destinationTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
+        destinationTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
+        destinationTextField.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
         
-        dropButton.anchorView = search.searchBar
-        dropButton.bottomOffset = CGPoint(x: 0, y:(dropButton.anchorView?.plainView.bounds.height)!)
-        dropButton.backgroundColor = standardBackgroundColor.withAlphaComponent(0.7)
-        dropButton.textColor = standardContrastColor
-        dropButton.direction = .bottom
-
-        dropButton.selectionAction = { [unowned self] (index: Int, item: String) in
-            print("Selected item: \(item) at index: \(index)") //Selected item: code at index: 0
-            
-            let geocoder = CLGeocoder()
-            geocoder.geocodeAddressString(item) {
-                placemarks, error in
-                
-                let localSearchRequest = MKLocalSearch.Request()
-                localSearchRequest.naturalLanguageQuery = item
-                let region = MKCoordinateRegion(center: self.userLocation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
-                localSearchRequest.region = region
-                let localSearch = MKLocalSearch(request: localSearchRequest)
-                localSearch.start { (response, _) in
-                    guard let response = response else { return }
-                    guard let firstMapItem = response.mapItems.first else { return }
-                    
-                    destinationName = item
-                    SelectedParkingData.removeAll()
-                    getDocumentNearBy(latitude: firstMapItem.placemark.coordinate.latitude, longitude: firstMapItem.placemark.coordinate.longitude, meters: 1000)
-                    showView(self: self, ViewController: ResultView())
-                    
-//                    self.getDirections(destination: firstMapItem)
-//                    self.navigationItem.searchController!.searchBar.placeholder = item
-//                    self.navigationItem.searchController!.searchBar.resignFirstResponder()
-                }
-            }
-        }
-        
-        
-        
-        
+        self.view.layoutSubviews()
     
+        if destinationTextField.isHidden {
+            navigationbarAttributes(Hidden: false, Translucent: false)
+            
             if DirectionsData.count > 0 {
-//                let directionTitle = SelectedParkingData[indexPath.row].Name
-//                    //DirectionsData[indexPath.row].Manuver
-//
-//                self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-//                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
-//                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
+                let directionTitle = SelectedParkingData[indexPath.row].Name
+                    //DirectionsData[indexPath.row].Manuver
+                
+                self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
+                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
+                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
 //                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
 //                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
             }
+        }else{
+            navigationbarAttributes(Hidden: true, Translucent: false)
+        }
+     }
+
+     func createViewLayout(){
+        view.backgroundColor = standardBackgroundColor
+         
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            locationManager.startUpdatingLocation()
+            mapView.isMyLocationEnabled = true
+            mapView.settings.allowScrollGesturesDuringRotateOrZoom = true
+            mapView.settings.rotateGestures = true
+        }else{
+            locationManager.requestWhenInUseAuthorization()
+            //Force user to enable location
+        }
+        
+        view = mapView
+     }
+     
+     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        guard status == .authorizedWhenInUse else {
+            return
+        }
+        locationManager.startUpdatingLocation()
+        mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17)
+        
+     }
+     
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else {
+            return
+        }
+        
+        userLocation = location
+        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
+        locationManager.stopUpdatingLocation()
+//        let update = GMSCameraUpdate.setTarget(location.coordinate)
+//        mapView.moveCamera(update)
+//
+//
+        if location.distance(from: destinationLocation) <= blockDistance {
+            updateDirectionsView()
+        }else{
+            
+        }
 
     }
     
-    func createSearchBar(){
-        self.navigationController?.navigationBar.isTranslucent = true
-        search.searchResultsUpdater = self
-        search.searchBar.placeholder = "Destination"
-        search.searchBar.barTintColor = standardBackgroundColor.withAlphaComponent(0.7)
-        search.searchBar.tintColor = standardContrastColor
-        search.searchBar.delegate = self
-        search.delegate = self
-        self.navigationItem.searchController = search
-        self.view.layoutSubviews()
-    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading){
 
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchCompleter.queryFragment = (self.navigationItem.searchController?.searchBar.text)!
-        let searchBar = self.navigationItem.searchController!.searchBar
-        if searchBar.text?.isEmpty == true {
-            autoCompleteData.removeAll()
-        }
     }
+    
 
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        let searchBar = self.navigationItem.searchController!.searchBar
-        searchBar.setShowsCancelButton(true, animated: true)
-        for ob: UIView in ((searchBar.subviews[0])).subviews {
-            if let z = ob as? UIButton {
-                let btn: UIButton = z
-                btn.setTitleColor(UIColor.white, for: .normal)
-            }
-        }
-    }
-
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        let searchBar = self.navigationItem.searchController!.searchBar
-        searchBar.showsCancelButton = false
-    }
-
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        let searchBar = self.navigationItem.searchController!.searchBar
-        searchBar.resignFirstResponder()
-        searchBar.text = ""
-        dropButton.hide()
-    }
-
+     @objc func searchLocation(){
+        let AutofillController = GMSAutocompleteViewController()
+        AutofillController.delegate = self
+        AutofillController.tableCellSeparatorColor = standardContrastColor
+        AutofillController.tableCellBackgroundColor = standardBackgroundColor
+        AutofillController.primaryTextColor = standardContrastColor
+        AutofillController.tableCellSeparatorColor = .darkGray
+        present(AutofillController, animated: true, completion: nil)
+     }
 }
 
-extension HomeViewController {
+extension HomeViewController: GMSAutocompleteViewControllerDelegate {
 
+    func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+        destinationName = place.name!
+        
+        dismiss(animated: true) {
+            SelectedParkingData.removeAll()
+            getDocumentNearBy(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude, meters: 1000)
+            showView(self: self, ViewController: ResultView())
+        }
+    }
+    
     @objc func createRoute(notification: NSNotification){
         destinationLocation = CLLocation(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
-        self.getDirections(destination: MKMapItem(placemark: MKPlacemark(coordinate: self.destinationLocation.coordinate)))
+        
+        let destinationLocation2D = CLLocationCoordinate2D(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
+        
         dismiss(animated: true, completion: {
-            
+            self.mapView.settings.compassButton = true
+            self.mapView.settings.myLocationButton = true
+            self.addMarker(position: destinationLocation2D)
+            self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
+ 
         })
     }
     
@@ -205,14 +204,22 @@ extension HomeViewController {
     
     @objc func startRoute(notification: NSNotification){
         destinationLocation = CLLocation(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
-        self.getDirections(destination: MKMapItem(placemark: MKPlacemark(coordinate: destinationLocation.coordinate)))
+
+        let destinationLocation2D = CLLocationCoordinate2D(latitude:  SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
+        
+        dismiss(animated: true, completion: {
+            self.addMarker(position: destinationLocation2D)
+            self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
+            self.destinationTextField.isHidden = true
+        })
     }
 
     @objc func cancelRoute(notification: NSNotification){
+        self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
         SelectedParkingData.removeAll()
-        self.setupNavigationBar(LargeText: true, Title: "", SystemImageR: true, ImageR: false, ImageTitleR: "", TargetR: self, ActionR: nil, SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-        let annotationsToRemove = mapView.annotations.filter { $0 !== mapView.userLocation }
-        mapView.removeAnnotations(annotationsToRemove)
+        self.navigationbarAttributes(Hidden: true, Translucent: true)
+        self.destinationTextField.isHidden = false
+        self.mapView.clear()
         self.reloadInputViews()
     }
     
@@ -225,137 +232,146 @@ extension HomeViewController {
         print("USER NEAR STRUCTURE")
     }
     
-    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        searchResults = completer.results
+    
+    
+    func addMarker(position: CLLocationCoordinate2D) {
         
-        if !autoCompleteData.contains(searchResults[indexPath.row].title){
-            autoCompleteData.append(searchResults[indexPath.row].title)
+//        let pulseAnimation = CABasicAnimation(keyPath: "opacity")
+//        pulseAnimation.duration = 30
+//        pulseAnimation.fromValue = 0
+//        pulseAnimation.toValue = 1
+//        pulseAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+//        pulseAnimation.autoreverses = true
+//        pulseAnimation.repeatCount = .greatestFiniteMagnitude
+//        self.view.layer.add(pulseAnimation, forKey: nil)
+        let marker = GMSMarker()
+        marker.position = position
+        marker.map = mapView
+        
+        if self.traitCollection.userInterfaceStyle == .dark {
+            marker.icon = UIImage(named: "destination.png")
+        }else{
+            marker.icon = UIImage(named: "destination.png")?.withTintColor(.black)
         }
-        
-        dropButton.dataSource = autoCompleteData
-        dropButton.show()
+
     }
     
-    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
-        // handle error
+    func drawPath(from polyStr: String){
+        let path = GMSPath(fromEncodedPath: polyStr)
+        let polyline = GMSPolyline(path: path)
+        polyline.strokeColor = UIColor(red: 0.08, green: 0.43, blue: 0.88, alpha: 1.00)
+        polyline.strokeWidth = 3.0
+        polyline.map = mapView
+//        self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 16, bearing: 0, viewingAngle: 25)
     }
-}
-
-
-//Map & user permissions
-extension HomeViewController {
-
-    func mapSettings(){
-        mapView.isZoomEnabled = true
-        mapView.isPitchEnabled = true
-        mapView.isRotateEnabled = true
-        mapView.isScrollEnabled = true
-        mapView.showsTraffic = true
-        mapView.showsUserLocation = true
-        mapView.showsBuildings = true
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        manager.stopUpdatingLocation()
-        guard let currentLocation = locations.first else { return }
-        userLocation = currentLocation
-        mapView.userTrackingMode = .followWithHeading
+    
+    func getRouteSteps(source: CLLocationCoordinate2D,destination: CLLocationCoordinate2D) {
+        let url = URL(string: "https://maps.googleapis.com/maps/api/directions/json?origin=\(source.latitude),\(source.longitude)&destination=\(destination.latitude),\(destination.longitude)&sensor=false&mode=driving&key=\(APIKey)")!
         
-        if currentLocation.distance(from: destinationLocation) <= blockDistance {
-            updateDirectionsView()
-        }
-    }
+        AF.request(url, method: .post).validate(statusCode: 200..<300).responseJSON { responseJSON in
+            switch responseJSON.result {
+                case .success(let json): //print(json)
+                    let jsonResult = json as? [String: AnyObject]
+                    
+                    guard let routes = jsonResult!["routes"] as? [Any] else { return }
+                    guard let route = routes[0] as? [String: Any] else { return }
+                    guard let legs = route["legs"] as? [Any] else { return }
+                    guard let leg = legs[0] as? [String: Any] else { return }
+                    guard let steps = leg["steps"] as? [Any] else { return }
+                    guard let duration = leg["duration"] as? [String: Any] else { return }
+                    guard let distance = leg["distance"] as? [String: Any] else { return }
 
-    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        print("ENTERED")
-        stepCounter += 1
-        if stepCounter < steps.count {
-            let currentStep = steps[stepCounter]
-            let message = "In \(currentStep.distance) meters, \(currentStep.instructions)"
-//            directionsLabel.text = message
-            let speechUtterance = AVSpeechUtterance(string: message)
-            speechSynthesizer.speak(speechUtterance)
-        } else {
-            let message = "Arrived at destination"
-//            directionsLabel.text = message
-            let speechUtterance = AVSpeechUtterance(string: message)
-            speechSynthesizer.speak(speechUtterance)
-            stepCounter = 0
-            locationManager.monitoredRegions.forEach({ self.locationManager.stopMonitoring(for: $0) })
-        }
-    }
-}
+                    RouteData.append(RouteInfo(Time: String(describing: duration["text"]! as Any), Distance: String(describing: distance["text"]! as Any)))
 
-extension HomeViewController: MKMapViewDelegate {
-    func getDirections(destination: MKMapItem) {
-        let sourceMapItem = MKMapItem(placemark: MKPlacemark(coordinate: userLocation.coordinate))
-        
-        let directionsRequest = MKDirections.Request()
-        directionsRequest.source = sourceMapItem
-        directionsRequest.destination = destination
-        directionsRequest.transportType = .automobile
-        
-        let directions = MKDirections(request: directionsRequest)
-        directions.calculate { (response, _) in
-            guard let response = response else { return }
-            guard let primaryRoute = response.routes.first else { return }
-            
-            self.mapView.addOverlay(primaryRoute.polyline)
-            self.locationManager.monitoredRegions.forEach({ self.locationManager.stopMonitoring(for: $0) })
-            
-            self.steps = primaryRoute.steps
-            RouteData.append(RouteInfo(Time: String(describing: primaryRoute.expectedTravelTime.asString(style: .abbreviated)), Distance: convertToMiles(Value: primaryRoute.distance)))
-            
-            for i in 0 ..< primaryRoute.steps.count {
-                let step = primaryRoute.steps[i]
-
-                let region = CLCircularRegion(center: step.polyline.coordinate, radius: 20, identifier: "\(i)")
-                self.locationManager.startMonitoring(for: region)
-                let circle = MKCircle(center: region.center, radius: region.radius)
-                self.mapView.addOverlay(circle)
-                
-                DirectionsData.append(DirectionsInfo(Time: "temp", Distance: convertToMiles(Value: step.distance), Manuver: String(describing: step.instructions)))
+                    for item in steps {
+                        guard let step = item as? [String: Any] else { return }
+                        guard let stepTurns = step["html_instructions"] as? String else { return }
+                        guard let stepDistance = step["distance"] as? [String: Any] else { return }
+                        guard let stepTime = step["duration"] as? [String: Any] else { return }
+                        guard let polyline = step["polyline"] as? [String: Any] else { return }
+                        guard let polyLineString = polyline["points"] as? String else { return }
+                   
+//                        guard let maneuver = step["maneuver"] as? String else { return }
+//                        print(maneuver)
+                       
+                        DispatchQueue.main.async {
+                            self.drawPath(from: polyLineString)
+                            DirectionsData.append(DirectionsInfo(Time: String(describing: stepTime["text"]! as Any), Distance: String(describing: stepDistance["text"]! as Any), Manuver: stepTurns.html2String))
+                           
+                            if DirectionsData.count > 0 {
+                                self.navigationbarAttributes(Hidden: false, Translucent: false)
+                                let directionTitle = SelectedParkingData[indexPath.row].Name
+                                   //DirectionsData[indexPath.row].Manuver + " in " + DirectionsData[indexPath.row].Distance //DirectionsData[indexPath.row].Manuver
+                                self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
+                                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
+                                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
+                               
+                                self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default) //UIImage.init(named: "transparent.png")
+                                self.navigationController?.navigationBar.shadowImage = UIImage()
+                                self.navigationController?.navigationBar.isTranslucent = false
+                               //self.navigationController?.view.backgroundColor = standardBackgroundColor.withAlphaComponent(0.7)
+                           }
+                       }
+                   }
+                case .failure(let error): print(error)
             }
-            
-            let initialMessage = "In \(convertToMiles(Value: self.steps[0].distance)), \(self.steps[0].instructions) then in \(convertToMiles(Value: self.steps[1].distance)), \(self.steps[1].instructions)."
-            self.currentDirections = initialMessage
-//            print(initialMessage)
-//            self.directionsLabel.text = initialMessage
-//            let speechUtterance = AVSpeechUtterance(string: initialMessage)
-//            self.speechSynthesizer.speak(speechUtterance)
-            self.stepCounter += 1
-//
         }
-//
-        if DirectionsData.count > 0 {
-             let directionTitle = currentDirections
 
-             self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-//
-//             let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 18)!]
-//             self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
-//             self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-//             self.navigationController?.navigationBar.shadowImage = UIImage()
-//             self.navigationController?.navigationBar.isTranslucent = false
-//             self.navigationController?.view.backgroundColor = standardBackgroundColor.withAlphaComponent(0.7)
+        let cameraUpdate = GMSCameraUpdate.fit(GMSCoordinateBounds(coordinate: self.userLocation.coordinate, coordinate: self.destinationLocation.coordinate))
+        self.mapView.moveCamera(cameraUpdate)
+        let currentZoom = self.mapView.camera.zoom
+        self.mapView.animate(toZoom: currentZoom - 0.8)
+    }
+
+}
+
+
+
+extension HomeViewController {
+    func styleMap(DarkMode: Bool) {
+        mapView.settings.myLocationButton = true
+        mapView.settings.rotateGestures = false
+        var style = String()
+        
+        if DarkMode == true || userDefaults.bool(forKey: "THEME") == true {
+            style = "darkstyle"
+        }else{
+            style = "lightstyle"
+        }
+        
+        do{
+            if let styleURL = Bundle.main.url(forResource: style, withExtension: "json") {
+                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            }else{
+                print("Unable to find style.json")
+            }
+        }catch{
+            print("One or more of the map styles failed to load. \(error)")
         }
     }
     
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        if overlay is MKPolyline {
-            let renderer = MKPolylineRenderer(overlay: overlay)
-            renderer.strokeColor = .blue
-            renderer.lineWidth = 10
-            return renderer
+
+    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
+        print("Error: ", error.localizedDescription)
+    }
+    
+    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard UIApplication.shared.applicationState == .inactive else {
+            return
         }
-        
-        if overlay is MKCircle {
-            let renderer = MKCircleRenderer(overlay: overlay)
-            renderer.strokeColor = .red
-            renderer.fillColor = .red
-            renderer.alpha = 0.5
-            return renderer
+
+        if self.traitCollection.userInterfaceStyle == .dark {
+            styleMap(DarkMode: true)
+            self.view.reloadInputViews()
+        }else{
+            styleMap(DarkMode: false)
+            self.view.reloadInputViews()
         }
-        return MKOverlayRenderer()
     }
 }
