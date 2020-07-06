@@ -85,9 +85,9 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if sections[indexPath.row] == "Privacy Policy"{
-            openWeb(Title: "Privacy Policy", URL: "https://theoryparking.com/privacy")
+            openWeb(Title: "Privacy Policy", URL: "https://raedam.c o/privacy")
         }else if sections[indexPath.row] == "Terms of Use"{
-            openWeb(Title: "Terms of Use", URL: "https://theoryparking.com/terms")
+            openWeb(Title: "Terms of Use", URL: "https://raedam.co/terms")
         }
     }
     

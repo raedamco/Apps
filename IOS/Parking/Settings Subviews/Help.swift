@@ -121,7 +121,7 @@ extension HelpViewController: MFMailComposeViewControllerDelegate {
             let systemVersion = UIDevice.current.systemVersion
             
             composeVC.mailComposeDelegate = self
-            composeVC.setToRecipients(["omar@theoryparking.com"])
+            composeVC.setToRecipients(["omar@raedam.co"])
             composeVC.setSubject(Subject)
             composeVC.setMessageBody("</br></br></br></br> User Email: \(UserData[indexPath.row].Email) </br> Member ID: \(UserData[indexPath.row].UID) </br> System Version: \(systemVersion) </br> Device: \(model) ", isHTML: true)
             self.present(composeVC, animated: true, completion: nil)
