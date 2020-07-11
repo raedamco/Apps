@@ -9,6 +9,7 @@
 import Foundation
 import Firebase
 import UIKit
+import CoreLocation
 
 var ParkingData = [Parking]()
 var SelectedParkingData = [SelectedParking]()
@@ -44,7 +45,10 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
                     let available = currentInfo["Available"]!
                     let capacity = currentInfo["Capacity"]!
                     let CompanyStripeID = document.data()["CompanyStripeID"] as! String
-                    ParkingData.append(Parking(Location: location, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floors: [], Spots: [], CompanyStripeID: CompanyStripeID))
+                    
+                    let distance = String(describing: convertToFeet(Value: CLLocation(latitude: location.latitude, longitude: location.longitude).distance(from: CLLocation(latitude: latitude, longitude: longitude)))) + " away from destination"
+                    
+                    ParkingData.append(Parking(Location: location, Distance: distance, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floors: [], Spots: [], CompanyStripeID: CompanyStripeID))
                 }
             }
             

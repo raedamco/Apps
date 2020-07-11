@@ -86,9 +86,11 @@ struct Parking {
     var Floors: [String]
     var Spots: [String]
     var CompanyStripeID: String
+    var Distance: String
     
-    init(Location: GeoPoint, Name: String!, Types: [String:Bool], Organization: String!, Prices: NSNumber, Capacity: NSNumber, Available: NSNumber,Floors: [String], Spots: [String], CompanyStripeID: String) {
+    init(Location: GeoPoint, Distance: String, Name: String!, Types: [String:Bool], Organization: String!, Prices: NSNumber, Capacity: NSNumber, Available: NSNumber,Floors: [String], Spots: [String], CompanyStripeID: String) {
         self.Location = Location
+        self.Distance = Distance
         self.Name = Name
         self.Types = Types
         self.Organization = Organization

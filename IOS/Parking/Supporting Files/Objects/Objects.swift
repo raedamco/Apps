@@ -242,6 +242,14 @@ func convertToMiles(Value: Double) -> String {
     return MeasurementFormatter().string(from: conversion)
 }
 
+func convertToFeet(Value: Double) -> String {
+    let format = MeasurementFormatter()
+    let decimals = NumberFormatter()
+    decimals.maximumFractionDigits = 2
+    format.numberFormatter = decimals
+    return format.string(from: Measurement(value: Value, unit: UnitLength.meters).converted(to: UnitLength.feet))
+}
+
 func convertToMinutes(Value: Double) -> String {
     let conversion = Measurement(value: Value, unit: UnitLength.meters).converted(to: UnitLength.miles)
     return MeasurementFormatter().string(from: conversion)

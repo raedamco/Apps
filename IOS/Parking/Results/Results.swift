@@ -88,8 +88,8 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         let PName = ParkingData[indexPath.row].Name
         let PAvailable = String(describing: ParkingData[indexPath.row].Available) + "/" + String(describing: ParkingData[indexPath.row].Capacity) + " Spots Available"
         let PPrice = "$" + String(describing: ParkingData[indexPath.row].Prices) + "/min"
-        let PDistance = "Distance from parking structure to intended destination"
-        let CTextDetil = PName + "\n" + PAvailable + "\n" + PPrice
+        let PDistance = ParkingData[indexPath.row].Distance
+        let CTextDetil = PName + "\n" + PAvailable + "\n" + PPrice + "\n" + PDistance
         
         let cell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: "resultCell")
         cell.textLabel?.font = UIFont(name: font, size: 18)

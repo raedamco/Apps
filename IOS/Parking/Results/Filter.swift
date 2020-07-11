@@ -16,9 +16,12 @@ struct CellData {
     var sectionData = [Any]()
 }
 
+var selectedFilters = [String]()
+
 class FilterView: UITableViewController {
     
     var tableViewData = [CellData]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,11 +87,14 @@ class FilterView: UITableViewController {
             cell.backgroundColor = standardBackgroundColor
             cell.textLabel?.textColor = standardContrastColor
             cell.accessoryView?.tintColor = standardContrastColor
+            cell.textLabel?.font = UIFont(name: font, size: 20)
+            cell.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "filterCell", for: indexPath) as! filterCell
             cell.textLabel?.text = String(describing: tableViewData[indexPath.section].sectionData[indexPath.row - 1])
-            cell.textLabel?.font = UIFont(name: font, size: 18)
+            cell.textLabel?.font = UIFont(name: font, size: 16)
+            cell.layoutMargins = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 0)
             return cell
         }
     }
@@ -106,34 +112,33 @@ class FilterView: UITableViewController {
             }
         }else{
             let cell = tableView.cellForRow(at: indexPath)
+            let selectedCellText = (cell?.textLabel?.text!)!
             cell?.accessoryView?.isHidden = false
-            cell?.accessoryView = UIImageView.init(image: UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate))
+            
             cell?.accessoryView?.tintColor = standardContrastColor
+            if selectedFilters.contains(selectedCellText){
+                selectedFilters.removeAll {$0 == selectedCellText}
+                cell?.accessoryView = .none
+            }else{
+                selectedFilters.append(selectedCellText)
+                cell?.accessoryView = UIImageView.init(image: UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate))
+                cell?.accessoryView?.tintColor = standardContrastColor
+            }
         }
-        
-//        let cell = tableView.cellForRow(at: indexPath)
-//
-//        if (indexPath.row == 0 && tableViewData[indexPath.section].opened == true) {
-//            tableViewData[indexPath.section].opened = false
-//            let sections = IndexSet(integer: indexPath.section)
-//            tableView.reloadSections(sections, with: .none)
-//        }else if (indexPath.row == 0 && tableViewData[indexPath.section].opened == false){
-//            tableViewData[indexPath.section].opened = true
-//            let sections = IndexSet(integer: indexPath.section)
-//            tableView.reloadSections(sections, with: .none)
-//        }else if (indexPath.row != 0 && cell?.isSelected == false){
-//            cell?.accessoryView?.isHidden = false
-//            cell?.accessoryView = UIImageView.init(image: UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate))
-//            cell?.accessoryView?.tintColor = standardContrastColor
-//        }
-//        tableView.beginUpdates()
-//        tableView.endUpdates()
-        
     }
     
     @objc func closeView(gesture: UISwipeGestureRecognizer) {
         self.tabBarController?.tabBar.isHidden = false
         self.navigationController?.popViewController(animated: false)
+        filterSearch()
     }
     
+}
+
+//Function to apply selected filters to view
+extension FilterView {
+    func filterSearch(){
+//        ParkingData.filter($0 == )
+
+    }
 }
