@@ -44,7 +44,7 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         tableView.isScrollEnabled = true
         tableView.allowsSelection = true
-        tableView.rowHeight = 170
+        tableView.rowHeight = 130
         tableView.separatorColor = .darkGray
         let adjustForTabbarInsets: UIEdgeInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: UITabBar.appearance().frame.height, right: 0)
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
@@ -85,11 +85,10 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let PName = ParkingData[indexPath.row].Name
         let PAvailable = String(describing: ParkingData[indexPath.row].Available) + "/" + String(describing: ParkingData[indexPath.row].Capacity) + " Spots Available"
         let PPrice = "$" + String(describing: ParkingData[indexPath.row].Prices) + "/min"
         let PDistance = ParkingData[indexPath.row].Distance
-        let CTextDetil = PName + "\n" + PAvailable + "\n" + PPrice + "\n" + PDistance
+        let CTextDetil = PAvailable + "\n" + PPrice + "\n" + PDistance
         
         let cell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: "resultCell")
         cell.textLabel?.font = UIFont(name: font, size: 18)
@@ -97,7 +96,7 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
         cell.textLabel?.numberOfLines = 3
         cell.detailTextLabel?.numberOfLines = 4
-        cell.textLabel!.text = ParkingData[indexPath.row].Organization
+        cell.textLabel!.text = ParkingData[indexPath.row].Organization + " - " + ParkingData[indexPath.row].Name
         cell.detailTextLabel?.text = CTextDetil
         cell.detailTextLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
         cell.detailTextLabel?.textColor = standardContrastColor

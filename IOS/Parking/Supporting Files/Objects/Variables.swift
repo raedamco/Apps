@@ -17,7 +17,6 @@ let database = Firestore.firestore()
 let settings = database.settings
 var reference: DocumentReference? = nil
 var storageReference = Storage.storage().reference()
-var vehicles = [String]()
 var parkingAreas = [String]()
 var destinationName = String()
 var functions = Functions.functions()

@@ -236,7 +236,6 @@ extension UIViewController {
         self.navigationController?.navigationBar.tintColor = standardContrastColor
         self.navigationItem.rightBarButtonItem = createBarButtonItem(SystemImage: SystemImageR, Image: ImageR, Title: ImageTitleR, Target: TargetR, Action: ActionR)
         self.navigationItem.leftBarButtonItem = createBarButtonItem(SystemImage: SystemImageL, Image: ImageL, Title: ImageTitleL, Target: TargetL, Action: ActionL)
-
     }
 
 }
@@ -302,3 +301,14 @@ extension String {
 }
 
 
+extension Measurement where UnitType == UnitLength {
+    private static let usFormatted: MeasurementFormatter = {
+       let formatter = MeasurementFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.unitOptions = .providedUnit
+        formatter.numberFormatter.maximumFractionDigits = 0
+        formatter.unitStyle = .long
+        return formatter
+    }()
+    var usFormatted: String { Measurement.usFormatted.string(from: self) }
+}

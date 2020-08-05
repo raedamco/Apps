@@ -29,7 +29,7 @@ class FilterView: UITableViewController {
         
         tableViewData = [
                         CellData(opened: false, title: "Sort",text: true, sectionData: ["Price: Low to High","Price: High to Low","Distance: Near to Far","Distance: Far to Near"]),
-                        CellData(opened: false, title: "Distance",text: false, sectionData: ["10ft or Less", "50ft or Less", "100ft or Less"]),
+                        CellData(opened: false, title: "Distance",text: false, sectionData: ["20ft or Less", "50ft or Less", "100ft or Less"]),
                         CellData(opened: false, title: "Price",text: false, sectionData: ["$2/hr or Less","$3-4/hr","$5-9/hr"]),
                         CellData(opened: false, title: "Duration",text: false, sectionData: ["1hr Max","2hr Max","4hr Max","No Constraint"]),
                         CellData(opened: false, title: "Features",text: true, sectionData: ["EV","ADA","Security"])
@@ -49,7 +49,6 @@ class FilterView: UITableViewController {
         view.backgroundColor = standardBackgroundColor
         setupNavigationBar(LargeText: true, Title: "Filter", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
         
-
         tableView.register(filterCell.self, forCellReuseIdentifier: "filterCell")
         tableView.isScrollEnabled = true
         tableView.allowsSelection = true
@@ -92,8 +91,9 @@ class FilterView: UITableViewController {
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "filterCell", for: indexPath) as! filterCell
+            cell.selectionStyle = UITableViewCell.SelectionStyle.none
             cell.textLabel?.text = String(describing: tableViewData[indexPath.section].sectionData[indexPath.row - 1])
-            cell.textLabel?.font = UIFont(name: font, size: 16)
+            cell.textLabel?.font = UIFont(name: font, size: 14)
             cell.layoutMargins = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 0)
             return cell
         }
