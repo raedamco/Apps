@@ -22,10 +22,12 @@
 #import "STPPaymentMethodFPX.h"
 #import "STPPaymentMethodFPXParams.h"
 #import "STPPaymentMethodGiropayParams.h"
+#import "STPPaymentMethodGrabPayParams.h"
 #import "STPPaymentMethodiDEAL.h"
 #import "STPPaymentMethodiDEALParams.h"
 #import "STPPaymentMethodPrzelewy24Params.h"
 #import "STPPaymentMethodSEPADebitParams.h"
+#import "STPPaymentMethodSofortParams.h"
 
 @implementation STPPaymentMethodParams
 
@@ -133,6 +135,35 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
     return params;
 }
 
++ (nullable STPPaymentMethodParams *)paramsWithSofort:(STPPaymentMethodSofortParams *)sofort
+                                       billingDetails:(nullable STPPaymentMethodBillingDetails *)billingDetails
+                                             metadata:(nullable NSDictionary<NSString *, NSString *> *)metadata {
+    STPPaymentMethodParams *params = [self new];
+    params.type = STPPaymentMethodTypeSofort;
+    params.sofort = sofort;
+    params.billingDetails = billingDetails;
+    params.metadata = metadata;
+    return params;
+}
+
++ (STPPaymentMethodParams *)paramsWithAlipay:(STPPaymentMethodAlipayParams *)alipay billingDetails:(STPPaymentMethodBillingDetails *)billingDetails metadata:(NSDictionary<NSString *,NSString *> *)metadata {
+    STPPaymentMethodParams *params = [self new];
+    params.type = STPPaymentMethodTypeAlipay;
+    params.alipay = alipay;
+    params.billingDetails = billingDetails;
+    return params;
+}
+
++ (STPPaymentMethodParams *)paramsWithGrabPay:(STPPaymentMethodGrabPayParams *)grabPay
+                               billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
+                                     metadata:(nullable NSDictionary<NSString *, NSString *> *)metadata {
+    STPPaymentMethodParams *params = [self new];
+    params.type = STPPaymentMethodTypeGrabPay;
+    params.grabPay = grabPay;
+    params.billingDetails = billingDetails;
+    return params;
+}
+
 + (nullable STPPaymentMethodParams *)paramsWithSingleUsePaymentMethod:(STPPaymentMethod *)paymentMethod {
     STPPaymentMethodParams *params = [self new];
     switch ([paymentMethod type]) {
@@ -142,7 +173,6 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
             STPPaymentMethodEPSParams *eps = [[STPPaymentMethodEPSParams alloc] init];
             params.eps = eps;
             params.billingDetails = paymentMethod.billingDetails;
-            params.metadata = paymentMethod.metadata;
             break;
         }
         case STPPaymentMethodTypeFPX:
@@ -152,7 +182,6 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
             fpx.rawBankString = paymentMethod.fpx.bankIdentifierCode;
             params.fpx = fpx;
             params.billingDetails = paymentMethod.billingDetails;
-            params.metadata = paymentMethod.metadata;
             break;
         }
         case STPPaymentMethodTypeiDEAL:
@@ -162,7 +191,6 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
             params.iDEAL = iDEAL;
             params.iDEAL.bankName = paymentMethod.iDEAL.bankName;
             params.billingDetails = paymentMethod.billingDetails;
-            params.metadata = paymentMethod.metadata;
             break;
         }
         case STPPaymentMethodTypeGiropay:
@@ -171,7 +199,6 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
             STPPaymentMethodGiropayParams *giropay = [[STPPaymentMethodGiropayParams alloc] init];
             params.giropay = giropay;
             params.billingDetails = paymentMethod.billingDetails;
-            params.metadata = paymentMethod.metadata;
             break;
         }
         case STPPaymentMethodTypePrzelewy24:
@@ -180,7 +207,6 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
             STPPaymentMethodPrzelewy24Params *przelewy24 = [[STPPaymentMethodPrzelewy24Params alloc] init];
             params.przelewy24 = przelewy24;
             params.billingDetails = paymentMethod.billingDetails;
-            params.metadata = paymentMethod.metadata;
             break;
         }
         case STPPaymentMethodTypeBancontact:
@@ -189,9 +215,31 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
             STPPaymentMethodBancontactParams *bancontact = [[STPPaymentMethodBancontactParams alloc] init];
             params.bancontact = bancontact;
             params.billingDetails = paymentMethod.billingDetails;
-            params.metadata = paymentMethod.metadata;
             break;
         }
+        case STPPaymentMethodTypeAlipay:
+        {
+            // Careful! In the future, when we add recurring Alipay, we'll need to look at this!
+            params.type = STPPaymentMethodTypeAlipay;
+            params.billingDetails = paymentMethod.billingDetails;
+            break;
+        }
+        case STPPaymentMethodTypeSofort:
+        {
+            params.type = STPPaymentMethodTypeSofort;
+            STPPaymentMethodSofortParams *sofort = [[STPPaymentMethodSofortParams alloc] init];
+            params.sofort = sofort;
+            params.billingDetails = paymentMethod.billingDetails;
+            break;
+        }
+        case STPPaymentMethodTypeGrabPay:
+        {
+            params.type = STPPaymentMethodTypeGrabPay;
+            STPPaymentMethodGrabPayParams *grabpay = [STPPaymentMethodGrabPayParams new];
+            params.grabPay = grabpay;
+            params.billingDetails = paymentMethod.billingDetails;
+        }
+        // All reusable PaymentMethods go below:
         case STPPaymentMethodTypeSEPADebit:
         case STPPaymentMethodTypeBacsDebit:
         case STPPaymentMethodTypeCard:
@@ -232,8 +280,10 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
              NSStringFromSelector(@selector(bacsDebit)): @"bacs_debit",
              NSStringFromSelector(@selector(auBECSDebit)): @"au_becs_debit",
              NSStringFromSelector(@selector(giropay)): @"giropay",
+             NSStringFromSelector(@selector(grabPay)): @"grabpay",
              NSStringFromSelector(@selector(przelewy24)): @"p24",
              NSStringFromSelector(@selector(bancontact)): @"bancontact",
+             NSStringFromSelector(@selector(sofort)): @"sofort",
              NSStringFromSelector(@selector(metadata)): @"metadata",
              };
 }
@@ -261,6 +311,8 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
 
 - (NSString *)label {
     switch (self.type) {
+        case STPPaymentMethodTypeAlipay:
+            return @"Alipay"; //? Why aren't these localized?
         case STPPaymentMethodTypeCard:
             if (self.card != nil) {
                 STPCardBrand brand = [STPCardValidator brandForNumber:self.card.number];
@@ -291,10 +343,13 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
             return @"EPS";
         case STPPaymentMethodTypeBancontact:
             return @"Bancontact";
+        case STPPaymentMethodTypeSofort:
+            return @"Sofort";
+        case STPPaymentMethodTypeGrabPay:
+            return @"GrabPay";
         case STPPaymentMethodTypeCardPresent:
         case STPPaymentMethodTypeUnknown:
             return STPLocalizedString(@"Unknown", @"Default missing source type label");
-
     }
 }
 
@@ -303,7 +358,7 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
     switch (self.type) {
         case STPPaymentMethodTypeCard:
             return YES;
-
+        case STPPaymentMethodTypeAlipay:
         case STPPaymentMethodTypeAUBECSDebit:
         case STPPaymentMethodTypeBacsDebit:
         case STPPaymentMethodTypeSEPADebit:
@@ -311,9 +366,11 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
         case STPPaymentMethodTypeFPX:
         case STPPaymentMethodTypeCardPresent:
         case STPPaymentMethodTypeGiropay:
+        case STPPaymentMethodTypeGrabPay:
         case STPPaymentMethodTypeEPS:
         case STPPaymentMethodTypePrzelewy24:
         case STPPaymentMethodTypeBancontact:
+        case STPPaymentMethodTypeSofort:
             // fall through
         case STPPaymentMethodTypeUnknown:
             return NO;

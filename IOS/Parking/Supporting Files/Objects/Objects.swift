@@ -249,9 +249,23 @@ func convertToFeet(Value: Double) -> String {
     return formatted
 }
 
-func convertToMinutes(Value: Double) -> String {
-    let conversion = Measurement(value: Value, unit: UnitLength.meters).converted(to: UnitLength.miles)
-    return MeasurementFormatter().string(from: conversion)
+func convertToString(Number: NSNumber) -> String{
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.maximumFractionDigits = 3
+    return formatter.string(from: Number)!
 }
+
+func convertToTime(Value: NSNumber, Style: DateComponentsFormatter.UnitsStyle) -> String {
+    let interval = Double(Value)
+
+    let formatter = DateComponentsFormatter()
+    formatter.allowedUnits = [.hour, .minute, .second]
+    formatter.unitsStyle = Style
+
+    let conversion = formatter.string(from: TimeInterval(interval))!
+    return conversion
+}
+
 
 

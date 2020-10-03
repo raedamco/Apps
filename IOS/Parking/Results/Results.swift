@@ -27,13 +27,13 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        createViewLayout()
         NotificationCenter.default.addObserver(self, selector: #selector(removeView(notification:)), name: NSNotification.Name(rawValue: "closeView"), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadTable(notification:)), name: NSNotification.Name(rawValue: "reloadResultTable"), object: nil)
+        createViewLayout()
     }
     
     func createViewLayout(){
@@ -86,7 +86,7 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let PAvailable = String(describing: ParkingData[indexPath.row].Available) + "/" + String(describing: ParkingData[indexPath.row].Capacity) + " Spots Available"
-        let PPrice = "$" + String(describing: ParkingData[indexPath.row].Prices) + "/min"
+        let PPrice = "$" + convertToString(Number: ParkingData[indexPath.row].Prices) + "/min"
         let PDistance = ParkingData[indexPath.row].Distance
         let CTextDetil = PAvailable + "\n" + PPrice + "\n" + PDistance
         

@@ -62,7 +62,7 @@ enum BulletinDataSource {
         page.descriptionLabel?.textAlignment = .left
         page.actionButtonTitle = "Start"
         page.alternativeButtonTitle = "Cancel"
-        page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n $\(SelectedParkingData[indexPath.row].Price)/min"
+        page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n $\(convertToString(Number: SelectedParkingData[indexPath.row].Price))/min"
         page.requiresCloseButton = false
         
         page.actionHandler = { item in
@@ -451,7 +451,7 @@ enum BulletinDataSource {
         page.actionButtonTitle = "Dimiss"
 
         if !SelectedParkingData.isEmpty {
-           page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n Rate: $\(SelectedParkingData[indexPath.row].Price)/min"
+           page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n Rate: $\(convertToString(Number: SelectedParkingData[indexPath.row].Price))/min"
         }else{
             page.descriptionText = "You are not currently parked near a location we can detect"
         }
@@ -707,7 +707,7 @@ enum BulletinDataSource {
         page.actionButtonTitle = "Dismiss"
         page.alternativeButtonTitle = "Report error"
         
-        page.descriptionText = "Date:\(Date) \nLocation:\(Location) \nDuration:\(Duration) \nAmount:\(Amount)"
+        page.descriptionText = "Date: \(Date) \nLocation: \(Location) \nDuration: \(Duration) \nAmount: \(Amount)"
         page.requiresCloseButton = false
         
         page.actionHandler = { item in

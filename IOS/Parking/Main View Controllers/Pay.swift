@@ -151,7 +151,6 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         guard status == .authorizedWhenInUse else {
             return
         }
-        
         locationManager.startUpdatingLocation()
     }
     
