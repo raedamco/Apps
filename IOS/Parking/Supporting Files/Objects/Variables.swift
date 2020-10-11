@@ -48,3 +48,4 @@ let largeTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.K
 //DISTANCES (METERS)
 let blockDistance = 0.012427423844747
 let nearByDistance = Double(1000000)
+

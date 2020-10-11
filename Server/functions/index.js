@@ -220,12 +220,15 @@ exports.startPayment = functions.https.onRequest(async (req, res) => {
     const Rate = Number(req.body.Rate);
     const CompanyStripeID = req.body.CompanyStripeID
     const TimerStart = new Date();
+    const StartLat = Number(req.body.StartLatitude);
+    const StartLong = Number(req.body.StartLongitude);
 
     try {
         await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).collection("History").doc().set({
             Current: true,
             CompanyStripeID: CompanyStripeID,
             Data: {
+                "Start Location": new admin.firestore.GeoPoint(StartLat, StartLong),
                 "Location": new admin.firestore.GeoPoint(Lat, Long),
                 "Organization": Organization,
                 "Floor": Floor,

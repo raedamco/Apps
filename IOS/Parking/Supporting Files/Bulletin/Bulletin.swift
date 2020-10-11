@@ -391,7 +391,7 @@ enum BulletinDataSource {
                 NotificationCenter.default.post(name: NSNotification.Name("enterLocation"), object: nil)
             }
         }else if SelectedParkingData.count == 0{
-            page.actionButtonTitle = "Dimiss"
+            page.actionButtonTitle = "Dismiss"
             
             page.descriptionText = "You must enter your destination and arrive prior to starting payment"
             
@@ -419,7 +419,7 @@ enum BulletinDataSource {
         page.appearance.alternativeButtonTitleColor = standardContrastColor
         page.appearance.alternativeButtonFontSize = 18
         
-        page.actionButtonTitle = "Dimiss"
+        page.actionButtonTitle = "Dismiss"
         page.alternativeButtonTitle = "Enter Location Manually"
         page.descriptionText = "You are not currently parked near a location we can detect"
         page.requiresCloseButton = false
@@ -448,7 +448,7 @@ enum BulletinDataSource {
         page.appearance.titleTextColor = standardContrastColor
         page.descriptionLabel?.textAlignment = .left
         
-        page.actionButtonTitle = "Dimiss"
+        page.actionButtonTitle = "Dismiss"
 
         if !SelectedParkingData.isEmpty {
            page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n Rate: $\(convertToString(Number: SelectedParkingData[indexPath.row].Price))/min"
@@ -478,7 +478,7 @@ enum BulletinDataSource {
         page.appearance.titleTextColor = standardContrastColor
         
     
-        page.actionButtonTitle = "Dimiss"
+        page.actionButtonTitle = "Dismiss"
         page.alternativeButtonTitle = "See details"
         
         page.descriptionText = "Transaction completed."

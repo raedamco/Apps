@@ -10,6 +10,7 @@
 		070091A0243018BA00A8AF40 /* TimerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0700919F243018BA00A8AF40 /* TimerClass.swift */; };
 		070091A2243061D300A8AF40 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070091A1243061D300A8AF40 /* Payment.swift */; };
 		070091A62431B5CE00A8AF40 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070091A52431B5CE00A8AF40 /* History.swift */; };
+		071339612531419F0039568C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 071339602531419F0039568C /* GoogleService-Info.plist */; };
 		0725B2D42325CC03007B400F /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D32325CC03007B400F /* Connection.swift */; };
 		0725B2D82325CF7F007B400F /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D72325CF7F007B400F /* Objects.swift */; };
 		0725B2DA2325CF99007B400F /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D92325CF99007B400F /* Variables.swift */; };
@@ -28,7 +29,6 @@
 		0757296D243A53F600BDA702 /* Directions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0757296C243A53F600BDA702 /* Directions.swift */; };
 		0764113A237A109800EF4332 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07641139237A109800EF4332 /* WebKit.framework */; };
 		0764113C237A429800EF4332 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0764113B237A429800EF4332 /* Search.swift */; };
-		0764113E237A6B0600EF4332 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0764113D237A6B0600EF4332 /* GoogleService-Info.plist */; };
 		07641140237A6DA200EF4332 /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0764113F237A6DA200EF4332 /* PassKit.framework */; };
 		0793DDD52325F80B002FBE09 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0793DDD32325F80B002FBE09 /* Settings.swift */; };
 		0793DDDB23260AC5002FBE09 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0793DDDA23260AC5002FBE09 /* Account.swift */; };
@@ -42,12 +42,12 @@
 		07ACDAE924999D4700F170B0 /* Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAE824999D4700F170B0 /* Stripe.swift */; };
 		07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */; };
 		07ADFCBD23712A9900D5D81F /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ADFCBC23712A9900D5D81F /* Structs.swift */; };
-		07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07BAB78E24AA9A9900A425A2 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07BAB78D24AA9A9900A425A2 /* MapKit.framework */; };
 		07BF2DE32438387C0017BCD3 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE22438387C0017BCD3 /* Parking.swift */; };
 		07BF2DE5243838970017BCD3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE4243838970017BCD3 /* User.swift */; };
 		07BF2DE7243838D20017BCD3 /* Transactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE6243838D20017BCD3 /* Transactions.swift */; };
-		07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07CAAC422439372D0027FF60 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CAAC412439372D0027FF60 /* PaymentMethod.swift */; };
 		07E3644D2327925100B55203 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E3644C2327925100B55203 /* Preferences.swift */; };
 		07E4F81623416E3C001CC519 /* Payments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E4F81523416E3C001CC519 /* Payments.swift */; };
@@ -74,8 +74,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */,
-				07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */,
+				07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */,
+				07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -86,6 +86,7 @@
 		0700919F243018BA00A8AF40 /* TimerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerClass.swift; sourceTree = "<group>"; usesTabs = 0; };
 		070091A1243061D300A8AF40 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		070091A52431B5CE00A8AF40 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
+		071339602531419F0039568C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0725B2CF2325BFAC007B400F /* Parking.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Parking.entitlements; sourceTree = "<group>"; };
 		0725B2D32325CC03007B400F /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		0725B2D62325CD06007B400F /* darkstyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = darkstyle.json; sourceTree = "<group>"; };
@@ -107,7 +108,6 @@
 		0757296C243A53F600BDA702 /* Directions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Directions.swift; sourceTree = "<group>"; };
 		07641139237A109800EF4332 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		0764113B237A429800EF4332 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
-		0764113D237A6B0600EF4332 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0764113F237A6DA200EF4332 /* PassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PassKit.framework; path = System/Library/Frameworks/PassKit.framework; sourceTree = SDKROOT; };
 		0793DDD32325F80B002FBE09 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		0793DDDA23260AC5002FBE09 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
@@ -248,7 +248,7 @@
 				0734C0A72325BBC000E74D0A /* LaunchScreen.storyboard */,
 				0734C0A52325BBC000E74D0A /* Assets.xcassets */,
 				0734C0AA2325BBC000E74D0A /* Info.plist */,
-				0764113D237A6B0600EF4332 /* GoogleService-Info.plist */,
+				071339602531419F0039568C /* GoogleService-Info.plist */,
 			);
 			path = Parking;
 			sourceTree = "<group>";
@@ -475,8 +475,8 @@
 				0734C0A92325BBC000E74D0A /* LaunchScreen.storyboard in Resources */,
 				0734C0A62325BBC000E74D0A /* Assets.xcassets in Resources */,
 				0725B2DE2325D0F1007B400F /* darkstyle.json in Resources */,
-				0764113E237A6B0600EF4332 /* GoogleService-Info.plist in Resources */,
 				0796DABF244D60AD00805018 /* VarelaRound-Regular.ttf in Resources */,
+				071339612531419F0039568C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -750,7 +750,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.00033;
+				CURRENT_PROJECT_VERSION = 1.00035;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
 				INFOPLIST_FILE = Parking/Info.plist;
@@ -759,7 +759,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00033;
+				MARKETING_VERSION = 1.00035;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theoryparking.park;
 				PRODUCT_NAME = park;
@@ -778,7 +778,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.00033;
+				CURRENT_PROJECT_VERSION = 1.00035;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
 				INFOPLIST_FILE = Parking/Info.plist;
@@ -787,7 +787,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00033;
+				MARKETING_VERSION = 1.00035;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theoryparking.park;
 				PRODUCT_NAME = park;

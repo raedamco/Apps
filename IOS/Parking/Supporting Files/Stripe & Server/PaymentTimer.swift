@@ -32,6 +32,8 @@ class ServerPayment: NSObject {
                                            "Spot": SelectedParkingData[indexPath.row].Spot,
                                            "Latitude": SelectedParkingData[indexPath.row].Location.latitude,
                                            "Longitude": SelectedParkingData[indexPath.row].Location.longitude,
+                                           "StartLatitude": currentUserLocation.coordinate.latitude,
+                                           "StartLongitude": currentUserLocation.coordinate.longitude,
                                            "Rate": SelectedParkingData[indexPath.row].Price,
                                            "CompanyStripeID": SelectedParkingData[indexPath.row].CompanyStripeID
                                           ]

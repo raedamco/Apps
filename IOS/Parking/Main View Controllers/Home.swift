@@ -12,8 +12,10 @@ import GooglePlaces
 import Alamofire
 import SwiftyJSON
 import BLTNBoard
+import FirebaseAnalytics
 
 var selectedParkingLocation = CLLocation()
+var currentUserLocation = CLLocation()
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate {
      
@@ -53,7 +55,8 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(startRoute(notification:)), name: NSNotification.Name(rawValue: "startRoute"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(cancelRoute(notification:)), name: NSNotification.Name(rawValue: "cancelRoute"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(infoRoute(notification:)), name: NSNotification.Name(rawValue: "moreInfo"), object: nil)
-     }
+    }
+    
     
     func updateMapStyle(){
         if self.traitCollection.userInterfaceStyle == .dark {
@@ -135,6 +138,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         }
         
         userLocation = location
+        currentUserLocation = location
         mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
         locationManager.stopUpdatingLocation()
 //        let update = GMSCameraUpdate.setTarget(location.coordinate)
