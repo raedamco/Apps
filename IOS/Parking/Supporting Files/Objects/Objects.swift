@@ -257,10 +257,10 @@ func convertToString(Number: NSNumber) -> String{
 }
 
 func convertToTime(Value: NSNumber, Style: DateComponentsFormatter.UnitsStyle) -> String {
-    let interval = Double(Value)
+    let interval = Double(truncating: Value)*60
 
     let formatter = DateComponentsFormatter()
-    formatter.allowedUnits = [.hour, .minute, .second]
+    formatter.allowedUnits = [.hour, .minute]
     formatter.unitsStyle = Style
 
     let conversion = formatter.string(from: TimeInterval(interval))!

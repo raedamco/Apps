@@ -242,7 +242,7 @@ enum BulletinDataSource {
         page.actionHandler = { item in
             userDefaults.set(true, forKey: "BLUETOOTH")
             NotificationCenter.default.post(name: NSNotification.Name("bluetoothPermission"), object: nil)
-            //item.manager?.dismissBulletin(animated: true)
+            item.manager?.dismissBulletin(animated: true)
         }
         
         page.alternativeHandler = { item in
@@ -729,6 +729,24 @@ enum BulletinDataSource {
         page.descriptionText = "Requesting server timer..."
         page.requiresCloseButton = false
         page.isDismissable = false
+        return page
+    }
+    
+    //TRANSACTIONS START
+    static func comingSoon() -> BLTNPageItem {
+        let page = BLTNPageItem(title: "Coming Soon")
+        page.appearance.titleTextColor = standardContrastColor
+        page.appearance.actionButtonColor = UIColor.darkGray
+        page.appearance.actionButtonTitleColor = UIColor.white
+        page.actionButtonTitle = "Ok"
+        page.isDismissable = true
+        page.requiresCloseButton = false
+        
+        page.actionHandler = { item in
+            item.manager?.dismissBulletin(animated: true)
+            NotificationCenter.default.post(name: NSNotification.Name("closeTView"), object: nil)
+        }
+        
         return page
     }
     

@@ -72,7 +72,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         setNeedsStatusBarAppearanceUpdate()
         checkConnection()
         updateMapStyle()
-        
      }
      
      override func viewWillAppear(_ animated: Bool) {

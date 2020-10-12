@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '13.0'
+ platform :ios, '13.0'
 
 target 'Theory Parking' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -20,9 +20,8 @@ target 'Theory Parking' do
 	pod 'Firebase/Analytics'
   	pod 'Firebase/Storage'
 	pod 'Firebase/Messaging'
-   	pod 'Firebase/Functions'
-	pod 'Crashlytics'
-	pod 'Fabric'
+  	pod 'Firebase/Functions'
+	pod 'Firebase/Crashlytics'
 	pod 'Stripe'	
 	pod 'ZendeskSupportSDK'
 	pod 'DropDown'

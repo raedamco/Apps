@@ -27,6 +27,11 @@ class PaymentViewController: UIViewController, UITableViewDelegate, UITableViewD
        return BLTNItemManager(rootItem: page)
     }()
     
+    lazy var bulletinManagerComingSoon: BLTNItemManager = {
+       let page = BulletinDataSource.comingSoon()
+       return BLTNItemManager(rootItem: page)
+    }()
+    
     // BLTNBoard END
     
     override func viewDidLoad() {
@@ -104,7 +109,8 @@ class PaymentViewController: UIViewController, UITableViewDelegate, UITableViewD
         }else if sections[indexPath.row] == "Transaction History"{
             showView(ViewController: TransactionHistory())
         }else if sections[indexPath.row] == "Rewards"{
-            
+            self.bulletinManagerComingSoon.allowsSwipeInteraction = false
+            self.bulletinManagerComingSoon.showBulletin(above: self)
         }
     }
     

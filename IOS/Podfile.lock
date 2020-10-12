@@ -220,10 +220,7 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Interface (0.0.7)
   - BulletinBoard (4.1.2)
-  - Crashlytics (3.14.0):
-    - Fabric (~> 1.10.2)
   - DropDown (2.3.13)
-  - Fabric (1.10.2)
   - Firebase (6.33.0):
     - Firebase/Core (= 6.33.0)
   - Firebase/Analytics (6.33.0):
@@ -236,6 +233,9 @@ PODS:
     - FirebaseAnalytics (= 6.8.3)
   - Firebase/CoreOnly (6.33.0):
     - FirebaseCore (= 6.10.3)
+  - Firebase/Crashlytics (6.33.0):
+    - Firebase/CoreOnly
+    - FirebaseCrashlytics (~> 4.6.1)
   - Firebase/Firestore (6.33.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 1.18.0)
@@ -271,6 +271,12 @@ PODS:
     - GoogleUtilities/Environment (~> 6.7)
     - GoogleUtilities/Logger (~> 6.7)
     - nanopb (~> 1.30906.0)
+  - FirebaseCrashlytics (4.6.2):
+    - FirebaseCore (~> 6.10)
+    - FirebaseInstallations (~> 1.6)
+    - GoogleDataTransport (~> 7.2)
+    - nanopb (~> 1.30906.0)
+    - PromisesObjC (~> 1.2)
   - FirebaseFirestore (1.18.0):
     - abseil/algorithm (= 0.20200225.0)
     - abseil/base (= 0.20200225.0)
@@ -396,13 +402,12 @@ PODS:
 DEPENDENCIES:
   - Alamofire
   - BulletinBoard
-  - Crashlytics
   - DropDown
-  - Fabric
   - Firebase
   - Firebase/Analytics
   - Firebase/Auth
   - Firebase/Core
+  - Firebase/Crashlytics
   - Firebase/Firestore
   - Firebase/Functions
   - Firebase/Messaging
@@ -421,14 +426,13 @@ SPEC REPOS:
     - Alamofire
     - BoringSSL-GRPC
     - BulletinBoard
-    - Crashlytics
     - DropDown
-    - Fabric
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreDiagnostics
+    - FirebaseCrashlytics
     - FirebaseFirestore
     - FirebaseFunctions
     - FirebaseInstallations
@@ -464,14 +468,13 @@ SPEC CHECKSUMS:
   Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   BulletinBoard: 1c0cb191b6c6245d08f51bd2445f1e36414ec0ed
-  Crashlytics: 9220f5bc89e7a618df411b4f639389dbfb0e03d2
   DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
-  Fabric: ea977e3cd9c20425516d3dafd3bf8c941c51223f
   Firebase: 8db6f2d1b2c5e2984efba4949a145875a8f65fe5
   FirebaseAnalytics: 5dd088bd2e67bb9d13dbf792d1164ceaf3052193
   FirebaseAuth: c92d49ada7948d1a23466e3db17bc4c2039dddc3
   FirebaseCore: d889d9e12535b7f36ac8bfbf1713a0836a3012cd
   FirebaseCoreDiagnostics: 770ac5958e1372ce67959ae4b4f31d8e127c3ac1
+  FirebaseCrashlytics: 1a747c9cc084a24dc6d9511c991db1cd078154eb
   FirebaseFirestore: adff4877869ca91a11250cc0989a6cd56bad163f
   FirebaseFunctions: 27518fdd14d8b3a849e2443f921cd1b471ab7acd
   FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
@@ -502,6 +505,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 51c9d4a826f7bd87e3109e5c801c602a6b62c762
   ZendeskSupportSDK: dcb2596ad05a63d662e8c7924357babbf327b421
 
-PODFILE CHECKSUM: 652bb2b6f4e144685b55eade0523e8e3fcbaa2a0
+PODFILE CHECKSUM: 14537ef22899b7777b68d018666d254cc73fce4b
 
 COCOAPODS: 1.9.3

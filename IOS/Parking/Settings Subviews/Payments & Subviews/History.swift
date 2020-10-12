@@ -49,6 +49,7 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
         NotificationCenter.default.addObserver(self, selector: #selector(closeView(notification:)), name: NSNotification.Name(rawValue: "closeTView"), object: nil)
+        
         if TransactionsHistory.isEmpty {
             self.emptyAlert.allowsSwipeInteraction = false
             self.emptyAlert.showBulletin(above: self)
@@ -110,7 +111,7 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
         
         cell.LocationLabel.text = TransactionsHistory[indexPath.row].Organization
         cell.DateLabel.text = "Date: " + formatter.string(from: TransactionsHistory[indexPath.row].Day)
-        cell.CostLabel.text = "Cost: $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Cost)) + " | $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Rate)) + "/min"
+        cell.CostLabel.text = "Cost: $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Cost)) + " @ $" + String(format:"%.2f", Double(truncating: TransactionsHistory[indexPath.row].Rate)) + "/min"
         cell.DurationLabel.text = "Duration: " + convertToTime(Value: TransactionsHistory[indexPath.row].Duration, Style: .abbreviated)
 
         return cell

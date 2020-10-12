@@ -14,7 +14,7 @@ class BLE: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
     var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
-    var errorMessage = String()
+    var statusMessage = String()
     
     lazy var bulletinManagerError: BLTNItemManager = {
         let page = BulletinDataSource.makeErrorPage(message: errorMessage)
@@ -33,21 +33,21 @@ class BLE: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
             case .poweredOff:
-                errorMessage = "BLE is powered off"
+                statusMessage = "BLE is powered off"
             case .poweredOn:
-                errorMessage = "BLE is poweredOn"
+                statusMessage = "BLE is powered On"
             case .resetting:
-                errorMessage = "BLE is resetting"
+                statusMessage = "BLE is resetting"
             case .unauthorized:
-                errorMessage = "BLE is unauthorized"
+                statusMessage = "BLE is unauthorized"
             case .unknown:
-                errorMessage = "BLE is unknown"
+                statusMessage = "BLE is unknown"
             case .unsupported:
-                errorMessage = "BLE is unsupported"
+                statusMessage = "BLE is unsupported"
             default:
-                errorMessage = "default"
+                statusMessage = "default"
         }
-        print(errorMessage)
+        
         self.bulletinManagerError.allowsSwipeInteraction = false
 //        self.bulletinManagerError.showBulletin(above: self)
     }

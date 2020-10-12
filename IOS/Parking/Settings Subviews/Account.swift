@@ -13,7 +13,7 @@ import BLTNBoard
 class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var tableView = UITableView()
-    var itemsInSections = [["\(UserData[indexPath.row].Email)","\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))"],[UserData[indexPath.row].License[indexPath.row]],[""],["Logout"]]
+    var itemsInSections = [["\(UserData[indexPath.row].Email)","\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))",""],[UserData[indexPath.row].License[indexPath.row],""],[""],["Logout"]]
     var sections = ["","Vehicles","Permits",""]
     
     // BLTNBoard START

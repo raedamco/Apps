@@ -101,5 +101,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>FirebaseAutomaticScreenReportingEnabled</key>
+	<true/>
 </dict>
 </plist>
