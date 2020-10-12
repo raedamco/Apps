@@ -47,10 +47,10 @@ func getTransactionHistory(){
     }
     
     database.collection("Users").document("Commuters").collection("Users").document(UserData[indexPath.row].UID).collection("History").addSnapshotListener { querySnapshot, error in
-        guard let snapshot = querySnapshot else {
-            print("Error fetching snapshots: \(error!)")
-            return
-        }
+//        guard let snapshot = querySnapshot else {
+//            print("Error fetching snapshots: \(error!)")
+//            return
+//        }
 
 //        snapshot.documentChanges.forEach { diff in
 //            if (diff.type == .added) {

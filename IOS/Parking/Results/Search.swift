@@ -31,7 +31,7 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     func createViewLayout(){
         view.backgroundColor = standardBackgroundColor
-        var search = UISearchController(searchResultsController: nil)
+        let search = UISearchController(searchResultsController: nil)
         self.navigationItem.searchController?.isActive = true
         self.navigationItem.searchController = search
         self.navigationController?.title = "Search"
