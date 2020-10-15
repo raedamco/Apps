@@ -46,7 +46,7 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
                     let capacity = currentInfo["Capacity"]!
                     let CompanyStripeID = document.data()["CompanyStripeID"] as! String
                     
-                    let distance = String(describing: convertToFeet(Value: CLLocation(latitude: location.latitude, longitude: location.longitude).distance(from: CLLocation(latitude: latitude, longitude: longitude)))) + " away from destination"
+                    let distance = String(describing: convertToMiles(Value: CLLocation(latitude: location.latitude, longitude: location.longitude).distance(from: CLLocation(latitude: latitude, longitude: longitude)))) + " from destination"
                     
                     ParkingData.append(Parking(Location: location, Distance: distance, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floors: [], Spots: [], CompanyStripeID: CompanyStripeID))
                 }

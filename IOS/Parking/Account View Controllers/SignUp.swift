@@ -19,10 +19,11 @@ class SignUp: UIViewController, UITextFieldDelegate{
     let emailTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .emailAddress, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: false, Placeholder: "Email", Target: self)
     let nameTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: false, Placeholder: "Name", Target: self)
     let passwordTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Password", Target: self)
-    let passwordVerifyTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Verify Password", Target: self)
-    let createAccountButton = createButton(Title: "next", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 6, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(createAccount))
-    let loginButton = createButton(Title: "Have an account? Log In", FontName: font, FontSize: 15, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 0, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(login))
-    let privacyPolicyButton = createButton(Title: "Privacy Policy", FontName: font, FontSize: 14, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 0, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(viewPrivacyPolicy))
+    let passwordVerifyTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .join, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Verify Password", Target: self)
+    
+    let createAccountButton = createButton(Title: "next", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(createAccount))
+    let loginButton = createButton(Title: "Have an account? Log In", FontName: font, FontSize: 15, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 12, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(login))
+    let privacyPolicyButton = createButton(Title: "Privacy Policy", FontName: font, FontSize: 14, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 12, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(viewPrivacyPolicy))
    
     // BLTNBoard START
        let backgroundStyles = BackgroundStyles()
@@ -57,7 +58,8 @@ class SignUp: UIViewController, UITextFieldDelegate{
         nameTextField.delegate = self
         passwordTextField.delegate = self
         passwordVerifyTextField.delegate = self
-
+        nameTextField.autocapitalizationType = .words
+        
         view.addSubview(emailTextField)
         view.addSubview(nameTextField)
         view.addSubview(passwordTextField)

@@ -20,7 +20,7 @@ var currentUserLocation = CLLocation()
 class HomeViewController: UIViewController, CLLocationManagerDelegate {
      
     private let locationManager = CLLocationManager()
-    let destinationTextField = createButton(Title: "Destination", FontName: font, FontSize: 20, FontColor: standardContrastColor, BorderWidth: 0, CornerRaduis: 5, BackgroundColor: standardBackgroundColor.withAlphaComponent(0.7), BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(searchLocation))
+    let destinationTextField = createButton(Title: "Destination", FontName: font, FontSize: 20, FontColor: standardContrastColor, BorderWidth: 0, CornerRaduis: 12, BackgroundColor: standardBackgroundColor.withAlphaComponent(0.7), BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(searchLocation))
     let mapView = GMSMapView()
     var userLocation = CLLocation()
     var destinationLocation = CLLocation()
@@ -57,7 +57,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(infoRoute(notification:)), name: NSNotification.Name(rawValue: "moreInfo"), object: nil)
     }
     
-    
     func updateMapStyle(){
         if self.traitCollection.userInterfaceStyle == .dark {
             styleMap(DarkMode: true)
@@ -90,6 +89,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             navigationbarAttributes(Hidden: false, Translucent: false)
             
             if DirectionsData.count > 0 {
+                print(DirectionsData)
                 let directionTitle = SelectedParkingData[indexPath.row].Name
                     //DirectionsData[indexPath.row].Manuver
                 
@@ -140,10 +140,10 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         currentUserLocation = location
         mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
         locationManager.stopUpdatingLocation()
-//        let update = GMSCameraUpdate.setTarget(location.coordinate)
-//        mapView.moveCamera(update)
-//
-//
+        let update = GMSCameraUpdate.setTarget(location.coordinate)
+        mapView.moveCamera(update)
+
+
         if location.distance(from: destinationLocation) <= blockDistance {
             updateDirectionsView()
         }else{

@@ -420,7 +420,7 @@ enum BulletinDataSource {
         page.appearance.alternativeButtonFontSize = 18
         
         page.actionButtonTitle = "Dismiss"
-        page.alternativeButtonTitle = "Enter Location Manually"
+//        page.alternativeButtonTitle = "Enter Location Manually"
         page.descriptionText = "You are not currently parked near a location we can detect"
         page.requiresCloseButton = false
         
@@ -429,10 +429,10 @@ enum BulletinDataSource {
             item.manager?.dismissBulletin(animated: true)
         }
         
-        page.alternativeHandler = { item in
-            item.manager?.dismissBulletin(animated: true)
-            NotificationCenter.default.post(name: NSNotification.Name("enterLocation"), object: nil)
-        }
+//        page.alternativeHandler = { item in
+//            item.manager?.dismissBulletin(animated: true)
+//            NotificationCenter.default.post(name: NSNotification.Name("enterLocation"), object: nil)
+//        }
         
         return page
     }
@@ -694,7 +694,7 @@ enum BulletinDataSource {
     }
     
 
-    static func TransactionData(Location:String, Duration:String, Amount:String, Date: String, TransactionID: String) -> BLTNPageItem {
+    static func TransactionData(Location: String, Duration: String, Amount: String, Date: Date, TransactionID: String) -> BLTNPageItem {
         let page = BLTNPageItem(title: "Transaction Details")
         
         page.appearance.actionButtonColor = standardContrastColor
@@ -707,11 +707,16 @@ enum BulletinDataSource {
         page.actionButtonTitle = "Dismiss"
         page.alternativeButtonTitle = "Report error"
         
-        page.descriptionText = "Date: \(Date) \nLocation: \(Location) \nDuration: \(Duration) \nAmount: \(Amount)"
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd/yyyy"
+        
+        page.descriptionText = "Location: \(Location) \nDate: \(formatter.string(from: Date)) \nDuration: \(Duration) \nAmount: $\(Amount)"
         page.requiresCloseButton = false
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
+            SelectedTransactionCellData.removeAll()
+            
         }
         
         page.alternativeHandler = { item in
@@ -726,7 +731,7 @@ enum BulletinDataSource {
         
         page.appearance.titleTextColor = standardContrastColor
 //        page.imageView = AnimationView(name: "connectivity")
-        page.descriptionText = "Requesting server timer..."
+        page.descriptionText = "Verifying Check-in"
         page.requiresCloseButton = false
         page.isDismissable = false
         return page
@@ -735,10 +740,14 @@ enum BulletinDataSource {
     //TRANSACTIONS START
     static func comingSoon() -> BLTNPageItem {
         let page = BLTNPageItem(title: "Coming Soon")
+        page.appearance.actionButtonColor = standardContrastColor
+        page.appearance.actionButtonTitleColor = standardBackgroundColor
+        page.appearance.actionButtonFontSize = 22
         page.appearance.titleTextColor = standardContrastColor
-        page.appearance.actionButtonColor = UIColor.darkGray
-        page.appearance.actionButtonTitleColor = UIColor.white
-        page.actionButtonTitle = "Ok"
+        page.appearance.alternativeButtonTitleColor = standardContrastColor
+        page.appearance.alternativeButtonFontSize = 18
+        
+        page.actionButtonTitle = "Dismiss"
         page.isDismissable = true
         page.requiresCloseButton = false
         

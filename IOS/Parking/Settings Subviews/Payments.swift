@@ -105,7 +105,9 @@ class PaymentViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if sections[indexPath.row] == "Payment Methods"{
-            showView(ViewController: PaymentMethod())
+//            showView(ViewController: PaymentMethod())
+            self.bulletinManagerComingSoon.allowsSwipeInteraction = false
+            self.bulletinManagerComingSoon.showBulletin(above: self)
         }else if sections[indexPath.row] == "Transaction History"{
             showView(ViewController: TransactionHistory())
         }else if sections[indexPath.row] == "Rewards"{

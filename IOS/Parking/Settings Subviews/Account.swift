@@ -13,7 +13,9 @@ import BLTNBoard
 class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var tableView = UITableView()
-    var itemsInSections = [["\(UserData[indexPath.row].Email)","\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))",""],[UserData[indexPath.row].License[indexPath.row],""],[""],["Logout"]]
+    var itemsInSections = [[""],[""],[""],[""]]
+    //"\(UserData[indexPath.row].Phone.converToPhoneFormat(pattern: "###-###-####", replacmentCharacter: "#"))
+    //[UserData[indexPath.row].License[indexPath.row]
     var sections = ["","Vehicles","Permits",""]
     
     // BLTNBoard START
@@ -28,6 +30,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        itemsInSections = [["\(UserData[indexPath.row].Email)",""],["None",""],["None",""],["Logout"]]
         createViewLayout()
     }
     
@@ -37,13 +40,13 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func createViewLayout(){
         view.backgroundColor = standardBackgroundColor
-        setupNavigationBar(LargeText: true, Title: UserData[indexPath.row].Name, SystemImageR: true, ImageR: true, ImageTitleR: "plus", TargetR: self, ActionR: #selector(self.addData), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
-        
+//        setupNavigationBar(LargeText: true, Title: UserData[indexPath.row].Name, SystemImageR: true, ImageR: true, ImageTitleR: "plus", TargetR: self, ActionR: #selector(self.addData), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
+        setupNavigationBar(LargeText: true, Title: UserData[indexPath.row].Name, SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: self, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "accountCell")
         tableView.isScrollEnabled = true
         tableView.allowsSelection = true
         tableView.rowHeight = 70
-        tableView.separatorColor = UIColor.darkGray.withAlphaComponent(0.5)
+        tableView.separatorColor = UIColor.clear.withAlphaComponent(0.5)
         let adjustForTabbarInsets: UIEdgeInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: UITabBar.appearance().frame.height, right: 0)
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         tableView.indicatorStyle = UIScrollView.IndicatorStyle.default
@@ -113,7 +116,6 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             logout()
         }
        
-        
     }
     
     @objc func addData() {
@@ -129,6 +131,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     @objc func logout(){
         UserData.removeAll()
         TransactionsHistory.removeAll()
+        SelectedParkingData.removeAll()
         try! Auth.auth().signOut()
         self.navigationController?.pushViewController(StartView(), animated: false)
         self.tabBarController?.tabBar.isHidden = true

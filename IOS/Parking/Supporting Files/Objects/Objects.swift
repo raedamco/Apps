@@ -238,8 +238,10 @@ func getMinutesDifferenceFromTwoDates(start: Date, end: Date) -> Int{
 }
 
 func convertToMiles(Value: Double) -> String {
-    let conversion = Measurement(value: Value, unit: UnitLength.meters).converted(to: UnitLength.miles)
-    return MeasurementFormatter().string(from: conversion)
+    let meters: Measurement<UnitLength> = .init(value: Value, unit: .meters)
+    let miles = meters.converted(to: .miles)
+    let formatted = miles.usFormatted
+    return formatted
 }
 
 func convertToFeet(Value: Double) -> String {

@@ -102,12 +102,12 @@ func checkCurrentTransaction(){
                     guard let Rate = Info["Rate"] as? NSNumber else { return }
                     guard let Location = Info["Location"] as? GeoPoint else { return }
                     guard let Time = document.data()["Duration"] as? [String: Firebase.Timestamp] else { return }
-                    
+//                    guard let StartLocation = Info["Start Location"] as? GeoPoint else { return }
                     let Start = Time["Begin"]!.dateValue()
                     let difference = Calendar.current.dateComponents([.minute], from: Start, to: Date())
-    
+                    
                     let Amount = Double(difference.minute!) * Double(truncating: Rate)
-
+                    
                     TransactionData.append(Payment(Current: true, Start: Start, Amount: Amount))
                     getCurrentParkingData(Location: Location, Organization: Organization, Spot: Spot, Floor: Floor, Rate: Rate)
                     mainTimer.start()

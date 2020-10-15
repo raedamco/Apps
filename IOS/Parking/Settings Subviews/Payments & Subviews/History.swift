@@ -12,14 +12,28 @@ import Firebase
 import Stripe
 import BLTNBoard
 
+var SelectedTransactionCellData = [SelectedCellData]()
+
+struct SelectedCellData {
+    var Location: String
+    var Duration: String
+    var Amount: String
+    var Date: Date
+    var TransactionID: String
+    
+    init(Location: String, Duration: String, Amount: String, Date: Date, TransactionID: String){
+        self.Location = Location
+        self.Duration = Duration
+        self.Amount = Amount
+        self.Date = Date
+        self.TransactionID = TransactionID
+    }
+}
+
 class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let tableView = UITableView()
-    var Location = String()
-    var Duration = String()
-    var Amount = String()
-    var Date = String()
-    var TransactionID = String()
+    
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
     var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
@@ -30,7 +44,7 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
     }()
     
     lazy var ShowMoreData: BLTNItemManager = {
-        let page = BulletinDataSource.TransactionData(Location: Location, Duration: Duration, Amount: Duration, Date: Duration, TransactionID: TransactionID)
+        let page = BulletinDataSource.TransactionData(Location: SelectedTransactionCellData[indexPath.row].Location, Duration: SelectedTransactionCellData[indexPath.row].Duration, Amount: SelectedTransactionCellData[indexPath.row].Amount, Date: SelectedTransactionCellData[indexPath.row].Date, TransactionID: SelectedTransactionCellData[indexPath.row].TransactionID)
         return BLTNItemManager(rootItem: page)
     }()
     // BLTNBoard END
@@ -119,11 +133,8 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedRow = TransactionsHistory[indexPath.row]
-        Location = selectedRow.Organization
-        Duration = String(describing: selectedRow.Duration)
-        Amount = String(describing: selectedRow.Cost)
-        Date = String(describing: selectedRow.Day)
-        TransactionID = selectedRow.TID
+        
+        SelectedTransactionCellData.append(SelectedCellData(Location: selectedRow.Organization, Duration: convertToTime(Value: selectedRow.Duration, Style: .abbreviated), Amount: String(describing: selectedRow.Cost), Date: selectedRow.Day, TransactionID: selectedRow.TID))
         
         self.ShowMoreData.allowsSwipeInteraction = false
         self.ShowMoreData.showBulletin(above: self)

@@ -17,6 +17,7 @@ admin.initializeApp({
 //Private keys
 const stripe = require('stripe')("sk_test_51H0FFyDtW0T37E4P27PEfuEPvDUyGvmkNhInroQ9mAH7sdKzeM0A2hqLEC3advWxPHO0oCMJtHKk7USLmMIqc4aW00RhpYqsgR"); //Secret Key
 var slack = require('slack-notify')('https://hooks.slack.com/services/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');
+var slackTransactionBot = require('slack-notify')('https://hooks.slack.com/services/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');
 //INITIALIZATION END
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -406,6 +407,22 @@ exports.createCharge = functions.https.onRequest(async (req, res) => {
                     TransactionID: TransactionDetails.TransactionID
                 }
             }, {merge: true});
+
+            //Send slack message of new finalized transaction
+            await slackTransactionBot.send({
+                'username': 'Transaction Bot',
+                'text': 'Finalized Transaction :tada:',
+                'icon_emoji': ':tada:',
+                'attachments': [{
+                  'color': '#75FF33',
+                  'fields': [{
+                        'title': 'Transaction Information',
+                        'value': "User ID: " + UserData.UID + "\nTime Finalized: " + TimerEnd.toUTCString() + "\nTransaction Amount: $" + (TransactionDetails.Amount/100) + "\nRevenue: $" + parseFloat((TransactionDetails.Amount * 0.07)/100).toFixed(2),
+                        'short': false
+                    }]
+                }]
+            })
+
         } catch(error) {
             return console.log(error);
         }

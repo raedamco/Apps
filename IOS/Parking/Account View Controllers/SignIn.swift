@@ -17,8 +17,8 @@ class SignIn: UIViewController, UITextFieldDelegate {
     let emailTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .emailAddress, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: false, Placeholder: "Email", Target: self)
     let passwordTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .continue, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Password", Target: self)
     
-    let loginButton = createButton(Title: "log in", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 6, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(login))
-    let signupButton = createButton(Title: "Don't have an account? Sign up here.", FontName: font, FontSize: 15, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 0, BackgroundColor: .clear, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(signup))
+    let loginButton = createButton(Title: "log in", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(login))
+    let signupButton = createButton(Title: "Don't have an account? Sign up here.", FontName: font, FontSize: 15, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 12, BackgroundColor: .clear, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(signup))
     let forgotButton = createButton(Title: "forgot?", FontName: font, FontSize: 16, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 0, BackgroundColor: .clear, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(passwordReset))
 
     let blacksubView = createViewOverlay()

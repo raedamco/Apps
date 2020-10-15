@@ -26,15 +26,19 @@ func getUserData(Email: String){
                 guard let Email = document.data()["Email"] as? String else { return }
                 guard let UID = document.data()["UUID"] as? String else { return }
                 var License = document.data()["Vehicles"] as! [String]
-                guard let Permit = document.data()["Permits"] as? [String:String] else { return }
+                var Permit = document.data()["Permits"] as? [String:String]
                 guard let StripeID = document.data()["StripeID"] as? String else { return }
                 let Phone = document.data()["Phone"] as? String ?? ""
                 
                 if License.isEmpty {
                     License = ["None"]
                 }
+                
+                if Permit!.isEmpty {
+                    Permit = ["None":" "]
+                }
 
-                UserData.append(User(Name: Name, Email: Email,Phone: Phone, UID: UID, License: License, Permit: Permit, StripeID: StripeID))
+                UserData.append(User(Name: Name, Email: Email,Phone: Phone, UID: UID, License: License, Permit: Permit!, StripeID: StripeID))
             }
         }
         
