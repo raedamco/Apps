@@ -95,41 +95,30 @@ func ParkingDataUpdates(){
         }
         
         snapshot.documentChanges.forEach { diff in
-            if (diff.type == .added) {
-                guard let occupancy = diff.document.data()["Occupancy"] as? [String: Any] else { return }
-                guard let occupied = occupancy["Occupied"] as? Bool else { return }
-                guard let info = diff.document.data()["Info"] as? [String: Any] else { return }
-                guard let spotID = info["Spot ID"] as? NSNumber else { return }
-                
-                if occupied == false {
-                    ParkingData[indexPath.row].Spots.append(String(describing: spotID))
-                }
-            }
-            
             if (diff.type == .modified) {
                 guard let occupancy = diff.document.data()["Occupancy"] as? [String: Any] else { return }
                 guard let occupied = occupancy["Occupied"] as? Bool else { return }
                 guard let info = diff.document.data()["Info"] as? [String: Any] else { return }
                 guard let spotID = info["Spot ID"] as? NSNumber else { return }
+                print("OCCUPANCY CHANGED: ", spotID, occupancy)
                 
                 if (ParkingData.isEmpty == false && ParkingData[indexPath.row].Spots.contains(diff.document.documentID) && occupied == true) {
                     if let index = ParkingData[indexPath.row].Spots.firstIndex(of: diff.document.documentID) {
                         ParkingData[indexPath.row].Spots.remove(at: index)
+                        print(ParkingData[indexPath.row].Spots)
                     }
                 }else if (ParkingData.isEmpty == false && ParkingData[indexPath.row].Spots.contains(diff.document.documentID) == false && occupied == false){
                     ParkingData[indexPath.row].Spots.append(String(describing: spotID))
+                    print(ParkingData[indexPath.row].Spots)
                 }else if (SelectedParkingData.isEmpty == false && SelectedParkingData[indexPath.row].Spot.contains(diff.document.documentID) && occupied == true){
                     print("PARKING TAKEN")
+                    
                 }
                 NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
             }
-            
-            if (diff.type == .removed) {
-                print("Removed: \(diff.document.data())")
-            }
         }
         
-        if ParkingData.isEmpty == false {
+        if !ParkingData.isEmpty{
             ParkingData[indexPath.row].Floors.append(String(describing: "2"))
             ParkingData[indexPath.row].Spots.sort {$0.localizedStandardCompare($1) == .orderedAscending}
         }

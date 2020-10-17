@@ -13,13 +13,14 @@ import Alamofire
 
 var UserData = [User]()
 
-//Get user data from database
-func getUserData(Email: String){
+////Get user data from database
+func getUserData(Email:String, completion: @escaping (_ success: Bool) -> Void) {
     database.collection("Users").document("Commuters").collection("Users").whereField("Email", isEqualTo: Email).getDocuments { (snapshot, error) in
         if error != nil {
             try! Auth.auth().signOut()
             UserData.removeAll()
             TransactionsHistory.removeAll()
+            completion(false)
         }else{
             for document in (snapshot?.documents)! {
                 guard let Name = document.data()["Name"] as? String else { return }
@@ -45,9 +46,10 @@ func getUserData(Email: String){
         if !UserData.isEmpty{
             checkCurrentTransaction()
             getTransactionHistory()
+        }else{
+            completion(false)
         }
+        completion(true)
     }
-}
 
-
-
+ }

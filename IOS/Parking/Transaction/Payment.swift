@@ -60,9 +60,11 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
                         clientSecret = responseJSON?["ClientSecret"] as! String
                         completion(clientSecret, nil)
                         if Completed {
-                             NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
-                             NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
-                             NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
+                            checkUpdatedTID(completion: { (true) in
+                                NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
+                                NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
+                                NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
+                            })
                         }
                     case .failure(let error): print(error.localizedDescription)
                     completion(clientSecret, error)
@@ -118,7 +120,33 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
         self.view.reloadInputViews()
     }
     
-    
-    
+
 }
 
+
+func checkUpdatedTID(completion: @escaping (_ success: Bool) -> Void) {
+    database.collection("Users").document("Commuters").collection("Users").document(UserData[indexPath.row].UID).collection("History").order(by: "Duration.Begin", descending: true).limit(to: 1).addSnapshotListener { querySnapshot, error in
+        guard let snapshot = querySnapshot else {
+            print("Error fetching snapshots: \(error!)")
+            return
+        }
+
+        snapshot.documentChanges.forEach { diff in
+            if (diff.type == .modified) {
+                for document in (snapshot.documents) {
+                    guard let isTransactionCurrent = document.data()["Current"] as? Bool else { return }
+                                        
+                    if !isTransactionCurrent {
+                        guard let TransactionData = document.data()["Transaction"] as? [String: Any] else { return }
+                        if let _ = TransactionData["TransactionID"] as? String {
+                            completion(true)
+                        }else{
+                            completion(false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+ }

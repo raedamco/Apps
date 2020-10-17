@@ -410,7 +410,7 @@ exports.createCharge = functions.https.onRequest(async (req, res) => {
 
             //Send slack message of new finalized transaction
             await slackTransactionBot.send({
-                'username': 'Transaction Bot',
+                'username': 'Stripe Bot',
                 'text': 'Finalized Transaction :tada:',
                 'icon_emoji': ':tada:',
                 'attachments': [{

@@ -30,6 +30,7 @@ class SignUp: UIViewController, UITextFieldDelegate{
        var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
 
        var errorMessageBLTN = String()
+    
        lazy var bulletinManagerError: BLTNItemManager = {
            let page = BulletinDataSource.makeErrorPage(message: errorMessageBLTN)
            return BLTNItemManager(rootItem: page)

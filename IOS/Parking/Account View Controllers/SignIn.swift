@@ -106,12 +106,13 @@ class SignIn: UIViewController, UITextFieldDelegate {
             Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
                 if user != nil {
                     if Auth.auth().currentUser?.isEmailVerified == true {
-                        getUserData(Email: self.emailTextField.text!)
-                        self.navigationController?.setNavigationBarHidden(true, animated: true)
-                        self.tabBarController?.tabBar.isHidden = true
-                        self.navigationController?.popViewController(animated: true)
-                        self.navigationController?.removeFromParent()
-                        self.navigationController?.pushViewController(TabBarViewController(), animated: false)
+                        getUserData(Email: self.emailTextField.text!) { (true) in
+                            self.navigationController?.setNavigationBarHidden(true, animated: true)
+                            self.tabBarController?.tabBar.isHidden = true
+                            self.navigationController?.popViewController(animated: true)
+                            self.navigationController?.removeFromParent()
+                            self.navigationController?.pushViewController(TabBarViewController(), animated: false)
+                        }
                     }else{
                         Auth.auth().currentUser?.sendEmailVerification(completion: { (error) in
                              if let error = error {

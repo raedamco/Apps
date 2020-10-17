@@ -76,20 +76,24 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
      override func viewWillAppear(_ animated: Bool) {
         updateMapStyle()
         
-        self.view.addSubview(destinationTextField)
-        destinationTextField.target(forAction: #selector(self.searchLocation), withSender: self)
-        destinationTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
-        destinationTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
-        destinationTextField.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
-        
         self.view.layoutSubviews()
     
+//        if !TransactionData.isEmpty {
+//            destinationTextField.removeFromSuperview()
+//        }else{
+            self.view.addSubview(destinationTextField)
+            destinationTextField.target(forAction: #selector(self.searchLocation), withSender: self)
+            destinationTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+            destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
+            destinationTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
+            destinationTextField.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
+//        }
+        
         if destinationTextField.isHidden {
             navigationbarAttributes(Hidden: false, Translucent: false)
             
             if DirectionsData.count > 0 {
-                print(DirectionsData)
+                
                 let directionTitle = SelectedParkingData[indexPath.row].Name
                     //DirectionsData[indexPath.row].Manuver
                 

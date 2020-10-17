@@ -27,7 +27,7 @@ class PaymentViewController: UIViewController, UITableViewDelegate, UITableViewD
        return BLTNItemManager(rootItem: page)
     }()
     
-    lazy var bulletinManagerComingSoon: BLTNItemManager = {
+    var bulletinManagerComingSoon: BLTNItemManager = {
        let page = BulletinDataSource.comingSoon()
        return BLTNItemManager(rootItem: page)
     }()

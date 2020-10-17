@@ -25,7 +25,12 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
        lazy var bulletinManagerAddData: BLTNItemManager = {
            let page = BulletinDataSource.AddDataPage()
            return BLTNItemManager(rootItem: page)
-       }()
+        }()
+    
+        lazy var bulletinManagerComingSoon: BLTNItemManager = {
+           let page = BulletinDataSource.comingSoon()
+           return BLTNItemManager(rootItem: page)
+        }()
     // BLTNBoard END
     
     override func viewDidLoad() {
@@ -40,8 +45,8 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func createViewLayout(){
         view.backgroundColor = standardBackgroundColor
-//        setupNavigationBar(LargeText: true, Title: UserData[indexPath.row].Name, SystemImageR: true, ImageR: true, ImageTitleR: "plus", TargetR: self, ActionR: #selector(self.addData), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
-        setupNavigationBar(LargeText: true, Title: UserData[indexPath.row].Name, SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: self, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
+        setupNavigationBar(LargeText: true, Title: UserData[indexPath.row].Name, SystemImageR: true, ImageR: true, ImageTitleR: "plus", TargetR: self, ActionR: #selector(self.tempView), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
+
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "accountCell")
         tableView.isScrollEnabled = true
         tableView.allowsSelection = true
@@ -116,6 +121,11 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             logout()
         }
        
+    }
+    
+    @objc func tempView(){
+        self.bulletinManagerComingSoon.allowsSwipeInteraction = false
+        self.bulletinManagerComingSoon.showBulletin(above: self)
     }
     
     @objc func addData() {

@@ -63,7 +63,7 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
         NotificationCenter.default.addObserver(self, selector: #selector(closeView(notification:)), name: NSNotification.Name(rawValue: "closeTView"), object: nil)
-        
+        print("COUNT TH", TransactionsHistory.count)
         if TransactionsHistory.isEmpty {
             self.emptyAlert.allowsSwipeInteraction = false
             self.emptyAlert.showBulletin(above: self)
@@ -138,6 +138,7 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
         
         self.ShowMoreData.allowsSwipeInteraction = false
         self.ShowMoreData.showBulletin(above: self)
+
     }
     
     @objc func closeView(gesture: UISwipeGestureRecognizer) {
