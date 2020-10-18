@@ -28,11 +28,11 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(removeView(notification:)), name: NSNotification.Name(rawValue: "closeView"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTable(notification:)), name: NSNotification.Name(rawValue: "reloadResultTable"), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadTable(notification:)), name: NSNotification.Name(rawValue: "reloadResultTable"), object: nil)
         createViewLayout()
     }
     
@@ -137,11 +137,10 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         self.tableView.reloadData()
         self.tableView.reloadInputViews()
         self.tableView.setNeedsUpdateConstraints()
+        self.tableView.tableFooterView?.reloadInputViews()
         self.reloadInputViews()
         self.view.needsUpdateConstraints()
-        self.tableView.cellForRow(at: indexPath)?.reloadInputViews()
-        setNeedsFocusUpdate()
-        
+
         if ParkingData.count == 0 {
             self.bulletinManagerNotifyNoResults.allowsSwipeInteraction = false
             self.bulletinManagerNotifyNoResults.showBulletin(above: self)

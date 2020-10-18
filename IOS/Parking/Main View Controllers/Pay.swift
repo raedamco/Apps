@@ -75,7 +75,6 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
         self.view.reloadInputViews()
         createViewLayout()
         paymentButton.isEnabled = Stripe.deviceSupportsApplePay()
-        paymentButton.layer.borderColor = UIColor.clear.cgColor
         
         NotificationCenter.default.addObserver(self, selector: #selector(displayParkingInfo(notification:)), name: NSNotification.Name(rawValue: "checkIn"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(enterLocation(notification:)), name: NSNotification.Name(rawValue: "enterLocation"), object: nil)

@@ -59,7 +59,7 @@ func getTransactionHistory(){
                     guard let TransactionData = document.data()["Transaction"] as? [String: Any] else { return }
                     guard let TID = TransactionData["TransactionID"] as? String else { return }
                     
-                    if !isTransactionCurrent && !TransactionsHistory.contains(where: {$0.TID == TID}) {
+                    if !isTransactionCurrent && !TransactionsHistory.contains(where: {$0.TID != TID}) {
                         guard let Amount = TransactionData["Amount"] as? NSNumber else { return }
                         
                         //Location & Organization Info
@@ -73,7 +73,7 @@ func getTransactionHistory(){
                         guard let Time = document.data()["Duration"] as? [String: Any] else { return }
                         guard let Duration = Time["Minutes"] as? NSNumber else { return }
                         guard let EndDay = Time["End"] as? Firebase.Timestamp else { return }
-                        TransactionsHistory.append(Transactions(Organization: Organization, Floor: Floor, Spot: Spot, TID: TID, Rate: Rate, Cost: Amount, Duration: Duration, Day: EndDay.dateValue()))
+                        TransactionsHistory.insert(Transactions(Organization: Organization, Floor: Floor, Spot: Spot, TID: TID, Rate: Rate, Cost: Amount, Duration: Duration, Day: EndDay.dateValue()), at: 0)
                     }
                 }
             }
@@ -98,7 +98,7 @@ func getTransactionHistory(){
                         guard let Time = document.data()["Duration"] as? [String: Any] else { return }
                         guard let Duration = Time["Minutes"] as? NSNumber else { return }
                         guard let EndDay = Time["End"] as? Firebase.Timestamp else { return }
-                        TransactionsHistory.append(Transactions(Organization: Organization, Floor: Floor, Spot: Spot, TID: TID, Rate: Rate, Cost: Amount, Duration: Duration, Day: EndDay.dateValue()))
+                        TransactionsHistory.insert(Transactions(Organization: Organization, Floor: Floor, Spot: Spot, TID: TID, Rate: Rate, Cost: Amount, Duration: Duration, Day: EndDay.dateValue()), at: 0)
                     }
                 }
             }

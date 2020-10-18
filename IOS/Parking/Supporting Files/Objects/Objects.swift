@@ -215,6 +215,8 @@ func createPaymentButton(Target: Any, Action: Selector) -> UIButton {
     let button = PKPaymentButton(paymentButtonType: .plain, paymentButtonStyle: .whiteOutline) //MARK: THIS NEEDS TO BE OPPOSITE OF THE THEME
     button.translatesAutoresizingMaskIntoConstraints = false
     button.addTarget(Target, action: Action, for: UIControl.Event.touchUpInside)
+    button.cornerRadius = 12
+    button.layer.borderColor = UIColor.clear.cgColor
     return button
 }
 
