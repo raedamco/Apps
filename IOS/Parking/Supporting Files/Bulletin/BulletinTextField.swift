@@ -179,10 +179,10 @@ extension TextFieldAddDataBulletinPage: UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        if isInputValid(text: textField.text) && Database.addVehicleData(Vehicle: textField.text!){
+        if isInputValid(text: textField.text) && textField.text?.isEmpty == false && Database.addVehicleData(Vehicle: textField.text!){
             functionError = false
             print("added to databse")
-        }else if isInputValid(text: textField.text) && !Database.addVehicleData(Vehicle: textField.text!){
+        }else if isInputValid(text: textField.text) && textField.text?.isEmpty == false  && !Database.addVehicleData(Vehicle: textField.text!){
             functionError = true
             print("already in databse")
         }else{

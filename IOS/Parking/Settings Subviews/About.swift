@@ -95,14 +95,7 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.tabBarController?.tabBar.isHidden = false
         self.navigationController?.pushViewController(SettingsViewController(), animated: false)
     }
-    
-    func openWeb(Title: String, URL: String){
-        webLink = URL
-        webViewLabel = Title
-        let webView = UINavigationController(rootViewController: webViewScreen())
-        self.navigationController?.present(webView, animated: false, completion: nil)
-    }
-    
+
 }
 
 

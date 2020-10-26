@@ -54,18 +54,16 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
         tableView.separatorColor = standardContrastColor.withAlphaComponent(0.5)
         let adjustForTabbarInsets: UIEdgeInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: UITabBar.appearance().frame.height, right: 0)
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
-        tableView.indicatorStyle = UIScrollView.IndicatorStyle.black
+        tableView.indicatorStyle = UIScrollView.IndicatorStyle.default
         tableView.contentMode = .scaleAspectFit
         tableView.backgroundColor = standardBackgroundColor
         tableView.contentInset = adjustForTabbarInsets
         tableView.scrollIndicatorInsets = adjustForTabbarInsets
-        
+        tableView.contentInsetAdjustmentBehavior = .never
         tableView.tableFooterView = UIView()
         tableView.tableHeaderView = UIView()
-        
         tableView.dataSource = self
         tableView.delegate = self
-        
         view = tableView
     }
     
@@ -76,16 +74,7 @@ class PaymentMethod: UIViewController, UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 0
     }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView()
-        headerView.backgroundColor = standardBackgroundColor
-        let headerLabel = UILabel(frame: CGRect(x: 15, y: -1, width: tableView.frame.width, height: 25))
-        headerLabel.text = ""
-        headerView.addSubview(headerLabel)
-        return headerView
-    }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "paymentCell", for: indexPath) as! transactionHistoryCell
         cell.textLabel?.font = UIFont(name: font, size: 20)

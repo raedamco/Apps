@@ -115,7 +115,6 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if itemsInSections[indexPath.section][indexPath.row] == "Logout" {
             logout()

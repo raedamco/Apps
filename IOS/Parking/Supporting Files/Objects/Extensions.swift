@@ -238,6 +238,13 @@ extension UIViewController {
         self.navigationItem.rightBarButtonItem = createBarButtonItem(SystemImage: SystemImageR, Image: ImageR, Title: ImageTitleR, Target: TargetR, Action: ActionR)
         self.navigationItem.leftBarButtonItem = createBarButtonItem(SystemImage: SystemImageL, Image: ImageL, Title: ImageTitleL, Target: TargetL, Action: ActionL)
     }
+    
+    func openWeb(Title: String, URL: String){
+        webLink = URL
+        webViewLabel = Title
+        let webView = UINavigationController(rootViewController: webViewScreen())
+        self.navigationController?.present(webView, animated: false, completion: nil)
+    }
 
 }
 

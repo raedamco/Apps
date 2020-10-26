@@ -59,7 +59,7 @@ enum BulletinDataSource {
         page.appearance.actionButtonFontSize = 22
         page.appearance.alternativeButtonTitleColor = standardContrastColor
         page.appearance.alternativeButtonFontSize = 20
-        page.descriptionLabel?.textAlignment = .left
+        
         page.actionButtonTitle = "Start"
         page.alternativeButtonTitle = "Cancel"
         page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n $\(convertToString(Number: SelectedParkingData[indexPath.row].Price))/min"
@@ -82,27 +82,27 @@ enum BulletinDataSource {
     static func cancelRoute() -> FeedbackPageBLTNItem {
         let page = FeedbackPageBLTNItem(title: "Confirm Cancelation")
         page.appearance.titleTextColor = standardContrastColor
-        page.appearance.actionButtonColor = standardContrastColor
+        page.appearance.actionButtonColor = .red
         page.appearance.actionButtonTitleColor = standardBackgroundColor
         page.appearance.actionButtonFontSize = 22
-        page.appearance.alternativeButtonTitleColor = .red
-        page.appearance.alternativeButtonFontSize = 18
+        page.appearance.alternativeButtonTitleColor = standardContrastColor
+        page.appearance.alternativeButtonFontSize = 20
         page.descriptionLabel?.textAlignment = .left
-        page.alternativeButtonTitle = "End Route"
-        page.actionButtonTitle = "Continue Route"
+        page.alternativeButtonTitle = "Continue Route"
+        page.actionButtonTitle = "End Route"
         page.requiresCloseButton = false
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
+            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
+            
         }
         
         page.alternativeHandler = { item in
             item.manager?.dismissBulletin(animated: true)
-            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
         }
         
         return page
-        
     }
     
 // MARK: ACCOUNT BLTN START
@@ -731,7 +731,7 @@ enum BulletinDataSource {
         
         page.appearance.titleTextColor = standardContrastColor
 //        page.imageView = AnimationView(name: "connectivity")
-        page.descriptionText = "Verifying Check-in"
+        page.descriptionText = "Verifying data"
         page.requiresCloseButton = false
         page.isDismissable = false
         return page
@@ -753,7 +753,6 @@ enum BulletinDataSource {
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
-            NotificationCenter.default.post(name: NSNotification.Name("closeTView"), object: nil)
         }
         
         return page

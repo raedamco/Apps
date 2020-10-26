@@ -106,7 +106,7 @@ class SignIn: UIViewController, UITextFieldDelegate {
             Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
                 if user != nil {
                     if Auth.auth().currentUser?.isEmailVerified == true {
-                        getUserData(Email: self.emailTextField.text!) { (true) in
+                        getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
                             self.navigationController?.setNavigationBarHidden(true, animated: true)
                             self.tabBarController?.tabBar.isHidden = true
                             self.navigationController?.popViewController(animated: true)

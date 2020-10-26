@@ -47,6 +47,11 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
         let page = BulletinDataSource.TransactionData(Location: SelectedTransactionCellData[indexPath.row].Location, Duration: SelectedTransactionCellData[indexPath.row].Duration, Amount: SelectedTransactionCellData[indexPath.row].Amount, Date: SelectedTransactionCellData[indexPath.row].Date, TransactionID: SelectedTransactionCellData[indexPath.row].TransactionID)
         return BLTNItemManager(rootItem: page)
     }()
+    
+    lazy var bulletinManagerComingSoon: BLTNItemManager = {
+       let page = BulletinDataSource.comingSoon()
+       return BLTNItemManager(rootItem: page)
+    }()
     // BLTNBoard END
     
     override func viewDidLoad() {
@@ -72,21 +77,21 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
 
     func createViewLayout(){
         view.backgroundColor = standardBackgroundColor
-        setupNavigationBar(LargeText: true, Title: "History", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
+        setupNavigationBar(LargeText: true, Title: "History", SystemImageR: true, ImageR: true, ImageTitleR: "icloud.and.arrow.down", TargetR: self, ActionR: #selector(self.tempView), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
 
         tableView.register(transactionHistoryCell.self, forCellReuseIdentifier: "paymentCell")
         tableView.isScrollEnabled = true
         tableView.allowsSelection = true
         tableView.rowHeight = 150
         tableView.separatorColor = standardContrastColor.withAlphaComponent(0.5)
-        let adjustForTabbarInsets: UIEdgeInsets = UIEdgeInsets.init(top: 0, left: 0, bottom: UITabBar.appearance().frame.height, right: 0)
+        let adjustForTabbarInsets: UIEdgeInsets = UIEdgeInsets.init(top: .zero, left: 0, bottom: UITabBar.appearance().frame.height, right: 0)
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         tableView.indicatorStyle = UIScrollView.IndicatorStyle.black
         tableView.contentMode = .scaleAspectFit
         tableView.backgroundColor = standardBackgroundColor
         tableView.contentInset = adjustForTabbarInsets
         tableView.scrollIndicatorInsets = adjustForTabbarInsets
-        
+        tableView.contentInsetAdjustmentBehavior = .never
         tableView.tableFooterView = UIView()
         tableView.tableHeaderView = UIView()
         
@@ -102,15 +107,6 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return TransactionsHistory.count
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView()
-        headerView.backgroundColor = standardBackgroundColor
-        let headerLabel = UILabel(frame: CGRect(x: 15, y: -1, width: tableView.frame.width, height: 25))
-        headerLabel.text = ""
-        headerView.addSubview(headerLabel)
-        return headerView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -139,6 +135,11 @@ class TransactionHistory: UIViewController, UITableViewDelegate, UITableViewData
         self.ShowMoreData.allowsSwipeInteraction = false
         self.ShowMoreData.showBulletin(above: self)
 
+    }
+    
+    @objc func tempView(){
+        self.bulletinManagerComingSoon.allowsSwipeInteraction = false
+        self.bulletinManagerComingSoon.showBulletin(above: self)
     }
     
     @objc func closeView(gesture: UISwipeGestureRecognizer) {

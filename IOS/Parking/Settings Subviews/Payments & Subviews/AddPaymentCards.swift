@@ -22,7 +22,6 @@ class CheckoutViewController: UIViewController {
         }
     }
     
-    
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
     var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
@@ -37,7 +36,6 @@ class CheckoutViewController: UIViewController {
         let page = BulletinDataSource.makeCompletionPage()
         return BLTNItemManager(rootItem: page)
     }()
-    
     // BLTNBoard END
     
     var setupIntentClientSecret: String?

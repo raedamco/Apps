@@ -101,7 +101,7 @@ extension AppDelegate {
             if Connectivity.isConnectedToInternet {
                 self.handle = Auth.auth().addStateDidChangeListener { (auth, user) in
                     if (user != nil){
-                        getUserData(Email: (user?.email)!) { (true) in
+                        getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
                             self.window = UIWindow(frame: UIScreen.main.bounds)
                             self.window?.makeKeyAndVisible()
                             self.window!.rootViewController = TabBarViewController()

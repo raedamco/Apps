@@ -20,9 +20,9 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
         isRunning = !isRunning
     }
     
-    
-    
+
     @objc func finishProcessing(notification: NSNotification){
+        self.navigationItem.title = "$" + String(describing: TransactionData[indexPath.row].Amount)
         let merchantIdentifier = "merchant.parking"
         let paymentRequest = Stripe.paymentRequest(withMerchantIdentifier: merchantIdentifier, country: "US", currency: "USD")
         let paymentItem = PKPaymentSummaryItem.init(label: "For Parking at \(SelectedParkingData[indexPath.row].Organization)", amount: NSDecimalNumber(value: TransactionData[indexPath.row].Amount))
@@ -60,10 +60,12 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
                         clientSecret = responseJSON?["ClientSecret"] as! String
                         completion(clientSecret, nil)
                         if Completed {
+                            NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
+                            NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
+                            NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
+                            
                             checkUpdatedTID(completion: { (true) in
-                                NotificationCenter.default.post(name: NSNotification.Name("endTransaction"), object: nil)
-                                NotificationCenter.default.post(name: NSNotification.Name("cancelRoute"), object: nil)
-                                NotificationCenter.default.post(name: NSNotification.Name("resetTimer"), object: nil)
+                                print("updated transaction history")
                             })
                         }
                     case .failure(let error): print(error.localizedDescription)

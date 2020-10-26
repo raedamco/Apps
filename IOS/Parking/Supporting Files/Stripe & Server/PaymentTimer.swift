@@ -78,42 +78,5 @@ class ServerPayment: NSObject {
         }
     }
     
-
-    func addVehicle() {
-        let url = self.baseURL.appendingPathComponent("addVehicle")
-        let requiredParameters: [String:Any] = ["UID": UserData[indexPath.row].UID]
-        
-        AF.request(url, method: .post,parameters: requiredParameters).validate(statusCode: 200..<300).responseJSON { responseJSON in
-            switch responseJSON.result {
-                case .success(let json):
-                    let responseJSON = json as? [String: AnyObject]
-                    guard let Status = responseJSON?["Status"] as? Bool else { return }
-                    
-                    if Status {
-                        //Show user data was added animation
-                    }
-                case .failure(let error): print(error.localizedDescription)
-            }
-        }
-    }
-    
-    func addPermit() {
-        let url = self.baseURL.appendingPathComponent("addPermit")
-        let requiredParameters: [String:Any] = ["UID": UserData[indexPath.row].UID]
-        
-        AF.request(url, method: .post,parameters: requiredParameters).validate(statusCode: 200..<300).responseJSON { responseJSON in
-            switch responseJSON.result {
-                case .success(let json):
-                    let responseJSON = json as? [String: AnyObject]
-                    guard let Status = responseJSON?["Status"] as? Bool else { return }
-                    
-                    if Status {
-                        //Show user data was added animation
-                    }
-                case .failure(let error): print(error.localizedDescription)
-            }
-        }
-    }
-
 }
 

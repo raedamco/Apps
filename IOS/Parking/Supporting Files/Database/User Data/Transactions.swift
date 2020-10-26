@@ -59,7 +59,7 @@ func getTransactionHistory(){
                     guard let TransactionData = document.data()["Transaction"] as? [String: Any] else { return }
                     guard let TID = TransactionData["TransactionID"] as? String else { return }
                     
-                    if !isTransactionCurrent && !TransactionsHistory.contains(where: {$0.TID != TID}) {
+                    if !isTransactionCurrent && TransactionsHistory.contains(where: {$0.TID != TID}) {
                         guard let Amount = TransactionData["Amount"] as? NSNumber else { return }
                         
                         //Location & Organization Info

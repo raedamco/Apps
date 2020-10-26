@@ -69,7 +69,6 @@ class SignUp: UIViewController, UITextFieldDelegate{
         view.addSubview(loginButton)
         view.addSubview(createAccountButton)
         
-        
         emailTextField.topAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -180).isActive = true
         emailTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         emailTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 60).isActive = true
@@ -108,8 +107,16 @@ class SignUp: UIViewController, UITextFieldDelegate{
         if emailTextField.text?.isEmpty == false && passwordTextField.text?.isEmpty == false && passwordTextField.text == passwordVerifyTextField.text && passwordVerifyTextField.text?.isEmpty == false && nameTextField.text?.isEmpty == false {
             Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
                 if user != nil {
-                    self.createDatabaseAccount()
-                    self.getData()
+                    let Data: [String: Any] = ["UID": Auth.auth().currentUser!.uid, "Name": self.nameTextField.text!, "Permits":[:],"Vehicles":[]]
+                    if Database.updateUserData(Data: Data){
+                        getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
+                            self.navigationController?.setNavigationBarHidden(true, animated: true)
+                            self.tabBarController?.tabBar.isHidden = true
+                            self.navigationController?.popViewController(animated: true)
+                            self.navigationController?.removeFromParent()
+                            self.navigationController?.pushViewController(TabBarViewController(), animated: false)
+                        }
+                    }
                 }else{
                     if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
                         self.errorMessageBLTN = errorCode.errorMessage
@@ -121,40 +128,13 @@ class SignUp: UIViewController, UITextFieldDelegate{
         }
     }
     
-    @objc func createDatabaseAccount(){
-        let UUID = Auth.auth().currentUser?.uid
-        let structData: [String: Any] = ["Name": self.nameTextField.text!, "Permits":[:],"Vehicles":[]]
-
-        database.collection("Users").document("Commuters").collection("Users").document(UUID!).setData(structData, merge: true) { error in
-            if let error = error?.localizedDescription {
-                print(error)
-            }else{
-                print("Successfully added to database")
-            }
-        }
-        
-    }
     
     @objc func login(){
         self.navigationController?.pushViewController(SignIn(), animated: false)
     }
-    
-    func getData(){
-        database.collection("Users").document("Commuters").collection("Users").whereField("Email", isEqualTo: self.emailTextField.text!).getDocuments { (snapshot, error) in
-            if error != nil {
-                print(error as Any)
-            }else{
-                self.navigationController?.setNavigationBarHidden(true, animated: true)
-                self.tabBarController?.tabBar.isHidden = true
-                self.navigationController?.popViewController(animated: true)
-                self.navigationController?.removeFromParent()
-                self.navigationController?.pushViewController(TabBarViewController(), animated: false)
-            }
-        }
-    }
-    
+        
     @objc func viewPrivacyPolicy(){
-        webLink = "https://theoryparking.com/privacy"
+        webLink = "https://raedam.co/privacy"
         webViewLabel = "Privacy Policy"
         let webView = UINavigationController(rootViewController: webViewScreen())
         self.navigationController?.present(webView, animated: false, completion: nil)

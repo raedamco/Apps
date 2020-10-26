@@ -75,11 +75,10 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
      
      override func viewWillAppear(_ animated: Bool) {
         updateMapStyle()
-        
         self.view.layoutSubviews()
-    
-//        if !TransactionData.isEmpty {
-//            destinationTextField.removeFromSuperview()
+//
+//        if !SelectedParkingData.isEmpty {
+//            destinationTextField.isEnabled = false
 //        }else{
             self.view.addSubview(destinationTextField)
             destinationTextField.target(forAction: #selector(self.searchLocation), withSender: self)
@@ -87,6 +86,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
             destinationTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
             destinationTextField.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
+            destinationTextField.isEnabled = true
 //        }
         
         if destinationTextField.isHidden {
@@ -100,8 +100,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
                 self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
                 let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
                 self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
-//                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 20)!]
-//                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
             }
         }else{
             navigationbarAttributes(Hidden: true, Translucent: false)
@@ -120,7 +118,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             mapView.settings.rotateGestures = true
         }else{
             locationManager.requestWhenInUseAuthorization()
-            //Force user to enable location
+            //MARK: Force user to enable location
         }
         
         view = mapView
