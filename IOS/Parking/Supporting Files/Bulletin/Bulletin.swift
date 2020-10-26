@@ -314,32 +314,6 @@ enum BulletinDataSource {
         return page
     }
     
-    static func ThemePage() -> FeedbackPageBLTNItem {
-        let page = FeedbackPageBLTNItem(title: "Theme")
-        page.image = UIImage(named: "Theme")
-        page.descriptionText = "Choose your preferred theme"
-        page.isDismissable = false
-        page.appearance.titleTextColor = standardContrastColor
-        
-        if userDefaults.bool(forKey: "THEME") == true {
-            page.actionButtonTitle = "Light"
-            page.alternativeButtonTitle = "Dark"
-        }else{
-            page.actionButtonTitle = "Dark"
-            page.alternativeButtonTitle = "Light"
-        }
-        
-        page.actionHandler = { item in
-            userDefaults.set(true, forKey: "THEME")
-            item.manager?.dismissBulletin(animated: true)
-        }
-        
-        page.alternativeHandler = { item in
-            userDefaults.set(false, forKey: "THEME")
-            item.manager?.dismissBulletin(animated: true)
-        }
-        return page
-    }
 // MARK: PREFERENCES BLTN END
     
 //SEARCH START//

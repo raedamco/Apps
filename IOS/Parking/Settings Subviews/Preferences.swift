@@ -12,7 +12,7 @@ import BLTNBoard
 class PreferencesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var ble: BLE!
     var tableView = UITableView()
-    var sections = ["Location","Bluetooth","Notifications","Automation","Theme"]
+    var sections = ["Location","Bluetooth","Notifications","Automation"]
 
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
@@ -35,11 +35,6 @@ class PreferencesViewController: UIViewController, UITableViewDelegate, UITableV
 
     lazy var bulletinManagerAutoCheckIn: BLTNItemManager = {
         let page = BulletinDataSource.AutoCheckInPage()
-        return BLTNItemManager(rootItem: page)
-    }()
-    
-    lazy var bulletinManagerTheme: BLTNItemManager = {
-        let page = BulletinDataSource.ThemePage()
         return BLTNItemManager(rootItem: page)
     }()
 
@@ -122,9 +117,6 @@ class PreferencesViewController: UIViewController, UITableViewDelegate, UITableV
         }else if sections[indexPath.row] == "Automation"{
             self.bulletinManagerAutoCheckIn.allowsSwipeInteraction = false
             self.bulletinManagerAutoCheckIn.showBulletin(above: self)
-        }else if sections[indexPath.row] == "Theme"{
-            self.bulletinManagerTheme.allowsSwipeInteraction = false
-            self.bulletinManagerTheme.showBulletin(above: self)
         }
     }
     

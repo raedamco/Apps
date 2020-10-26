@@ -102,28 +102,15 @@ class SignIn: UIViewController, UITextFieldDelegate {
 
     @objc func login(){
         emptyTextField()
-        if emailTextField.text != "" && passwordTextField.text != "" {
+        if !emailTextField.text!.isEmpty && !passwordTextField.text!.isEmpty {
             Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
                 if user != nil {
-                    if Auth.auth().currentUser?.isEmailVerified == true {
-                        getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
-                            self.navigationController?.setNavigationBarHidden(true, animated: true)
-                            self.tabBarController?.tabBar.isHidden = true
-                            self.navigationController?.popViewController(animated: true)
-                            self.navigationController?.removeFromParent()
-                            self.navigationController?.pushViewController(TabBarViewController(), animated: false)
-                        }
-                    }else{
-                        Auth.auth().currentUser?.sendEmailVerification(completion: { (error) in
-                             if let error = error {
-                                self.errorMessageBLTN = error.localizedDescription
-                                self.bulletinManagerError.allowsSwipeInteraction = false
-                                self.bulletinManagerError.showBulletin(above: self)
-                            }else{
-                                self.bulletinManagerVerifyAccount.allowsSwipeInteraction = false
-                                self.bulletinManagerVerifyAccount.showBulletin(above: self)
-                            }
-                        })
+                    getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
+                        self.navigationController?.setNavigationBarHidden(true, animated: true)
+                        self.tabBarController?.tabBar.isHidden = true
+                        self.navigationController?.popViewController(animated: true)
+                        self.navigationController?.removeFromParent()
+                        self.navigationController?.pushViewController(TabBarViewController(), animated: false)
                     }
                 }else{
                     if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
