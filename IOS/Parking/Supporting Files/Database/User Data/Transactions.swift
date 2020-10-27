@@ -149,6 +149,7 @@ func getCurrentParkingData(Location: GeoPoint, Organization: String, Spot: Strin
                     let types = document.data()["Spot Types"] as! [String: Bool]
                     let CompanyStripeID = document.data()["CompanyStripeID"] as! String
                     SelectedParkingData.append(SelectedParking(Location: Location, Name: name, Types: types, Organization: Organization, Price: Rate, Floor: Floor, Spot: Spot, CompanyStripeID: CompanyStripeID))
+                    NotificationCenter.default.post(name: NSNotification.Name("loadMap"), object: nil)
                 }
             }
         }

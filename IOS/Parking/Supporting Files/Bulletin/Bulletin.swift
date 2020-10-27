@@ -36,7 +36,7 @@ enum BulletinDataSource {
         
         page.actionButtonTitle = "More Info"
         page.alternativeButtonTitle = "Cancel Route"
-        page.descriptionText = "Time: \(RouteData[indexPath.row].Time) \n Distance: \(RouteData[indexPath.row].Distance)"
+        page.descriptionText = "Time: \(RouteData[indexPath.row].Time) \n Distance: \(RouteData[indexPath.row].Distance) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n $\(convertToString(Number: SelectedParkingData[indexPath.row].Price))/min"
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)

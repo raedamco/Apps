@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 import Firebase
 
+
 var Server = ParkingServer()
 
 class ParkingServer {
@@ -74,4 +75,5 @@ class ParkingServer {
             }
         }
     }
+
 }

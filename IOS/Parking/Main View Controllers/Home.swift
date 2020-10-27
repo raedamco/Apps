@@ -55,6 +55,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(startRoute(notification:)), name: NSNotification.Name(rawValue: "startRoute"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(cancelRoute(notification:)), name: NSNotification.Name(rawValue: "cancelRoute"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(infoRoute(notification:)), name: NSNotification.Name(rawValue: "moreInfo"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(loadMap(notification:)), name: NSNotification.Name(rawValue: "loadMap"), object: nil)
     }
     
     func updateMapStyle(){
@@ -76,18 +77,12 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
      override func viewWillAppear(_ animated: Bool) {
         updateMapStyle()
         self.view.layoutSubviews()
-//
-//        if !SelectedParkingData.isEmpty {
-//            destinationTextField.isEnabled = false
-//        }else{
-            self.view.addSubview(destinationTextField)
-            destinationTextField.target(forAction: #selector(self.searchLocation), withSender: self)
-            destinationTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-            destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
-            destinationTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
-            destinationTextField.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
-            destinationTextField.isEnabled = true
-//        }
+        self.view.addSubview(destinationTextField)
+        destinationTextField.target(forAction: #selector(self.searchLocation), withSender: self)
+        destinationTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
+        destinationTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
+        destinationTextField.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
         
         if destinationTextField.isHidden {
             navigationbarAttributes(Hidden: false, Translucent: false)
@@ -103,6 +98,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             }
         }else{
             navigationbarAttributes(Hidden: true, Translucent: false)
+            destinationTextField.isEnabled = true
         }
      }
 
@@ -159,7 +155,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
 
     }
     
-
      @objc func searchLocation(){
         let AutofillController = GMSAutocompleteViewController()
         AutofillController.delegate = self
@@ -228,6 +223,20 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         self.reloadInputViews()
     }
     
+    @objc func loadMap(notification: NSNotification) {
+        if !SelectedParkingData.isEmpty {
+            destinationTextField.isEnabled = false
+            destinationTextField.isHidden = true
+            destinationLocation = CLLocation(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
+            if DirectionsData.isEmpty {
+                self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
+            }
+        }else{
+            destinationTextField.isEnabled = true
+            destinationTextField.isHidden = false
+        }
+    }
+    
     @objc func showRouteInfo(){
         self.bulletinManagerShowInfo.allowsSwipeInteraction = false
         self.bulletinManagerShowInfo.showBulletin(above: self)
@@ -236,8 +245,6 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
     func updateDirectionsView(){
         print("USER NEAR STRUCTURE")
     }
-    
-    
     
     func addMarker(position: CLLocationCoordinate2D) {
         
