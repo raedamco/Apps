@@ -21,7 +21,7 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
     }
     
     @objc func finishProcessing(notification: NSNotification){
-        self.navigationItem.title = "$" + String(format:"%.2f", String(describing: TransactionData[indexPath.row].Amount))
+//        self.navigationItem.title = "$" + String(format:"%.2f", String(describing: TransactionData[indexPath.row].Amount))
         let merchantIdentifier = "merchant.parking"
         let paymentRequest = Stripe.paymentRequest(withMerchantIdentifier: merchantIdentifier, country: "US", currency: "USD")
         let paymentItem = PKPaymentSummaryItem.init(label: "For Parking at \(SelectedParkingData[indexPath.row].Organization)", amount: NSDecimalNumber(value: TransactionData[indexPath.row].Amount))
