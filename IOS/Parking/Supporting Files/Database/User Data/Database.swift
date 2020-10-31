@@ -22,27 +22,34 @@ class DatabaseCalls {
         }
     }
     
-    func updateUserData(Data: [String:Any]) -> Bool{
+    func createAccount(Data: [String:Any]) -> Bool{
         var Success = Bool()
-        let url = self.baseURL.appendingPathComponent("updateAccount")
+//        var ErrorMessage = String()
+        let url = self.baseURL.appendingPathComponent("createAccount")
         AF.request(url, method: .post,parameters: Data).validate(statusCode: 200..<300).responseJSON { responseJSON in
             switch responseJSON.result {
                 case .success(let json):
                     let responseJSON = json as? [String: AnyObject]
                     guard let Sucess = responseJSON?["Success"] as? Bool else { return }
+                    guard let UID = responseJSON?["UID"] as? String else { return }
+//                    let errorMessage = responseJSON?["Error"] as? String
                     
                     if Sucess {
-                        Success = true
+                        getUserData(UID: UID) { (true) in
+                            Success = true
+                        }
                     }else{
                         Success = false
                     }
                 case .failure(let error): print(error.localizedDescription)
                     Success = false
+//                    print(errorMessage)
             }
         }
         return Success
     }
-    
+
+
     func addVehicleData(Vehicle: String) -> Bool{
         var Success = Bool()
         let url = self.baseURL.appendingPathComponent("addVehicleData")

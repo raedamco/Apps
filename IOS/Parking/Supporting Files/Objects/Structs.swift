@@ -20,7 +20,7 @@ struct User {
     var StripeID: String
     var Phone: String
     
-    init(Name: String!, Email: String!,Phone: String!, UID: String!, License: [String], Permit: [String:String], StripeID: String) {
+    init(Name: String!, Email: String!, Phone: String!, UID: String!, License: [String], Permit: [String:String], StripeID: String) {
         self.Name = Name
         self.Email = Email
         self.UID = UID

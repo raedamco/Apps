@@ -13,14 +13,14 @@ import Alamofire
 
 var UserData = [User]()
 
-//Get user data from database
+////Get user data from database
 func getUserData(UID: String, completion: @escaping (_ success: Bool) -> Void) {
     database.collection("Users").document("Commuters").collection("Users").document(UID).getDocument { (document, error) in
         if let document = document, document.exists {
             let data = document.data()!
-            guard let Name = data["Name"] as? String else { return }
-            guard let Email = data["Email"] as? String else { return }
-            guard let UID = data["UUID"] as? String else { return }
+            let Name = data["Name"] as? String
+            let Email = data["Email"] as? String
+            let UID = data["UUID"] as? String
             var License = data["Vehicles"] as! [String]
             var Permit = data["Permits"] as? [String:String]
             let StripeID = data["StripeID"] as? String ?? ""
@@ -34,8 +34,7 @@ func getUserData(UID: String, completion: @escaping (_ success: Bool) -> Void) {
                 Permit = ["None":" "]
             }
 
-            UserData.append(User(Name: Name, Email: Email,Phone: Phone, UID: UID, License: License, Permit: Permit!, StripeID: StripeID))
-            
+            UserData.append(User(Name: Name, Email: Email, Phone: Phone, UID: UID, License: License, Permit: Permit!, StripeID: StripeID))
             checkCurrentTransaction()
             getTransactionHistory()
             
@@ -47,5 +46,4 @@ func getUserData(UID: String, completion: @escaping (_ success: Bool) -> Void) {
             completion(false)
         }
     }
-
  }

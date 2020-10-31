@@ -13,24 +13,30 @@ import LocalAuthentication
 import Lottie
 import BLTNBoard
 import FirebaseFunctions
+import Stripe
+
+import UIKit
+import Firebase
+import LocalAuthentication
+import Lottie
+import BLTNBoard
+import FirebaseFunctions
 
 class SignUp: UIViewController, UITextFieldDelegate{
     
     let emailTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .emailAddress, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: false, Placeholder: "Email", Target: self)
     let nameTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: false, Placeholder: "Name", Target: self)
     let passwordTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Password", Target: self)
-    let passwordVerifyTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .join, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Verify Password", Target: self)
-    
-    let createAccountButton = createButton(Title: "next", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(createAccount))
-    let loginButton = createButton(Title: "Have an account? Log In", FontName: font, FontSize: 15, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 12, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(login))
-    let privacyPolicyButton = createButton(Title: "Privacy Policy", FontName: font, FontSize: 14, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 12, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(viewPrivacyPolicy))
+    let passwordVerifyTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Verify Password", Target: self)
+    let createAccountButton = createButton(Title: "next", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 6, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(createAccount))
+    let loginButton = createButton(Title: "Have an account? Log In", FontName: font, FontSize: 15, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 0, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(login))
+    let privacyPolicyButton = createButton(Title: "Privacy Policy", FontName: font, FontSize: 14, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 0, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(viewPrivacyPolicy))
    
     // BLTNBoard START
        let backgroundStyles = BackgroundStyles()
        var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
 
        var errorMessageBLTN = String()
-    
        lazy var bulletinManagerError: BLTNItemManager = {
            let page = BulletinDataSource.makeErrorPage(message: errorMessageBLTN)
            return BLTNItemManager(rootItem: page)
@@ -54,30 +60,30 @@ class SignUp: UIViewController, UITextFieldDelegate{
     
     func createScreenLayout(){
         view.backgroundColor = standardBackgroundColor
-        
-        emailTextField.delegate = self
+        nameTextField.autocapitalizationType = .words
         nameTextField.delegate = self
+        emailTextField.delegate = self
         passwordTextField.delegate = self
         passwordVerifyTextField.delegate = self
-        nameTextField.autocapitalizationType = .words
-        
-        view.addSubview(emailTextField)
+
         view.addSubview(nameTextField)
+        view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
         view.addSubview(passwordVerifyTextField)
         view.addSubview(privacyPolicyButton)
         view.addSubview(loginButton)
         view.addSubview(createAccountButton)
         
-        emailTextField.topAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -180).isActive = true
-        emailTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        emailTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 60).isActive = true
         
-        nameTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 30).isActive = true
+        nameTextField.topAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -180).isActive = true
         nameTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         nameTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 60).isActive = true
         
-        passwordTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 30).isActive = true
+        emailTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 30).isActive = true
+        emailTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        emailTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 60).isActive = true
+        
+        passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 30).isActive = true
         passwordTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         passwordTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 60).isActive = true
         
@@ -104,19 +110,13 @@ class SignUp: UIViewController, UITextFieldDelegate{
 
     @objc func createAccount(){
         textFieldEntries()
+        
         if emailTextField.text?.isEmpty == false && passwordTextField.text?.isEmpty == false && passwordTextField.text == passwordVerifyTextField.text && passwordVerifyTextField.text?.isEmpty == false && nameTextField.text?.isEmpty == false {
             Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
                 if user != nil {
-                    let Data: [String: Any] = ["UID": Auth.auth().currentUser!.uid, "Name": self.nameTextField.text!, "Permits":[:],"Vehicles":[]]
-                    if Database.updateUserData(Data: Data){
-                        getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
-                            self.navigationController?.setNavigationBarHidden(true, animated: true)
-                            self.tabBarController?.tabBar.isHidden = true
-                            self.navigationController?.popViewController(animated: true)
-                            self.navigationController?.removeFromParent()
-                            self.navigationController?.pushViewController(TabBarViewController(), animated: false)
-                        }
-                    }
+                    self.signin()
+                    self.createDatabaseAccount()
+//                    self.getData()
                 }else{
                     if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
                         self.errorMessageBLTN = errorCode.errorMessage
@@ -128,13 +128,52 @@ class SignUp: UIViewController, UITextFieldDelegate{
         }
     }
     
+    @objc func signin(){
+        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
+            if user != nil {
+                getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
+                    self.navigationController?.setNavigationBarHidden(true, animated: false)
+                    self.navigationController?.removeFromParent()
+                    self.tabBarController?.tabBar.isHidden = true
+                    self.tabBarController?.removeFromParent()
+                    self.navigationController?.popViewController(animated: true)
+                    self.navigationController?.pushViewController(TabBarViewController(), animated: false)
+                }
+            }else{
+                if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
+                    self.errorMessageBLTN = errorCode.errorMessage
+                    self.bulletinManagerError.allowsSwipeInteraction = false
+                    self.bulletinManagerError.showBulletin(above: self)
+                }
+            }
+        })
+    }
+    
+    @objc func createDatabaseAccount(){
+        let UUID = Auth.auth().currentUser?.uid
+        let structData: [String: Any] = ["Name": self.nameTextField.text!, "Permits":[:],"Vehicles":[]]
+
+        database.collection("Users").document("Commuters").collection("Users").document(UUID!).setData(structData, merge: true) { error in
+            if let error = error?.localizedDescription {
+                print(error)
+            }else{
+                print("Successfully added to database")
+            }
+        }
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+    }
     
     @objc func login(){
         self.navigationController?.pushViewController(SignIn(), animated: false)
     }
-        
+    
     @objc func viewPrivacyPolicy(){
-        webLink = "https://raedam.co/privacy"
+        webLink = "https://theoryparking.com/privacy"
         webViewLabel = "Privacy Policy"
         let webView = UINavigationController(rootViewController: webViewScreen())
         self.navigationController?.present(webView, animated: false, completion: nil)
@@ -207,10 +246,10 @@ extension SignUp {
             textField.resignFirstResponder()
         }else{
             if emailTextField.isEditing == true && emailTextField.text?.isEmpty == false {
-                nameTextField.becomeFirstResponder()
+                passwordTextField.becomeFirstResponder()
             }else{
                 if nameTextField.isEditing == true && nameTextField.text?.isEmpty == false {
-                    passwordTextField.becomeFirstResponder()
+                    emailTextField.becomeFirstResponder()
                 }else{
                     if passwordTextField.isEditing == true && passwordTextField.text?.isEmpty == false {
                         passwordVerifyTextField.becomeFirstResponder()

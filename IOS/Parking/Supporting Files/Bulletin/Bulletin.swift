@@ -506,8 +506,8 @@ enum BulletinDataSource {
         page.appearance.actionButtonColor = UIColor.green
         page.appearance.imageViewTintColor = UIColor.green
         page.appearance.actionButtonTitleColor = UIColor.white
-        page.actionButtonTitle = "Get started"
-        page.isDismissable = true
+        page.actionButtonTitle = "Login"
+        page.isDismissable = false
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
@@ -515,7 +515,6 @@ enum BulletinDataSource {
         
         return page
     }
-    
     
     static func makeEmailPage() -> TextFieldBulletinPage {
         let page = TextFieldBulletinPage(title: "Enter an Email")

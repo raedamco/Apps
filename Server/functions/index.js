@@ -1,3 +1,4 @@
+ /* eslint-disable */
 //INITIALIZATION START
 //HTTP packages
 const express = require('express');
@@ -48,42 +49,17 @@ exports.addUser = functions.auth.user().onCreate(async (user) => {
             }]
         }]
     })
+
     return
 });
-
-exports.updateAccount = functions.https.onRequest(async (req, res) => {
-    const UID = req.body.UID;
-    const UserName = req.body.Name;
-    // const Permits = req.body.Permits;
-    // const Vehicles = req.body.Vehicles;
-
-    try {
-        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).set({
-            Name: UserName,
-            Permits: {},
-            Vehicles: []
-        }, {merge: true});
-
-        const snapshot = await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).get();
-        const snapval = snapshot.data();
-        console.log(snapval.StripeID);
-        const customer = await stripe.customers.update(String(snapval.StripeID),{name: String(UserName)});
-        res.status(200).send({Success: true})
-    }catch(error){
-        console.log(error)
-        return res.status(500).send({Success: false})
-    }
-});
-
-
 
 // When a user deletes their account, clean up after them and notify slack
 exports.removeUser = functions.auth.user().onDelete(async (user) => {
   const snapshot = await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).get();
   const snapval = snapshot.data();
-  const joined = snapval.Joined;
+  var joined = snapval.Joined.toDate().toUTCString();
 
-  slack.send({
+  await slack.send({
       'username': 'User Activity Bot',
       'text': 'User Deleted Account :disappointed:',
       'icon_emoji': ':x:',

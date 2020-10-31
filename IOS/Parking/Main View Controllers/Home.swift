@@ -83,15 +83,13 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
         destinationTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
         destinationTextField.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
-        
         if destinationTextField.isHidden {
             navigationbarAttributes(Hidden: false, Translucent: false)
-            
+
             if DirectionsData.count > 0 {
-                
                 let directionTitle = SelectedParkingData[indexPath.row].Name
                     //DirectionsData[indexPath.row].Manuver
-                
+
                 self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
                 let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
                 self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
