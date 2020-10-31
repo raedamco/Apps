@@ -45,6 +45,11 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         let page = BulletinDataSource.cancelRoute()
         return BLTNItemManager(rootItem: page)
     }()
+    
+    lazy var bulletinManagerForceLocation: BLTNItemManager = {
+        let page = BulletinDataSource.updateLocationSettings()
+        return BLTNItemManager(rootItem: page)
+    }()
     // BLTNBoard END
     
     override func viewDidLoad() {
@@ -154,14 +159,27 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     }
     
      @objc func searchLocation(){
-        let AutofillController = GMSAutocompleteViewController()
-        AutofillController.delegate = self
-        AutofillController.tableCellSeparatorColor = standardContrastColor
-        AutofillController.tableCellBackgroundColor = standardBackgroundColor
-        AutofillController.primaryTextColor = standardContrastColor
-        AutofillController.tableCellSeparatorColor = .darkGray
-        present(AutofillController, animated: true, completion: nil)
-     }
+        if CLLocationManager.locationServicesEnabled() {
+            switch CLLocationManager.authorizationStatus() {
+                case .notDetermined, .restricted, .denied:
+                    self.bulletinManagerForceLocation.allowsSwipeInteraction = false
+                    self.bulletinManagerForceLocation.showBulletin(above: self)
+                case .authorizedAlways, .authorizedWhenInUse:
+                    let AutofillController = GMSAutocompleteViewController()
+                    AutofillController.delegate = self
+                    AutofillController.tableCellSeparatorColor = standardContrastColor
+                    AutofillController.tableCellBackgroundColor = standardBackgroundColor
+                    AutofillController.primaryTextColor = standardContrastColor
+                    AutofillController.tableCellSeparatorColor = .darkGray
+                    present(AutofillController, animated: true, completion: nil)
+                    print("location enabled")
+                @unknown default:
+                break
+            }
+        } else {
+            locationManager.requestWhenInUseAuthorization()
+        }
+    }
 }
 
 extension HomeViewController: GMSAutocompleteViewControllerDelegate {

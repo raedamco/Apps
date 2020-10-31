@@ -105,6 +105,23 @@ enum BulletinDataSource {
         return page
     }
     
+    static func updateLocationSettings() -> FeedbackPageBLTNItem {
+        let page = FeedbackPageBLTNItem(title: "Location Required")
+        page.appearance.titleTextColor = standardContrastColor
+        page.appearance.actionButtonColor = standardContrastColor
+        page.appearance.actionButtonTitleColor = standardBackgroundColor
+        page.appearance.actionButtonFontSize = 22
+        page.actionButtonTitle = "Enable Location Services"
+        page.requiresCloseButton = false
+        
+        page.actionHandler = { item in
+            item.manager?.dismissBulletin(animated: true)
+            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+        }
+
+        return page
+    }
+    
 // MARK: ACCOUNT BLTN START
     static func AddDataPage() -> FeedbackPageBLTNItem {
         let page = FeedbackPageBLTNItem(title: "Add Data")
