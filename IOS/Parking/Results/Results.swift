@@ -23,6 +23,11 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         let page = BulletinDataSource.makeNoResults()
         return BLTNItemManager(rootItem: page)
     }()
+    
+    var bulletinManagerComingSoon: BLTNItemManager = {
+       let page = BulletinDataSource.comingSoon()
+       return BLTNItemManager(rootItem: page)
+    }()
     // BLTNBoard END
     
     override func viewDidLoad() {
@@ -121,8 +126,11 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     @objc func filterResults(){
-        self.tabBarController?.tabBar.isHidden = false
-        self.navigationController?.pushViewController(FilterView(), animated: false)
+        self.bulletinManagerComingSoon.allowsSwipeInteraction = false
+        self.bulletinManagerComingSoon.showBulletin(above: self)
+        //MARK: REMOVE THE COMING SOON, FINISH IMPLEMENTATION
+//        self.tabBarController?.tabBar.isHidden = false
+//        self.navigationController?.pushViewController(FilterView(), animated: false)
     }
     
     @objc func closeView(gesture: UISwipeGestureRecognizer) {
