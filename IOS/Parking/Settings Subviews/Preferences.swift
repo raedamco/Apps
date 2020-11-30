@@ -12,7 +12,7 @@ import BLTNBoard
 class PreferencesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var ble: BLE!
     var tableView = UITableView()
-    var sections = ["Location","Bluetooth","Notifications","Automation"]
+    var sections = ["Automation", "Bluetooth", "Notifications", "Location"]
 
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
