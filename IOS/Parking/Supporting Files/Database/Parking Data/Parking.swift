@@ -29,7 +29,7 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
     let swGeopoint = GeoPoint(latitude: latitude - deltaLat, longitude: longitude - deltaLon)
     let neGeopoint = GeoPoint(latitude: latitude + deltaLat, longitude: longitude + deltaLon)
 
-    database.collection("PSU").whereField("Location", isGreaterThan: swGeopoint).whereField("Location", isLessThan: neGeopoint).getDocuments { snapshot, error in
+    database.collection("Companies").document("Portland State University").collection("Data").whereField("Location", isGreaterThan: swGeopoint).whereField("Location", isLessThan: neGeopoint).getDocuments { snapshot, error in
         if let error = error {
             print("Error getting documents: \(error)")
         }else{
@@ -62,7 +62,7 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
 }
 
 func getStructureData(){
-    database.collection("PSU").document("Parking Structure 1").collection("Floor 2").getDocuments { snapshot, error in
+    database.collection("Companies").document("Portland State University").collection("Data").document("Parking Structure 1").collection("Floor 2").getDocuments { snapshot, error in
         if let error = error {
             print("Error getting documents: \(error)")
         }else{
@@ -88,7 +88,7 @@ func getStructureData(){
 }
 
 func ParkingDataUpdates(){
-    database.collection("PSU").document("Parking Structure 1").collection("Floor 2").addSnapshotListener { querySnapshot, error in
+    database.collection("Companies").document("Portland State University").collection("Data").document("Parking Structure 1").collection("Floor 2").addSnapshotListener { querySnapshot, error in
         guard let snapshot = querySnapshot else {
             print("Error fetching snapshots: \(error!)")
             return
