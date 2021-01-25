@@ -29,6 +29,26 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
     let swGeopoint = GeoPoint(latitude: latitude - deltaLat, longitude: longitude - deltaLon)
     let neGeopoint = GeoPoint(latitude: latitude + deltaLat, longitude: longitude + deltaLon)
 
+    
+    var locationsArray = [String]()
+    
+    database.collection("Companies").getDocuments { (snapshot, error) in
+        if let error = error {
+            print("Error getting documents: \(error)")
+        }else{
+            for document in snapshot!.documents {
+                if document.exists{
+                    locationsArray.append(document.documentID)
+                }
+            }
+            
+            print(locationsArray)
+            for location in locationsArray {
+                getParkingLocations(location: location)
+            }
+        }
+    }
+
     database.collection("Companies").document("Portland State University").collection("Data").whereField("Location", isGreaterThan: swGeopoint).whereField("Location", isLessThan: neGeopoint).getDocuments { snapshot, error in
         if let error = error {
             print("Error getting documents: \(error)")
@@ -36,8 +56,8 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
             for document in snapshot!.documents {
                 if document.exists {
                     let organization = document.data()["Organization"] as! String
-                    let price = document.data()["Pricing"] as! [String: NSNumber]
-                    let rate = price["Minute"]!
+                    let price = document.data()["Pricing"] as! [String: Any]
+                    let rate = price["Minute"]! as! NSNumber
                     let name = document.data()["Name"] as! String
                     let types = document.data()["Spot Types"] as! [String: Bool]
                     let location = document.data()["Location"] as! GeoPoint
@@ -57,6 +77,21 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
             }
             
             NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
+        }
+    }
+}
+
+func getParkingLocations(location: String){
+
+    database.collection("Companies").document(location).collection("Data").getDocuments { snapshot, error in
+        if let error = error {
+            print("Error getting documents: \(error)")
+        }else{
+            for document in snapshot!.documents {
+                if document.exists {
+                    print(document.documentID)
+                }
+            }
         }
     }
 }
