@@ -42,14 +42,15 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
                 }
             }
             
-            print(locationsArray)
             for location in locationsArray {
-                getParkingLocations(location: location)
+                getParkingLocations(location: location, swGeopoint: swGeopoint, neGeopoint: neGeopoint, latitude: latitude, longitude: longitude)
             }
         }
     }
+}
 
-    database.collection("Companies").document("Portland State University").collection("Data").whereField("Location", isGreaterThan: swGeopoint).whereField("Location", isLessThan: neGeopoint).getDocuments { snapshot, error in
+func getParkingLocations(location: String, swGeopoint: GeoPoint, neGeopoint: GeoPoint, latitude: Double, longitude: Double){
+    database.collection("Companies").document(location).collection("Data").whereField("Location", isGreaterThan: swGeopoint).whereField("Location", isLessThan: neGeopoint).getDocuments { snapshot, error in
         if let error = error {
             print("Error getting documents: \(error)")
         }else{
@@ -70,54 +71,29 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
                     
                     ParkingData.append(Parking(Location: location, Distance: distance, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floors: [], Spots: [], CompanyStripeID: CompanyStripeID))
                 }
+                
+                if ParkingData.isEmpty == false {
+                    getLocationData(location: location, facility: document.documentID)
+                }
             }
-            
-            if ParkingData.isEmpty == false {
-                getStructureData()
-            }
-            
             NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
         }
     }
 }
 
-func getParkingLocations(location: String){
-
-    database.collection("Companies").document(location).collection("Data").getDocuments { snapshot, error in
-        if let error = error {
-            print("Error getting documents: \(error)")
-        }else{
-            for document in snapshot!.documents {
-                if document.exists {
-                    print(document.documentID)
-                }
+func getLocationData(location: String, facility: String){
+    database.collection("Companies").document(location).collection("Data").document(facility).getDocument { (document, error) in
+        if let document = document, document.exists {
+            let spotStatus = document.data()?["Spot Status"] as! [String: Any]
+            let unoccupiedSpots = spotStatus["Unoccupied"] as! [NSNumber]
+            
+            if !unoccupiedSpots.isEmpty {
+                ParkingData[indexPath.row].Spots.sort {$0.localizedStandardCompare($1) == .orderedAscending}
+                ParkingData[indexPath.row].Spots.append(String(describing: unoccupiedSpots.first!.stringValue))
+                ParkingData[indexPath.row].Floors.append(String(describing: "2"))
+            }else{
+                //all spots are occupied
             }
-        }
-    }
-}
-
-func getStructureData(){
-    database.collection("Companies").document("Portland State University").collection("Data").document("Parking Structure 1").collection("Floor 2").getDocuments { snapshot, error in
-        if let error = error {
-            print("Error getting documents: \(error)")
-        }else{
-            for document in snapshot!.documents {
-                if document.exists {
-                    let info = document.data()["Info"] as! [String: Any]
-                    let occupancy = document.data()["Occupancy"] as! [String: Any]
-                    //let type = document.data()["Pricing"] as! [String: Any]
-
-                    let spotID = info["Spot ID"] as! NSNumber
-                    let occupied = occupancy["Occupied"] as! Bool
-
-                    if !occupied {
-                        ParkingData[indexPath.row].Spots.append(String(describing: spotID))
-                    }
-                    ParkingData[indexPath.row].Floors.append(String(describing: "2"))
-                }
-            }
-            ParkingDataUpdates()
-            ParkingData[indexPath.row].Spots.sort {$0.localizedStandardCompare($1) == .orderedAscending}
         }
     }
 }
@@ -128,29 +104,55 @@ func ParkingDataUpdates(){
             print("Error fetching snapshots: \(error!)")
             return
         }
-        
+
         snapshot.documentChanges.forEach { diff in
             if (diff.type == .modified) {
                 guard let occupancy = diff.document.data()["Occupancy"] as? [String: Any] else { return }
                 guard let occupied = occupancy["Occupied"] as? Bool else { return }
                 guard let info = diff.document.data()["Info"] as? [String: Any] else { return }
                 guard let spotID = info["Spot ID"] as? NSNumber else { return }
-                
+
                 if !ParkingData.isEmpty {
                     if (ParkingData[indexPath.row].Spots.contains(diff.document.documentID) && occupied) {
                         if let index = ParkingData[indexPath.row].Spots.firstIndex(of: diff.document.documentID) {
                             ParkingData[indexPath.row].Spots.remove(at: index)
-                            
+
                         }
                     }else if (ParkingData[indexPath.row].Spots.contains(diff.document.documentID) == false && !occupied){
                         ParkingData[indexPath.row].Spots.append(String(describing: spotID))
-                        
+
                     }else if (SelectedParkingData[indexPath.row].Spot.contains(diff.document.documentID) && occupied == true){
                         print("PARKING TAKEN")
                         //direct them to next available spot
                     }
                     NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
                 }
+            }
+        }
+
+        if !ParkingData.isEmpty {
+            ParkingData[indexPath.row].Floors.append(String(describing: "2"))
+            ParkingData[indexPath.row].Spots.sort {$0.localizedStandardCompare($1) == .orderedAscending}
+        }
+    }
+}
+
+func ParkingDataUpdates1(location: String){
+    database.collection("Companies").document(location).collection("Data").addSnapshotListener { querySnapshot, error in
+        guard let snapshot = querySnapshot else {
+            print("Error fetching snapshots: \(error!)")
+            return
+        }
+        
+        snapshot.documentChanges.forEach { diff in
+            if (diff.type == .modified) {
+                guard let spotStatus = diff.document.data()["Spot Status"] as? [String: Any] else { return }
+                guard let occupiedSpots = spotStatus["Occupied"] as? [NSNumber] else { return }
+                guard let unoccupiedSpots = spotStatus["Unoccupied"] as? [NSNumber] else { return }
+                
+                
+                print("occupied spots", occupiedSpots)
+                print("unoccupied spots", unoccupiedSpots)
             }
         }
         
