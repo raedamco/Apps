@@ -123,7 +123,6 @@ struct SelectedParking {
         self.Spot = Spot
         self.CompanyStripeID = CompanyStripeID
     }
-    
 }
 
 struct RouteInfo {
