@@ -31,7 +31,6 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
     let swGeopoint = GeoPoint(latitude: latitude - deltaLat, longitude: longitude - deltaLon)
     let neGeopoint = GeoPoint(latitude: latitude + deltaLat, longitude: longitude + deltaLon)
 
-    
     var locationsArray = [String]()
     
     database.collection("Companies").getDocuments { (snapshot, error) in
@@ -45,19 +44,21 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
             }
             
             for location in locationsArray {
-                getParkingLocations(location: location, swGeopoint: swGeopoint, neGeopoint: neGeopoint, latitude: latitude, longitude: longitude)
+                getParkingLocations(location1: location, swGeopoint: swGeopoint, neGeopoint: neGeopoint, latitude: latitude, longitude: longitude)
             }
         }
     }
 }
 
-func getParkingLocations(location: String, swGeopoint: GeoPoint, neGeopoint: GeoPoint, latitude: Double, longitude: Double){
-    database.collection("Companies").document(location).collection("Data").whereField("Location", isGreaterThan: swGeopoint).whereField("Location", isLessThan: neGeopoint).getDocuments { snapshot, error in
+func getParkingLocations(location1: String, swGeopoint: GeoPoint, neGeopoint: GeoPoint, latitude: Double, longitude: Double){
+    database.collection("Companies").document(location1).collection("Data").whereField("Location", isGreaterThan: swGeopoint).whereField("Location", isLessThan: neGeopoint).getDocuments { snapshot, error in
         if let error = error {
             print("Error getting documents: \(error)")
         }else{
             for document in snapshot!.documents {
                 if document.exists {
+                    var floors = [String]()
+                    var spots = [String]()
                     let organization = document.data()["Organization"] as! String
                     let price = document.data()["Pricing"] as! [String: Any]
                     let rate = price["Minute"]! as! NSNumber
@@ -68,125 +69,40 @@ func getParkingLocations(location: String, swGeopoint: GeoPoint, neGeopoint: Geo
                     let available = currentInfo["Available"]!
                     let capacity = currentInfo["Capacity"]!
                     let CompanyStripeID = document.data()["CompanyStripeID"] as! String
+                    let floorDataMap = document.data()["Floor Data"] as! [String: Any]
+
+                    for floor in floorDataMap.keys {
+                        floors.append(floor)
+                    }
+                    
+                    for floor in floors {
+                        let floorData = floorDataMap[floor] as! [String: Any]
+                        let unoccupiedSpots = floorData["Unoccupied"] as! [NSNumber]
+                        spots.append(contentsOf: unoccupiedSpots.map {$0.stringValue})
+                    }
                     
                     let distance = String(describing: convertToMiles(Value: CLLocation(latitude: location.latitude, longitude: location.longitude).distance(from: CLLocation(latitude: latitude, longitude: longitude)))) + " from destination"
                     
-                    ParkingData.append(Parking(Location: location, Distance: distance, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floors: [], Spots: [], CompanyStripeID: CompanyStripeID))
+                    ParkingData.append(Parking(Location: location, Distance: distance, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floors: floors, Spots: spots, CompanyStripeID: CompanyStripeID))
                 }
-                
-                getLocationData(location: location, facility: document.documentID)
+                NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
             }
         }
     }
 }
 
-func getLocationData(location: String, facility: String){
-    database.collection("Companies").document(location).collection("Data").document(facility).getDocument { (document, error) in
-        if let document = document, document.exists {
-            let floorDataMap = document.data()?["Floor Data"] as! [String: Any]
-            
-            for floorData in floorDataMap {
-                ParkingData[indexPath.row].Floors.append(floorData.key)
-            }
-            
-            for floors in ParkingData[indexPath.row].Floors {
-                let floor = floorDataMap[floors] as! [String: Any]
-                let unoccupiedSpots = floor["Unoccupied"] as! [NSNumber]
-                ParkingData[indexPath.row].Spots.append(contentsOf: unoccupiedSpots.map {$0.stringValue})
-                ParkingData[indexPath.row].Spots.sort {$0.localizedStandardCompare($1) == .orderedAscending}
-                ParkingData[indexPath.row].Floors.append(floors)
-            }
-        }
-        
-        NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
-    }
-}
-
-func ParkingDataUpdates(location: String){
-    database.collection("Companies").document(location).collection("Data").addSnapshotListener { querySnapshot, error in
-        guard let snapshot = querySnapshot else {
-            print("Error fetching snapshots: \(error!)")
-            return
-        }
-        
-        snapshot.documentChanges.forEach { diff in
-            if (diff.type == .modified) {
-                guard let floorDataMap = diff.document.data()["Floor Data"] as? [String: Any] else { return }
-                
-                for floors in ParkingData[indexPath.row].Floors {
-                    let floor = floorDataMap[floors] as! [String: Any]
-                    let unoccupiedSpots = floor["Unoccupied"] as! [NSNumber]
-                    let occupiedSpots = floor["Occupied"] as! [NSNumber]
-                    
-                    if !ParkingData.isEmpty {
-                        if (ParkingData[indexPath.row].Spots.contains(diff.document.documentID)) {
-                            if let index = ParkingData[indexPath.row].Spots.firstIndex(of: diff.document.documentID) {
-                                ParkingData[indexPath.row].Spots.remove(at: index)
-
-                            }
-                        }else if (ParkingData[indexPath.row].Spots.contains(diff.document.documentID) == false && !occupied){
-                            ParkingData[indexPath.row].Spots.append(String(describing: spotID))
-
-                        }else if (SelectedParkingData[indexPath.row].Spot.contains(diff.document.documentID) && occupied == true){
-                            print("PARKING TAKEN")
-                            //direct them to next available spot
-                        }
-                        NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
-                    }
-                    
-                }
-                
-                
-                
-//                occupiedSpots.map {$0.stringValue}
-                
-//                print("occupied spots", occupiedSpots)
-//                print("unoccupied spots", unoccupiedSpots)
-            }
-        }
-        
-        if !ParkingData.isEmpty {
-            ParkingData[indexPath.row].Floors.append(String(describing: "2"))
-            ParkingData[indexPath.row].Spots.sort {$0.localizedStandardCompare($1) == .orderedAscending}
-        }
-    }
-}
-
-func ParkingDataUpdates(){
-    database.collection("Companies").document("Portland State University").collection("Data").document("Parking Structure 1").collection("Floor 2").addSnapshotListener { querySnapshot, error in
-        guard let snapshot = querySnapshot else {
-            print("Error fetching snapshots: \(error!)")
-            return
-        }
-
-        snapshot.documentChanges.forEach { diff in
-            if (diff.type == .modified) {
-                guard let occupancy = diff.document.data()["Occupancy"] as? [String: Any] else { return }
-                guard let occupied = occupancy["Occupied"] as? Bool else { return }
-                guard let info = diff.document.data()["Info"] as? [String: Any] else { return }
-                guard let spotID = info["Spot ID"] as? NSNumber else { return }
-
-                if !ParkingData.isEmpty {
-                    if (ParkingData[indexPath.row].Spots.contains(diff.document.documentID) && occupied) {
-                        if let index = ParkingData[indexPath.row].Spots.firstIndex(of: diff.document.documentID) {
-                            ParkingData[indexPath.row].Spots.remove(at: index)
-
-                        }
-                    }else if (ParkingData[indexPath.row].Spots.contains(diff.document.documentID) == false && !occupied){
-                        ParkingData[indexPath.row].Spots.append(String(describing: spotID))
-
-                    }else if (SelectedParkingData[indexPath.row].Spot.contains(diff.document.documentID) && occupied == true){
-                        print("PARKING TAKEN")
-                        //direct them to next available spot
-                    }
-                    NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
-                }
-            }
-        }
-
-        if !ParkingData.isEmpty {
-            ParkingData[indexPath.row].Floors.append(String(describing: "2"))
-            ParkingData[indexPath.row].Spots.sort {$0.localizedStandardCompare($1) == .orderedAscending}
-        }
-    }
-}
+// MARK: FIX REALTIME UPDATES. IF SPOT IS TAKEN & USER IS BEING DIRECTED THERE, FIND THEM THE NEXT AVAILABLE SPOT
+//func ParkingDataUpdates(location: String){
+//    database.collection("Companies").document(location).collection("Data").addSnapshotListener { querySnapshot, error in
+//        guard let snapshot = querySnapshot else {
+//            print("Error fetching snapshots: \(error!)")
+//            return
+//        }
+//
+//        snapshot.documentChanges.forEach { diff in
+//            if (diff.type == .modified) {
+//                guard let floorDataMap = diff.document.data()["Floor Data"] as? [String: Any] else { return }
+//            }
+//        }
+//    }
+//}
