@@ -47,6 +47,7 @@ func getDocumentNearBy(latitude: Double, longitude: Double, meters: Double) {
                 getParkingLocations(location1: location, swGeopoint: swGeopoint, neGeopoint: neGeopoint, latitude: latitude, longitude: longitude)
             }
         }
+        locationsArray.removeAll()
     }
 }
 
