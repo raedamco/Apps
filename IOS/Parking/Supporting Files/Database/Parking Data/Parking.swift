@@ -57,7 +57,7 @@ func getParkingLocations(location1: String, swGeopoint: GeoPoint, neGeopoint: Ge
             print("Error getting documents: \(error)")
         }else{
             for document in snapshot!.documents {
-                if document.exists {
+                if document.exists && document.data()["Active"] as! Bool == true {
                     var floors = [String]()
                     var spots = [String]()
                     let organization = document.data()["Organization"] as! String
@@ -86,6 +86,7 @@ func getParkingLocations(location1: String, swGeopoint: GeoPoint, neGeopoint: Ge
                     
                     ParkingData.append(Parking(Location: location, Distance: distance, Name: name, Types: types, Organization: organization, Prices: rate, Capacity: capacity, Available: available, Floors: floors, Spots: spots, CompanyStripeID: CompanyStripeID))
                 }
+                ParkingData.sort(by: {$0.Distance < $1.Distance})
                 NotificationCenter.default.post(name: NSNotification.Name("reloadResultTable"), object: nil)
             }
         }

@@ -72,7 +72,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             self.view.reloadInputViews()
         }
     }
-     
+    
      override func viewDidAppear(_ animated: Bool) {
         setNeedsStatusBarAppearanceUpdate()
         checkConnection()
@@ -172,7 +172,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
                     AutofillController.primaryTextColor = standardContrastColor
                     AutofillController.tableCellSeparatorColor = .darkGray
                     present(AutofillController, animated: true, completion: nil)
-                    print("location enabled")
                 @unknown default:
                 break
             }

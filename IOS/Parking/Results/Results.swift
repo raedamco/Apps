@@ -147,6 +147,7 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         self.tableView.reloadInputViews()
         self.tableView.setNeedsUpdateConstraints()
         self.tableView.tableFooterView?.reloadInputViews()
+        
         self.reloadInputViews()
         self.view.needsUpdateConstraints()
 

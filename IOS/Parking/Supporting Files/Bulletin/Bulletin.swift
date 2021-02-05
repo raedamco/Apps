@@ -64,7 +64,7 @@ enum BulletinDataSource {
         page.alternativeButtonTitle = "Cancel"
         page.descriptionText = "\(SelectedParkingData[indexPath.row].Organization) \n \(SelectedParkingData[indexPath.row].Name) \n \(SelectedParkingData[indexPath.row].Floor) - \(SelectedParkingData[indexPath.row].Spot) \n $\(convertToString(Number: SelectedParkingData[indexPath.row].Price))/min"
         page.requiresCloseButton = false
-        print(SelectedParkingData)
+        
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
             NotificationCenter.default.post(name: NSNotification.Name("startRoute"), object: nil)

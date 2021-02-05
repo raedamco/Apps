@@ -32,7 +32,7 @@ extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPA
     }
     
     func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
-        STPAPIClient.shared().createToken(with: payment) { (stripeToken, error) in
+        STPAPIClient.shared.createToken(with: payment) { (stripeToken, error) in
             guard error == nil, let stripeToken = stripeToken else {
                return print(error!)
             }

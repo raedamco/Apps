@@ -111,7 +111,7 @@ class CheckoutViewController: UIViewController {
 
         // Complete the setup
         let paymentHandler = STPPaymentHandler.shared()
-        paymentHandler.confirmSetupIntent(withParams: setupIntentParams, authenticationContext: self) { status, setupIntent, error in
+        paymentHandler.confirmSetupIntent(setupIntentParams, with: self) { status, setupIntent, error in
             switch (status) {
             case .failed:
                 self.errorMessage = error?.localizedDescription ?? ""
