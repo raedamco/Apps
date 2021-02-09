@@ -15,13 +15,6 @@ import BLTNBoard
 import FirebaseFunctions
 import Stripe
 
-import UIKit
-import Firebase
-import LocalAuthentication
-import Lottie
-import BLTNBoard
-import FirebaseFunctions
-
 class SignUp: UIViewController, UITextFieldDelegate{
     
     let emailTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .emailAddress, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: false, Placeholder: "Email", Target: self)

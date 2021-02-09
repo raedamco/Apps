@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
         } else {
 #if TARGET_OS_MACCATALYST
 #else
-            _activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+            _activityIndicatorViewStyle = UIActivityIndicatorViewStyleMedium;
 #endif
         }
         _blurStyle = UIBlurEffectStyleRegular;

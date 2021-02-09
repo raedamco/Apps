@@ -372,7 +372,7 @@ PODS:
   - gRPC-Core/Interface (1.28.2)
   - GTMSessionFetcher/Core (1.5.0)
   - leveldb-library (1.22)
-  - lottie-ios (3.2.0)
+  - lottie-ios (3.2.1)
   - nanopb (2.30907.0):
     - nanopb/decode (= 2.30907.0)
     - nanopb/encode (= 2.30907.0)
@@ -488,7 +488,7 @@ SPEC CHECKSUMS:
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
-  lottie-ios: b6b911246246a90a1d25e7388afe6d9ef003d293
+  lottie-ios: 106e92eaf11fbed0a76590b4cdb9b5ec26123ff7
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Siren: de768099aff1f1c9acda4247064788a4940b4bf3
@@ -502,6 +502,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 5221df6ca45e0b6f12470a5e8e65ccf3ccca17fa
   ZendeskSupportSDK: e100a7a0a1bb5d7d43abbde3338727d985a4986d
 
-PODFILE CHECKSUM: 14537ef22899b7777b68d018666d254cc73fce4b
+PODFILE CHECKSUM: dfac3d811bd3deb82a717c554d078788cfd02e7f
 
 COCOAPODS: 1.10.1
