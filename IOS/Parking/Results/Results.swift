@@ -119,7 +119,7 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
             self.navigationController?.popViewController(animated: true)
             let selectedRow = ParkingData[indexPath.row]
 //            Server.requestSpot()
-            SelectedParkingData.append(SelectedParking(Location: selectedRow.Location, Name: selectedRow.Name, Types: selectedRow.Types, Organization: selectedRow.Organization, Price: selectedRow.Prices, Floor: ParkingData[indexPath.row].Floors.first!, Spot: "Spot " + ParkingData[indexPath.row].Spots.first!, CompanyStripeID: selectedRow.CompanyStripeID))
+            SelectedParkingData.append(SelectedParking(Location: selectedRow.Location, Name: selectedRow.Name, Types: selectedRow.Types, Organization: selectedRow.Organization, Price: selectedRow.Prices, Floor: ParkingData[indexPath.row].Floors.first!, Spot: ParkingData[indexPath.row].Spots.first!, CompanyStripeID: selectedRow.CompanyStripeID))
             print(SelectedParkingData)
         }
         ParkingData.removeAll()
@@ -147,15 +147,13 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         self.tableView.reloadInputViews()
         self.tableView.setNeedsUpdateConstraints()
         self.tableView.tableFooterView?.reloadInputViews()
-        
         self.reloadInputViews()
         self.view.needsUpdateConstraints()
-
+        setNeedsFocusUpdate()
         if ParkingData.count == 0 {
             self.bulletinManagerNotifyNoResults.allowsSwipeInteraction = false
             self.bulletinManagerNotifyNoResults.showBulletin(above: self)
         }
-        
     }
 
     @objc func removeView(notification: NSNotification) {

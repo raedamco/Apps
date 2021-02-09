@@ -120,38 +120,39 @@ func checkCurrentTransaction(){
                     guard let Organization = Info["Organization"] as? String else { return }
                     guard let Spot = Info["Spot"] as? String else { return }
                     guard let Rate = Info["Rate"] as? NSNumber else { return }
-                    guard let Location = Info["Location"] as? GeoPoint else { return }
+                    guard let Location = Info["Location"] as? Firebase.GeoPoint else { return }
                     guard let Time = document.data()["Duration"] as? [String: Firebase.Timestamp] else { return }
 //                    guard let StartLocation = Info["Start Location"] as? GeoPoint else { return }
                     let Start = Time["Begin"]!.dateValue()
                     let difference = Calendar.current.dateComponents([.minute], from: Start, to: Date())
-                    
                     let Amount = Double(difference.minute!) * Double(truncating: Rate)
                     
                     TransactionData.append(Payment(Current: true, Start: Start, Amount: Amount))
                     getCurrentParkingData(Location: Location, Organization: Organization, Spot: Spot, Floor: Floor, Rate: Rate)
-                    
-                    mainTimer.start()
                 }
             }
         }
     }
 }
 
+
 func getCurrentParkingData(Location: GeoPoint, Organization: String, Spot: String, Floor: String, Rate: NSNumber){
-    database.collection("PSU").whereField("Location", isEqualTo: Location).getDocuments { snapshot, error in
-        if let error = error {
+    database.collection("Companies").document(Organization).collection("Data").whereField("Location", isLessThanOrEqualTo: Location).getDocuments { snapshot, error in
+        if let error = error { 
             print("Error getting documents: \(error)")
         }else{
             for document in snapshot!.documents {
                 if document.exists {
+                    print(Organization)
                     let name = document.data()["Name"] as! String
                     let types = document.data()["Spot Types"] as! [String: Bool]
                     let CompanyStripeID = document.data()["CompanyStripeID"] as! String
                     SelectedParkingData.append(SelectedParking(Location: Location, Name: name, Types: types, Organization: Organization, Price: Rate, Floor: Floor, Spot: Spot, CompanyStripeID: CompanyStripeID))
                     NotificationCenter.default.post(name: NSNotification.Name("loadMap"), object: nil)
+                    print("PARKING DATA", SelectedParkingData)
                 }
             }
+            mainTimer.start()
         }
     }
 }

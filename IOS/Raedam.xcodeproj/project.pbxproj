@@ -64,7 +64,7 @@
 		07F0E6FF23792A8500046292 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F0E6FE23792A8500046292 /* About.swift */; };
 		07F0E70123794C6000046292 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F0E70023794C6000046292 /* Filter.swift */; };
 		07F0E7052379D5BE00046292 /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F0E7042379D5BE00046292 /* Classes.swift */; };
-		C6D687747A9C7F6D4DE1FD65 /* Pods_Theory_Parking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10C6BF308C6D49485252275D /* Pods_Theory_Parking.framework */; };
+		181776AC994D0EBE1978C46C /* Pods_Theory_Parking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAE3E3674B88A247A67DB41 /* Pods_Theory_Parking.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -143,9 +143,9 @@
 		07F0E6FE23792A8500046292 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		07F0E70023794C6000046292 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		07F0E7042379D5BE00046292 /* Classes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
-		10C6BF308C6D49485252275D /* Pods_Theory_Parking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Theory_Parking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4D6BA086EE38451A30B71720 /* Pods-Theory Parking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.debug.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.debug.xcconfig"; sourceTree = "<group>"; };
-		5127635E6AB73FC3D6A8406B /* Pods-Theory Parking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.release.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.release.xcconfig"; sourceTree = "<group>"; };
+		43495BBF18BD6FC9B38036EB /* Pods-Theory Parking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.debug.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.debug.xcconfig"; sourceTree = "<group>"; };
+		7DAE3E3674B88A247A67DB41 /* Pods_Theory_Parking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Theory_Parking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9FE13A97BD70C7150ABCA724 /* Pods-Theory Parking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.release.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,7 +156,7 @@
 				07641140237A6DA200EF4332 /* PassKit.framework in Frameworks */,
 				0764113A237A109800EF4332 /* WebKit.framework in Frameworks */,
 				07BAB78E24AA9A9900A425A2 /* MapKit.framework in Frameworks */,
-				C6D687747A9C7F6D4DE1FD65 /* Pods_Theory_Parking.framework in Frameworks */,
+				181776AC994D0EBE1978C46C /* Pods_Theory_Parking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,8 +389,8 @@
 		1C301C15EF6F40E27F459DE5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				4D6BA086EE38451A30B71720 /* Pods-Theory Parking.debug.xcconfig */,
-				5127635E6AB73FC3D6A8406B /* Pods-Theory Parking.release.xcconfig */,
+				43495BBF18BD6FC9B38036EB /* Pods-Theory Parking.debug.xcconfig */,
+				9FE13A97BD70C7150ABCA724 /* Pods-Theory Parking.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -403,7 +403,7 @@
 				07641139237A109800EF4332 /* WebKit.framework */,
 				07B13CAB23767AC70015E111 /* Alamofire.framework */,
 				07EF7D95235C357600D015CF /* Lottie.framework */,
-				10C6BF308C6D49485252275D /* Pods_Theory_Parking.framework */,
+				7DAE3E3674B88A247A67DB41 /* Pods_Theory_Parking.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -415,20 +415,22 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0734C0AD2325BBC000E74D0A /* Build configuration list for PBXNativeTarget "Theory Parking" */;
 			buildPhases = (
-				466883E0B3978EAB928B40AC /* [CP] Check Pods Manifest.lock */,
+				6E50758DC4818A784A9C7DFB /* [CP] Check Pods Manifest.lock */,
 				0734C0932325BBBF00E74D0A /* Sources */,
 				0734C0942325BBBF00E74D0A /* Frameworks */,
 				0734C0952325BBBF00E74D0A /* Resources */,
 				07B2CF6D236E959000BBD923 /* Embed Frameworks */,
 				0715ECD42533DFB700CD5F24 /* ShellScript */,
-				FFD2AAAAEBDA2B9456887713 /* [CP] Embed Pods Frameworks */,
-				C092E5F161E5F4B2314B69EA /* [CP] Copy Pods Resources */,
+				F1513BFFBBD2F8B431253547 /* [CP] Embed Pods Frameworks */,
+				7CA91590644B3C7CE936499A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "Theory Parking";
+			packageProductDependencies = (
+			);
 			productName = Parking;
 			productReference = 0734C0972325BBBF00E74D0A /* park.app */;
 			productType = "com.apple.product-type.application";
@@ -457,6 +459,8 @@
 				Base,
 			);
 			mainGroup = 0734C08E2325BBBF00E74D0A;
+			packageReferences = (
+			);
 			productRefGroup = 0734C0982325BBBF00E74D0A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -500,7 +504,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
-		466883E0B3978EAB928B40AC /* [CP] Check Pods Manifest.lock */ = {
+		6E50758DC4818A784A9C7DFB /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -522,7 +526,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C092E5F161E5F4B2314B69EA /* [CP] Copy Pods Resources */ = {
+		7CA91590644B3C7CE936499A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -539,7 +543,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FFD2AAAAEBDA2B9456887713 /* [CP] Embed Pods Frameworks */ = {
+		F1513BFFBBD2F8B431253547 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -744,7 +748,7 @@
 		};
 		0734C0AE2325BBC000E74D0A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4D6BA086EE38451A30B71720 /* Pods-Theory Parking.debug.xcconfig */;
+			baseConfigurationReference = 43495BBF18BD6FC9B38036EB /* Pods-Theory Parking.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
@@ -772,7 +776,7 @@
 		};
 		0734C0AF2325BBC000E74D0A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5127635E6AB73FC3D6A8406B /* Pods-Theory Parking.release.xcconfig */;
+			baseConfigurationReference = 9FE13A97BD70C7150ABCA724 /* Pods-Theory Parking.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
