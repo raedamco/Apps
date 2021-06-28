@@ -87,25 +87,29 @@ public class StripeAPI: NSObject {
   }
 
   @objc class func supportedPKPaymentNetworks() -> [PKPaymentNetwork] {
+    var additionalOSSupportedNetworks : [PKPaymentNetwork] = []
+    if #available(iOS 12.0, *) {
+      additionalOSSupportedNetworks.append(.maestro)
+    }
     return [
       .amex,
       .masterCard,
       .visa,
       .discover,
-    ] + additionalEnabledApplePayNetworks
+    ] + additionalEnabledApplePayNetworks + additionalOSSupportedNetworks
   }
 
   /// Whether or not this can make Apple Pay payments via a card network supported
   /// by Stripe.
   /// The Stripe supported Apple Pay card networks are:
-  /// American Express, Visa, Mastercard, Discover.
+  /// American Express, Visa, Mastercard, Discover, Maestro.
   /// Japanese users can enable JCB by setting `JCBPaymentNetworkSupported` to YES,
   /// after they have been approved by JCB.
   /// - Returns: YES if the device is currently able to make Apple Pay payments via one
   /// of the supported networks. NO if the user does not have a saved card of a
   /// supported type, or other restrictions prevent payment (such as parental controls).
   @objc dynamic public class func deviceSupportsApplePay() -> Bool {
-    return PKPaymentAuthorizationViewController.canMakePayments(
+    return PKPaymentAuthorizationController.canMakePayments(
       usingNetworks: self.supportedPKPaymentNetworks())
   }
 
@@ -134,9 +138,9 @@ public class StripeAPI: NSObject {
 
   /// A convenience method to build a `PKPaymentRequest` with sane default values.
   /// You will still need to configure the `paymentSummaryItems` property to indicate
-  /// what the user is purchasing, as well as the optional `requiredShippingAddressFields`,
-  /// `requiredBillingAddressFields`, and `shippingMethods` properties to indicate
-  /// what contact information your application requires.
+  /// what the user is purchasing, as well as the optional `requiredShippingContactFields`,
+  /// `requiredBillingContactFields`, and `shippingMethods` properties to indicate
+  /// what additional contact information your application requires.
   /// - Parameters:
   ///   - merchantIdentifier: Your Apple Merchant ID.
   ///   - countryCode:        The two-letter code for the country where the payment
@@ -175,7 +179,7 @@ public class StripeAPI: NSObject {
   /// To learn more about native url schemes, see https://developer.apple.com/library/content/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Inter-AppCommunication/Inter-AppCommunication.html#//apple_ref/doc/uid/TP40007072-CH6-SW10
   /// - Parameter url: The URL that you received in your app delegate
   /// - Returns: YES if the URL is expected and will be handled by Stripe. NO otherwise.
-  @objc(handleStripeURLCallbackWithURL:) public static func handleURLCallback(with url: URL) -> Bool
+  @objc(handleStripeURLCallbackWithURL:) @discardableResult public static func handleURLCallback(with url: URL) -> Bool
   {
     return STPURLCallbackHandler.shared().handleURLCallback(url)
   }

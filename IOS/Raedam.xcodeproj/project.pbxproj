@@ -42,13 +42,14 @@
 		07ACDAE924999D4700F170B0 /* Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAE824999D4700F170B0 /* Stripe.swift */; };
 		07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */; };
 		07ADFCBD23712A9900D5D81F /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ADFCBC23712A9900D5D81F /* Structs.swift */; };
-		07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07BAB78E24AA9A9900A425A2 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07BAB78D24AA9A9900A425A2 /* MapKit.framework */; };
 		07BF2DE32438387C0017BCD3 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE22438387C0017BCD3 /* Parking.swift */; };
 		07BF2DE5243838970017BCD3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE4243838970017BCD3 /* User.swift */; };
 		07BF2DE7243838D20017BCD3 /* Transactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE6243838D20017BCD3 /* Transactions.swift */; };
-		07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07CAAC422439372D0027FF60 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CAAC412439372D0027FF60 /* PaymentMethod.swift */; };
+		07DD00402689728A00687875 /* Park.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DD003F2689728A00687875 /* Park.swift */; };
 		07E3644D2327925100B55203 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E3644C2327925100B55203 /* Preferences.swift */; };
 		07E4F81623416E3C001CC519 /* Payments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E4F81523416E3C001CC519 /* Payments.swift */; };
 		07EF7D94235BF0BF00D015CF /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07EF7D93235BF0BF00D015CF /* Connectivity.swift */; };
@@ -74,8 +75,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */,
-				07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */,
+				07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */,
+				07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -127,6 +128,7 @@
 		07BF2DE4243838970017BCD3 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		07BF2DE6243838D20017BCD3 /* Transactions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transactions.swift; sourceTree = "<group>"; };
 		07CAAC412439372D0027FF60 /* PaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethod.swift; sourceTree = "<group>"; };
+		07DD003F2689728A00687875 /* Park.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Park.swift; sourceTree = "<group>"; };
 		07E3644C2327925100B55203 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		07E4F81523416E3C001CC519 /* Payments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Payments.swift; sourceTree = "<group>"; };
 		07EF7D93235BF0BF00D015CF /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
@@ -281,8 +283,9 @@
 			children = (
 				0793EC032339F4450099C71C /* Controller.swift */,
 				0734C09E2325BBBF00E74D0A /* Home.swift */,
-				074A8AF2242FF6DB00E219A9 /* Pay.swift */,
+				07DD003F2689728A00687875 /* Park.swift */,
 				0793DDD32325F80B002FBE09 /* Settings.swift */,
+				074A8AF2242FF6DB00E219A9 /* Pay.swift */,
 			);
 			path = "Main View Controllers";
 			sourceTree = "<group>";
@@ -607,6 +610,7 @@
 				07A42B82235BD9E100A053B0 /* SignUp.swift in Sources */,
 				0744C7E824A03EBA00574A0F /* Database.swift in Sources */,
 				07ADFCBD23712A9900D5D81F /* Structs.swift in Sources */,
+				07DD00402689728A00687875 /* Park.swift in Sources */,
 				07E3644D2327925100B55203 /* Preferences.swift in Sources */,
 				0757296D243A53F600BDA702 /* Directions.swift in Sources */,
 			);
@@ -749,7 +753,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.00048;
+				CURRENT_PROJECT_VERSION = 1.00050;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
 				INFOPLIST_FILE = Parking/Info.plist;
@@ -758,7 +762,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00048;
+				MARKETING_VERSION = 1.00050;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theoryparking.park;
 				PRODUCT_NAME = park;
@@ -777,7 +781,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.00048;
+				CURRENT_PROJECT_VERSION = 1.00050;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
 				INFOPLIST_FILE = Parking/Info.plist;
@@ -786,7 +790,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00048;
+				MARKETING_VERSION = 1.00050;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theoryparking.park;
 				PRODUCT_NAME = park;

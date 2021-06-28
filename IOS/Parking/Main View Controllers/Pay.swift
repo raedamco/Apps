@@ -14,7 +14,7 @@ import PassKit
 import Stripe
 import FirebaseFunctions
 
-class ParkViewController: UIViewController, CLLocationManagerDelegate {
+class PayViewController: UIViewController, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     var userLocation = CLLocation()
     
@@ -241,7 +241,7 @@ class ParkViewController: UIViewController, CLLocationManagerDelegate {
     }
 }
 
-extension ParkViewController: GMSAutocompleteViewControllerDelegate {
+extension PayViewController: GMSAutocompleteViewControllerDelegate {
         
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
         destinationName = place.name!

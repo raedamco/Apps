@@ -12,7 +12,7 @@ import PassKit
 import Alamofire
 import Firebase
 
-extension ParkViewController: PKPaymentAuthorizationViewControllerDelegate, STPApplePayContextDelegate {
+extension PayViewController: PKPaymentAuthorizationViewControllerDelegate, STPApplePayContextDelegate {
     
     @objc func proccessPayment(){
         self.paymentButton.isEnabled = false

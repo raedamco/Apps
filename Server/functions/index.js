@@ -14,10 +14,11 @@ const admin = require('firebase-admin');
 admin.initializeApp({
   databaseURL: "https://theory-parking.firebaseio.com"
 });
+// PubSub = require(`@google-cloud/pubsub`);
 
 //Private keys
 const stripe = require('stripe')("sk_test_51H0FFyDtW0T37E4P27PEfuEPvDUyGvmkNhInroQ9mAH7sdKzeM0A2hqLEC3advWxPHO0oCMJtHKk7USLmMIqc4aW00RhpYqsgR"); //Secret Key
-var slack = require('slack-notify')('https://hooks.slack.com/services/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');
+var slack = require('slack-notify')('https://hooks.slack.com/services/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');
 var slackTransactionBot = require('slack-notify')('https://hooks.slack.com/services/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');
 //INITIALIZATION END
 
@@ -462,3 +463,32 @@ exports.create_setup_intent = functions.https.onRequest(async (req, res) => {
     }
 });
 //STRIPE END
+
+
+
+// exports.pubsubcall = functions.pubsub.topic('particle').onPublish(async (message) => {
+//   const messageData = Buffer.from(message.data, 'base64').toString();
+//   var parsedStringData = messageData.split(",");
+//
+//   //Parsed values from main unit
+//   var company = parsedStringData[0];
+//   var location = parsedStringData[1];
+//   var floor = parsedStringData[2];
+//   var mainUnitNumber = parsedStringData[3];
+//   var batteryLevel = parsedStringData[4];
+//
+//   //Update database from values
+//   updateDatabase(company,location,floor,mainUnitNumber,batteryLevel);
+// });
+
+async function updateDatabase(company, location, floor, mainUnitNumber, batteryLevel){
+  const snapshot = await db.collection('Companies').where("CUID", "==",company).get();
+  var fieldName = "Main Units." + mainUnitNumber + ".Battery Level";
+  if (snapshot) {
+    db.collection("Companies").doc(snapshot.id).collection("Data").doc(location).update({
+      fieldName: batteryLevel
+    }).catch((err) => {
+      console.log("Error updating battery level", err);
+    });
+  }
+}

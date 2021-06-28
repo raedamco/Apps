@@ -3045,11 +3045,11 @@ Copyright 2021 Google
 
 ## GoogleMaps
 
-Copyright 2020 Google
+Copyright 2021 Google
 
 ## GooglePlaces
 
-Copyright 2020 Google
+Copyright 2021 Google
 
 ## GoogleUtilities
 
