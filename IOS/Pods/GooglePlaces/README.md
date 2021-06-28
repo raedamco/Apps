@@ -50,7 +50,7 @@ specify it in your `Podfile`:
 
 ```
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '10.0'
+platform :ios, '11.4'
 target 'YOUR_APPLICATION_TARGET_NAME_HERE' do
   pod 'GooglePlaces'
 end

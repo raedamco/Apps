@@ -149,5 +149,5 @@ install_xcframework() {
   echo "Copied $source to $destination"
 }
 
-install_xcframework "${PODS_ROOT}/ZendeskSupportSDK/SupportSDK.xcframework" "SupportSDK" "framework" "ios-arm64_armv7" "ios-i386_x86_64-simulator"
+install_xcframework "${PODS_ROOT}/ZendeskSupportSDK/SupportSDK.xcframework" "SupportSDK" "framework" "ios-arm64_armv7" "ios-arm64_i386_x86_64-simulator"
 

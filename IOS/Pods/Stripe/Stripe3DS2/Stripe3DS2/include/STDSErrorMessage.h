@@ -59,11 +59,6 @@ typedef NS_ENUM(NSInteger, STDSErrorMessageCode) {
                  errorMessageType:(NSString *)errorMessageType;
 
 /**
- `STDSErrorMessage` should not be directly initialized.
- */
-- (instancetype)init NS_UNAVAILABLE;
-
-/**
  The error code.
  */
 @property (nonatomic, readonly) NSString *errorCode;
@@ -96,7 +91,7 @@ typedef NS_ENUM(NSInteger, STDSErrorMessageCode) {
 /**
  The message type that was identified as erroneous.
  */
-@property (nonatomic, readonly) NSString *errorMessageType;
+@property (nonatomic, readonly, nullable) NSString *errorMessageType;
 
 /**
  A representation of the `STDSErrorMessage` as an `NSError`

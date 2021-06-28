@@ -13,9 +13,9 @@
 #import "GMSPlacesDeprecationUtils.h"
 
 @class GMSAddressComponent;
-@class GMSCoordinateBounds;
 @class GMSOpeningHours;
 @class GMSPlacePhotoMetadata;
+@class GMSPlaceViewportInfo;
 @class GMSPlusCode;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -154,7 +154,7 @@ typedef NS_ENUM(NSInteger, GMSPlacesBusinessStatus) {
  * |GMSPlace| object representing a store may have a relatively small viewport, while a |GMSPlace|
  * object representing a country may have a very large viewport.
  */
-@property(nonatomic, strong, readonly, nullable) GMSCoordinateBounds *viewport;
+@property(nonatomic, strong, readonly, nullable) GMSPlaceViewportInfo *viewportInfo;
 
 /**
  * An array of |GMSAddressComponent| objects representing the components in the place's address.
