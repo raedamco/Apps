@@ -98,8 +98,8 @@
 		0725B2D92325CF99007B400F /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		0725B2DB2325CFC7007B400F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		0728B6052692DDF8001E1C11 /* BetaSignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaSignUp.swift; sourceTree = "<group>"; };
-		0728B60A26937D08001E1C11 /* b1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = b1.json; path = ../../../../../../../Downloads/b1.json; sourceTree = "<group>"; };
-		0728B60C26937EC2001E1C11 /* b2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = b2.json; path = ../../../../../../../Downloads/b2.json; sourceTree = "<group>"; };
+		0728B60A26937D08001E1C11 /* b1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = b1.json; sourceTree = "<group>"; };
+		0728B60C26937EC2001E1C11 /* b2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = b2.json; sourceTree = "<group>"; };
 		0734C0972325BBBF00E74D0A /* park.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = park.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0734C09A2325BBBF00E74D0A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0734C09E2325BBBF00E74D0A /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
