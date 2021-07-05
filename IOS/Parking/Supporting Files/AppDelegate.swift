@@ -107,7 +107,7 @@ extension AppDelegate {
                             self.window!.rootViewController = TabBarViewController()
                         }
                     }else{
-                        let navigationController = UINavigationController(rootViewController: StartView())
+                        let navigationController = UINavigationController(rootViewController: BetaSignUpView())
                         let window = UIWindow(frame: UIScreen.main.bounds)
                         window.rootViewController = navigationController
                         window.makeKeyAndVisible()

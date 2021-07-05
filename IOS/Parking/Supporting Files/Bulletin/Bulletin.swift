@@ -609,6 +609,63 @@ enum BulletinDataSource {
     
         return page
     }
+    
+    static func reserveSpot() -> TextFieldBulletinPage {
+        let page = TextFieldBulletinPage(title: "Reserve my Spot")
+        page.appearance.titleTextColor = standardContrastColor
+        page.requiresCloseButton = false
+        page.descriptionText = "Enter your email address and we will notify you once Raedam is open for you to use."
+        page.actionButtonTitle = "Submit"
+
+        page.textInputHandler = { (item, text) in
+            if functionError == true {
+                let errorPage = self.makeErrorPage(message: "Error")
+                page.manager?.push(item: errorPage)
+                item.manager?.dismissBulletin(animated: true)
+            }else{
+                database.collection("UsersBeta").document(text!).getDocument { (document, error) in
+                    if let document = document, document.exists {
+                        let errorPage = self.makeErrorPage(message: "Your spot is already reserved with the email \(text!)")
+                        page.manager?.push(item: errorPage)
+                        item.manager?.dismissBulletin(animated: true)
+                    }else{
+                        database.collection("UsersBeta").document(text!).setData(["Email": text!, "Time": Firebase.Timestamp.init(date: Date())]){ error in
+                            if let error = error?.localizedDescription {
+                                let errorPage = self.makeErrorPage(message: error)
+                                page.manager?.push(item: errorPage)
+                                item.manager?.dismissBulletin(animated: true)
+                            }else{
+                                let completionPage = self.reservedSpotPage(email: text)
+                                item.manager?.push(item: completionPage)
+                                item.manager?.dismissBulletin(animated: true)
+                            }
+                        }
+                    }
+                }
+                
+            }
+        }
+        
+        return page
+    }
+    
+    static func reservedSpotPage(email: String?) -> BLTNPageItem {
+        let page = BLTNPageItem(title: "Spot reserved!")
+        page.image = UIImage(named: "Completion")
+        page.appearance.titleTextColor = standardContrastColor
+        page.appearance.actionButtonColor = UIColor.green
+        page.appearance.actionButtonTitleColor = UIColor.white
+        page.descriptionText = "An email will be sent to \(email!) when you have beta access to the Raedam app!"
+        page.actionButtonTitle = "Finish"
+        page.isDismissable = true
+        page.requiresCloseButton = false
+        
+        page.actionHandler = { item in
+            item.manager?.dismissBulletin(animated: true)
+        }
+        
+        return page
+    }
 
     static func makeSentPage(userName: String?) -> BLTNPageItem {
         let page = BLTNPageItem(title: "Sent")

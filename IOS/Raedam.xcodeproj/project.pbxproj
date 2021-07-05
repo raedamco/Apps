@@ -16,6 +16,9 @@
 		0725B2DA2325CF99007B400F /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D92325CF99007B400F /* Variables.swift */; };
 		0725B2DC2325CFC7007B400F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2DB2325CFC7007B400F /* Extensions.swift */; };
 		0725B2DE2325D0F1007B400F /* darkstyle.json in Resources */ = {isa = PBXBuildFile; fileRef = 0725B2D62325CD06007B400F /* darkstyle.json */; };
+		0728B6062692DDF9001E1C11 /* BetaSignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0728B6052692DDF8001E1C11 /* BetaSignUp.swift */; };
+		0728B60B26937D08001E1C11 /* b1.json in Resources */ = {isa = PBXBuildFile; fileRef = 0728B60A26937D08001E1C11 /* b1.json */; };
+		0728B60D26937EC2001E1C11 /* b2.json in Resources */ = {isa = PBXBuildFile; fileRef = 0728B60C26937EC2001E1C11 /* b2.json */; };
 		0734C09B2325BBBF00E74D0A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0734C09A2325BBBF00E74D0A /* AppDelegate.swift */; };
 		0734C09F2325BBBF00E74D0A /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0734C09E2325BBBF00E74D0A /* Home.swift */; };
 		0734C0A62325BBC000E74D0A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0734C0A52325BBC000E74D0A /* Assets.xcassets */; };
@@ -42,12 +45,12 @@
 		07ACDAE924999D4700F170B0 /* Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAE824999D4700F170B0 /* Stripe.swift */; };
 		07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */; };
 		07ADFCBD23712A9900D5D81F /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ADFCBC23712A9900D5D81F /* Structs.swift */; };
-		07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07BAB78E24AA9A9900A425A2 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07BAB78D24AA9A9900A425A2 /* MapKit.framework */; };
 		07BF2DE32438387C0017BCD3 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE22438387C0017BCD3 /* Parking.swift */; };
 		07BF2DE5243838970017BCD3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE4243838970017BCD3 /* User.swift */; };
 		07BF2DE7243838D20017BCD3 /* Transactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE6243838D20017BCD3 /* Transactions.swift */; };
-		07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07CAAC422439372D0027FF60 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CAAC412439372D0027FF60 /* PaymentMethod.swift */; };
 		07DD00402689728A00687875 /* Park.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DD003F2689728A00687875 /* Park.swift */; };
 		07E3644D2327925100B55203 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E3644C2327925100B55203 /* Preferences.swift */; };
@@ -75,8 +78,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */,
-				07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */,
+				07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */,
+				07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +97,9 @@
 		0725B2D72325CF7F007B400F /* Objects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Objects.swift; sourceTree = "<group>"; };
 		0725B2D92325CF99007B400F /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		0725B2DB2325CFC7007B400F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		0728B6052692DDF8001E1C11 /* BetaSignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaSignUp.swift; sourceTree = "<group>"; };
+		0728B60A26937D08001E1C11 /* b1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = b1.json; path = ../../../../../../../Downloads/b1.json; sourceTree = "<group>"; };
+		0728B60C26937EC2001E1C11 /* b2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = b2.json; path = ../../../../../../../Downloads/b2.json; sourceTree = "<group>"; };
 		0734C0972325BBBF00E74D0A /* park.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = park.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0734C09A2325BBBF00E74D0A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0734C09E2325BBBF00E74D0A /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
@@ -205,6 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				0734C09A2325BBBF00E74D0A /* AppDelegate.swift */,
+				0728B607269378F1001E1C11 /* Animations */,
 				0796DABE244D603A00805018 /* Font */,
 				07BF2DDB243834930017BCD3 /* Map Style */,
 				07EF7D9C235C3A4500D015CF /* Bulletin */,
@@ -216,6 +223,15 @@
 				07ACDAEA24999D4D00F170B0 /* Stripe & Server */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0728B607269378F1001E1C11 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				0728B60A26937D08001E1C11 /* b1.json */,
+				0728B60C26937EC2001E1C11 /* b2.json */,
+			);
+			path = Animations;
 			sourceTree = "<group>";
 		};
 		0734C08E2325BBBF00E74D0A = {
@@ -301,6 +317,7 @@
 		07A42B7E235BD99D00A053B0 /* Account View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				0728B6052692DDF8001E1C11 /* BetaSignUp.swift */,
 				07A42B83235BE5E500A053B0 /* Start.swift */,
 				07A42B7F235BD9CD00A053B0 /* SignIn.swift */,
 				07A42B81235BD9E100A053B0 /* SignUp.swift */,
@@ -474,7 +491,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0728B60D26937EC2001E1C11 /* b2.json in Resources */,
 				073D512224281642008450DD /* lightstyle.json in Resources */,
+				0728B60B26937D08001E1C11 /* b1.json in Resources */,
 				0734C0A92325BBC000E74D0A /* LaunchScreen.storyboard in Resources */,
 				0734C0A62325BBC000E74D0A /* Assets.xcassets in Resources */,
 				0725B2DE2325D0F1007B400F /* darkstyle.json in Resources */,
@@ -608,6 +627,7 @@
 				0793EC042339F4450099C71C /* Controller.swift in Sources */,
 				07F0E70123794C6000046292 /* Filter.swift in Sources */,
 				07A42B82235BD9E100A053B0 /* SignUp.swift in Sources */,
+				0728B6062692DDF9001E1C11 /* BetaSignUp.swift in Sources */,
 				0744C7E824A03EBA00574A0F /* Database.swift in Sources */,
 				07ADFCBD23712A9900D5D81F /* Structs.swift in Sources */,
 				07DD00402689728A00687875 /* Park.swift in Sources */,
@@ -753,7 +773,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.00050;
+				CURRENT_PROJECT_VERSION = 1.00051;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
 				INFOPLIST_FILE = Parking/Info.plist;
@@ -762,7 +782,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00050;
+				MARKETING_VERSION = 1.00051;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theoryparking.park;
 				PRODUCT_NAME = park;
@@ -781,7 +801,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.00050;
+				CURRENT_PROJECT_VERSION = 1.00051;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
 				INFOPLIST_FILE = Parking/Info.plist;
@@ -790,7 +810,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00050;
+				MARKETING_VERSION = 1.00051;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theoryparking.park;
 				PRODUCT_NAME = park;

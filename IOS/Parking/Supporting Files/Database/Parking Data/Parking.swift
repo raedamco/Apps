@@ -60,7 +60,7 @@ func getParkingLocations(location1: String, swGeopoint: GeoPoint, neGeopoint: Ge
                     var spots = [String]()
                     let organization = document.data()["Organization"] as! String
                     let price = document.data()["Pricing"] as! [String: Any]
-                    let rate = price["Minute"]! as! NSNumber
+                    let rate = price["Hour"]! as! NSNumber
                     let name = document.data()["Name"] as! String
                     let types = document.data()["Spot Types"] as! [String: Bool]
                     let location = document.data()["Location"] as! GeoPoint

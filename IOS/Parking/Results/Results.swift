@@ -91,7 +91,7 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let PAvailable = String(describing: ParkingData[indexPath.row].Available) + "/" + String(describing: ParkingData[indexPath.row].Capacity) + " Spots Available"
-        let PPrice = "$" + convertToString(Number: ParkingData[indexPath.row].Prices) + "/min"
+        let PPrice = "$" + convertToString(Number: ParkingData[indexPath.row].Prices) + "/hour"
         let PDistance = ParkingData[indexPath.row].Distance
         let CTextDetil = PAvailable + "\n" + PPrice + "\n" + PDistance
         
