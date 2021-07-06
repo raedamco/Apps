@@ -638,6 +638,9 @@ enum BulletinDataSource {
                                 let completionPage = self.reservedSpotPage(email: text)
                                 item.manager?.push(item: completionPage)
                                 item.manager?.dismissBulletin(animated: true)
+//                                if Database.reservedSpot(Email: text!, DateSignedUp: Firebase.Timestamp.init(date: Date())){
+//                                    print("done")
+//                                }
                             }
                         }
                     }

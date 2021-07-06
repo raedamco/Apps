@@ -25,6 +25,34 @@ var slackTransactionBot = require('slack-notify')('https://hooks.slack.com/servi
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //ACCOUNT START
+//When a user signs up for bet access, notify slack
+exports.betaUserAdded = functions.https.onRequest(async (req, res) => {
+    const email = req.body.Email;
+    const date = req.body.Date;
+
+    try {
+        //Send slack message of new finalized transaction
+        await slack.send({
+            'username': 'User Activity Bot',
+            'text': 'Beta User Signedup :tada:',
+            'icon_emoji': ':tada:',
+            'attachments': [{
+              'color': '#5930fc',
+              'fields': [{
+                    'title': 'Joined On',
+                    'value': email + "\n" + date.toUTCString(),
+                    'short': true
+                }]
+            }]
+        })
+
+    } catch(error) {
+        return console.log(error);
+    }
+});
+
+
+
 // When a user creates their account, set up their database log, stripe account, and notify slack
 exports.addUser = functions.auth.user().onCreate(async (user) => {
     var date = new Date();
