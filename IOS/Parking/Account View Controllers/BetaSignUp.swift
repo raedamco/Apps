@@ -23,6 +23,7 @@ class BetaSignUpView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(reloadStartView(notification:)), name: NSNotification.Name(rawValue: "reloadStartView"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(moveViewBeta(notification:)), name: NSNotification.Name(rawValue: "pushBetaSignInView"), object: nil)
         createScreenLayout()
     }
     
@@ -102,6 +103,10 @@ class BetaSignUpView: UIViewController {
         setNeedsFocusUpdate()
         
         navigationbarAttributes(Hidden: true, Translucent: false)
+    }
+    
+    @objc func moveViewBeta(notification: NSNotification) {
+        self.navigationController?.pushViewController(StartView(), animated: false)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

@@ -49,3 +49,10 @@ func getUserData(UID: String, completion: @escaping (_ success: Bool) -> Void) {
     }
 
  }
+
+
+func checkIfUserExists(Email: String){
+        
+    
+        
+}

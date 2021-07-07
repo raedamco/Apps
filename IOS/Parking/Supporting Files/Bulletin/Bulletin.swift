@@ -9,7 +9,6 @@ import SafariServices
 import Firebase
 import Lottie
 
-
 enum BulletinDataSource {
 
     static func makeItemInfoPage() -> BLTNPageItem {
@@ -623,29 +622,41 @@ enum BulletinDataSource {
                 page.manager?.push(item: errorPage)
                 item.manager?.dismissBulletin(animated: true)
             }else{
-                database.collection("UsersBeta").document(text!).getDocument { (document, error) in
-                    if let document = document, document.exists {
-                        let errorPage = self.makeErrorPage(message: "Your spot is already reserved with the email \(text!)")
+                Auth.auth().fetchSignInMethods(forEmail: text!, completion: {(providers, error) in
+                    if let error = error {
+                        let errorPage = self.makeErrorPage(message: error.localizedDescription)
                         page.manager?.push(item: errorPage)
                         item.manager?.dismissBulletin(animated: true)
+                    } else if let providers = providers {
+                        NotificationCenter.default.post(name: NSNotification.Name("pushBetaSignInView"), object: nil)
+                        let successPage = self.makeSuccessPage(TitleText: "Welcome to Beta Access!", ButtonText: "Continue")
+                        page.manager?.push(item: successPage)
+                        item.manager?.dismissBulletin(animated: true)
                     }else{
-                        database.collection("UsersBeta").document(text!).setData(["Email": text!, "Time": Firebase.Timestamp.init(date: Date())]){ error in
-                            if let error = error?.localizedDescription {
-                                let errorPage = self.makeErrorPage(message: error)
+                        database.collection("UsersBeta").document(text!).getDocument { (document, error) in
+                            if let document = document, document.exists {
+                                let errorPage = self.makeErrorPage(message: "Your spot is already reserved with the email \(text!)")
                                 page.manager?.push(item: errorPage)
                                 item.manager?.dismissBulletin(animated: true)
                             }else{
-                                let completionPage = self.reservedSpotPage(email: text)
-                                item.manager?.push(item: completionPage)
-                                item.manager?.dismissBulletin(animated: true)
-//                                if Database.reservedSpot(Email: text!, DateSignedUp: Firebase.Timestamp.init(date: Date())){
-//                                    print("done")
-//                                }
+                                database.collection("UsersBeta").document(text!).setData(["Email": text!, "Time": Firebase.Timestamp.init(date: Date())]){ error in
+                                    if let error = error?.localizedDescription {
+                                        let errorPage = self.makeErrorPage(message: error)
+                                        page.manager?.push(item: errorPage)
+                                        item.manager?.dismissBulletin(animated: true)
+                                    }else{
+                                        let completionPage = self.reservedSpotPage(email: text)
+                                        item.manager?.push(item: completionPage)
+                                        item.manager?.dismissBulletin(animated: true)
+        //                                if Database.reservedSpot(Email: text!, DateSignedUp: Firebase.Timestamp.init(date: Date())){
+        //                                    print("done")
+        //                                }
+                                    }
+                                }
                             }
                         }
                     }
-                }
-                
+                })
             }
         }
         
@@ -809,5 +820,23 @@ enum BulletinDataSource {
     }
     
     //TRANSACTIONS END
+    
+    
+    static func makeSuccessPage(TitleText: String, ButtonText: String) -> BLTNPageItem {
+        let page = BLTNPageItem(title: TitleText)
+        page.image = UIImage(named: "Completion")
+        page.appearance.titleTextColor = standardContrastColor
+        page.appearance.actionButtonColor = UIColor.green
+        page.appearance.imageViewTintColor = UIColor.green
+        page.appearance.actionButtonTitleColor = UIColor.white
+        page.actionButtonTitle = ButtonText
+        page.isDismissable = false
+        
+        page.actionHandler = { item in
+            item.manager?.dismissBulletin(animated: true)
+        }
+        
+        return page
+    }
 }
 

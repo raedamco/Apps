@@ -11,6 +11,8 @@
 		070091A2243061D300A8AF40 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070091A1243061D300A8AF40 /* Payment.swift */; };
 		070091A62431B5CE00A8AF40 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070091A52431B5CE00A8AF40 /* History.swift */; };
 		071339612531419F0039568C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 071339602531419F0039568C /* GoogleService-Info.plist */; };
+		071A04132694F847005FC806 /* BetaSignup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071A04122694F847005FC806 /* BetaSignup.swift */; };
+		071A041526954F49005FC806 /* Home2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071A041426954F49005FC806 /* Home2.swift */; };
 		0725B2D42325CC03007B400F /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D32325CC03007B400F /* Connection.swift */; };
 		0725B2D82325CF7F007B400F /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D72325CF7F007B400F /* Objects.swift */; };
 		0725B2DA2325CF99007B400F /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D92325CF99007B400F /* Variables.swift */; };
@@ -91,6 +93,8 @@
 		070091A1243061D300A8AF40 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		070091A52431B5CE00A8AF40 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		071339602531419F0039568C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		071A04122694F847005FC806 /* BetaSignup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaSignup.swift; sourceTree = "<group>"; };
+		071A041426954F49005FC806 /* Home2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home2.swift; sourceTree = "<group>"; };
 		0725B2CF2325BFAC007B400F /* Parking.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Parking.entitlements; sourceTree = "<group>"; };
 		0725B2D32325CC03007B400F /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		0725B2D62325CD06007B400F /* darkstyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = darkstyle.json; sourceTree = "<group>"; };
@@ -191,6 +195,7 @@
 		070A36A2249C9420000A8471 /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				071A04112694F828005FC806 /* BetaSignup */,
 				07BF2DE12438386C0017BCD3 /* User Data */,
 				070A36A1249C93C1000A8471 /* Parking Data */,
 			);
@@ -205,6 +210,14 @@
 				070091A52431B5CE00A8AF40 /* History.swift */,
 			);
 			path = "Payments & Subviews";
+			sourceTree = "<group>";
+		};
+		071A04112694F828005FC806 /* BetaSignup */ = {
+			isa = PBXGroup;
+			children = (
+				071A04122694F847005FC806 /* BetaSignup.swift */,
+			);
+			path = BetaSignup;
 			sourceTree = "<group>";
 		};
 		0725B2D52325CCE7007B400F /* Supporting Files */ = {
@@ -299,6 +312,7 @@
 			children = (
 				0793EC032339F4450099C71C /* Controller.swift */,
 				0734C09E2325BBBF00E74D0A /* Home.swift */,
+				071A041426954F49005FC806 /* Home2.swift */,
 				07DD003F2689728A00687875 /* Park.swift */,
 				0793DDD32325F80B002FBE09 /* Settings.swift */,
 				074A8AF2242FF6DB00E219A9 /* Pay.swift */,
@@ -601,6 +615,7 @@
 				0725B2DC2325CFC7007B400F /* Extensions.swift in Sources */,
 				07F0E7052379D5BE00046292 /* Classes.swift in Sources */,
 				0725B2D42325CC03007B400F /* Connection.swift in Sources */,
+				071A04132694F847005FC806 /* BetaSignup.swift in Sources */,
 				07A42B80235BD9CD00A053B0 /* SignIn.swift in Sources */,
 				079C7746237731C0009E0F6F /* Results.swift in Sources */,
 				07EF7DA8235C3A4500D015CF /* BulletinTextField.swift in Sources */,
@@ -611,6 +626,7 @@
 				0793DDDB23260AC5002FBE09 /* Account.swift in Sources */,
 				07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */,
 				07EF7DAC235C3A4500D015CF /* BulletinFeedback.swift in Sources */,
+				071A041526954F49005FC806 /* Home2.swift in Sources */,
 				0734C09B2325BBBF00E74D0A /* AppDelegate.swift in Sources */,
 				0764113C237A429800EF4332 /* Search.swift in Sources */,
 				070091A0243018BA00A8AF40 /* TimerClass.swift in Sources */,
