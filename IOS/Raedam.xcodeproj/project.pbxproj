@@ -792,6 +792,15 @@
 				CURRENT_PROJECT_VERSION = 1.00052;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/New\\ Group",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/Mapbox",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/New\\ Group",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/Mapbox",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/Mapbox",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/New\\ Group",
+				);
 				INFOPLIST_FILE = Parking/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -820,6 +829,15 @@
 				CURRENT_PROJECT_VERSION = 1.00052;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/New\\ Group",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/Mapbox",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/New\\ Group",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/Mapbox",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/Mapbox",
+					"$(PROJECT_DIR)/Parking/Supporting\\ Files/New\\ Group",
+				);
 				INFOPLIST_FILE = Parking/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (

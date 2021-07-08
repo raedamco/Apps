@@ -13,7 +13,6 @@ import SwiftyJSON
 import BLTNBoard
 import FirebaseAnalytics
 
-
 class HomeViewController2: UIViewController, CLLocationManagerDelegate {
      
     private let locationManager = CLLocationManager()

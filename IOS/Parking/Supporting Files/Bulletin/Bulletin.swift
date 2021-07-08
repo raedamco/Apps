@@ -8,6 +8,8 @@ import BLTNBoard
 import SafariServices
 import Firebase
 import Lottie
+import Alamofire
+
 
 enum BulletinDataSource {
 
@@ -609,6 +611,7 @@ enum BulletinDataSource {
         return page
     }
     
+    //MARK: THIS NEEDS TO BE CLEANEDUP
     static func reserveSpot() -> TextFieldBulletinPage {
         let page = TextFieldBulletinPage(title: "Reserve my Spot")
         page.appearance.titleTextColor = standardContrastColor
@@ -627,34 +630,48 @@ enum BulletinDataSource {
                         let errorPage = self.makeErrorPage(message: error.localizedDescription)
                         page.manager?.push(item: errorPage)
                         item.manager?.dismissBulletin(animated: true)
-                    } else if let providers = providers {
+                    } else if providers != nil {
                         NotificationCenter.default.post(name: NSNotification.Name("pushBetaSignInView"), object: nil)
                         let successPage = self.makeSuccessPage(TitleText: "Welcome to Beta Access!", ButtonText: "Continue")
                         page.manager?.push(item: successPage)
                         item.manager?.dismissBulletin(animated: true)
                     }else{
-                        database.collection("UsersBeta").document(text!).getDocument { (document, error) in
-                            if let document = document, document.exists {
-                                let errorPage = self.makeErrorPage(message: "Your spot is already reserved with the email \(text!)")
-                                page.manager?.push(item: errorPage)
-                                item.manager?.dismissBulletin(animated: true)
-                            }else{
-                                database.collection("UsersBeta").document(text!).setData(["Email": text!, "Time": Firebase.Timestamp.init(date: Date())]){ error in
-                                    if let error = error?.localizedDescription {
-                                        let errorPage = self.makeErrorPage(message: error)
-                                        page.manager?.push(item: errorPage)
-                                        item.manager?.dismissBulletin(animated: true)
-                                    }else{
+                        
+                        let url = URL(string: "https://us-central1-theory-parking.cloudfunctions.net/")?.appendingPathComponent("betaUserAdded")
+                        AF.request(url!, method: .post,parameters: ["Email": text!]).validate(statusCode: 200..<300).responseJSON { responseJSON in switch responseJSON.result {
+                                case .success(let json):
+                                    let responseJSON = json as? [String: AnyObject]
+                                    let success = responseJSON?["Success"] as! Bool
+                                    
+                                    if success {
                                         let completionPage = self.reservedSpotPage(email: text)
                                         item.manager?.push(item: completionPage)
                                         item.manager?.dismissBulletin(animated: true)
-        //                                if Database.reservedSpot(Email: text!, DateSignedUp: Firebase.Timestamp.init(date: Date())){
-        //                                    print("done")
-        //                                }
+                                    }else{
+                                        let errorPage = self.makeErrorPage(message: "Your spot is already reserved. Please wait for an email from us for your early access.")
+                                        page.manager?.push(item: errorPage)
+                                        item.manager?.dismissBulletin(animated: true)
                                     }
-                                }
+                                
+                                case .failure(let error):
+                                    print(error.localizedDescription)
+                                    let errorPage = self.makeErrorPage(message: error.localizedDescription)
+                                    page.manager?.push(item: errorPage)
+                                    item.manager?.dismissBulletin(animated: true)
                             }
                         }
+                    
+//                        if Database.reservedSpot(Email: text!){
+//                            let completionPage = self.reservedSpotPage(email: text)
+//                            item.manager?.push(item: completionPage)
+//                            item.manager?.dismissBulletin(animated: true)
+//
+//                        }else{
+//                            let errorPage = self.makeErrorPage(message: "Your spot is already reserved. Please wait for an email from us for your early access.")
+//                            page.manager?.push(item: errorPage)
+//                            item.manager?.dismissBulletin(animated: true)
+//
+//                        }
                     }
                 })
             }

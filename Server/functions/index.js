@@ -28,30 +28,44 @@ var slackTransactionBot = require('slack-notify')('https://hooks.slack.com/servi
 //When a user signs up for bet access, notify slack
 exports.betaUserAdded = functions.https.onRequest(async (req, res) => {
     const email = req.body.Email;
-    const date = req.body.Date;
+    const date = new Date();
 
     try {
-        //Send slack message of new finalized transaction
-        await slack.send({
-            'username': 'User Activity Bot',
-            'text': 'Beta User Signedup :tada:',
-            'icon_emoji': ':tada:',
-            'attachments': [{
-              'color': '#5930fc',
-              'fields': [{
-                    'title': 'Joined On',
-                    'value': email + "\n" + date.toUTCString(),
-                    'short': true
-                }]
-            }]
-        })
-
-    } catch(error) {
-        return console.log(error);
+      await admin.firestore().collection('UsersBeta').doc(email).get().then(doc => {
+          if (!doc.exists) {
+              return addBetaUser(email, date, res);
+          }else{
+              return res.status(200).send({Success: false, Text: "Your spot is already reserved. Please wait for an email from us for your early access."})
+          }
+      }).catch(err => {
+          console.log('Error getting document', err);
+      });
+    }catch(error){
+        console.log(error)
+        res.status(500).end()
     }
 });
 
-
+async function addBetaUser(email, date, res){
+  admin.firestore().collection('UsersBeta').doc(email).set({
+      Email: email,
+      Joined: admin.firestore.Timestamp.fromDate(date),
+  });
+  slack.send({
+      'username': 'User Activity Bot',
+      'text': 'New Beta User Signup :tada:',
+      'icon_emoji': ':tada:',
+      'attachments': [{
+        'color': '#6a0dad',
+        'fields': [{
+              'title': "Email: " + email,
+              "value": "Joined: " + date.toUTCString(),
+              'short': true
+          }]
+      }]
+  })
+  return res.status(200).send({Success: true, Text: "An email will be sent when you have beta access to the Raedam app!"})
+}
 
 // When a user creates their account, set up their database log, stripe account, and notify slack
 exports.addUser = functions.auth.user().onCreate(async (user) => {
@@ -72,8 +86,8 @@ exports.addUser = functions.auth.user().onCreate(async (user) => {
         'attachments': [{
           'color': '#30FCF1',
           'fields': [{
-                'title': 'Joined On',
-                'value': date.toUTCString(),
+                'title': 'Email: ' + user.email,
+                'value': 'Joined: ' + date.toUTCString(),
                 'short': true
             }]
         }]
@@ -383,7 +397,7 @@ exports.createCharge = functions.https.onRequest(async (req, res) => {
             }
         }).catch(err => {
             console.log('Error getting document', err);
-    });
+        });
 
     async function finalizeTransaction(){
         await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
