@@ -98,7 +98,9 @@ class PaymentViewController: UIViewController, UITableViewDelegate, UITableViewD
             self.bulletinManagerComingSoon.allowsSwipeInteraction = false
             self.bulletinManagerComingSoon.showBulletin(above: self)
         }else if sections[indexPath.row] == "Transaction History"{
-            showView(ViewController: TransactionHistory())
+//            showView(ViewController: TransactionHistory())
+            self.bulletinManagerComingSoon.allowsSwipeInteraction = false
+            self.bulletinManagerComingSoon.showBulletin(above: self)
         }else if sections[indexPath.row] == "Rewards"{
             self.bulletinManagerComingSoon.allowsSwipeInteraction = false
             self.bulletinManagerComingSoon.showBulletin(above: self)
