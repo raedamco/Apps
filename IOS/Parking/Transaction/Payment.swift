@@ -27,7 +27,7 @@ extension PayViewController: PKPaymentAuthorizationViewControllerDelegate, STPAp
         let paymentItem = PKPaymentSummaryItem.init(label: "For Parking at \(SelectedParkingData[indexPath.row].Organization)", amount: NSDecimalNumber(value: TransactionData[indexPath.row].Amount))
         paymentRequest.paymentSummaryItems = [paymentItem]
         if let applePayContext = STPApplePayContext(paymentRequest: paymentRequest, delegate: self) {
-            applePayContext.presentApplePay(on: self)
+            applePayContext.presentApplePay(completion: nil)
         }
     }
     

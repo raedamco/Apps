@@ -88,14 +88,6 @@ class DatabaseCalls {
         }
     }
     
-    func reservedSpot(Email: String) -> Bool{
-        var Success = Bool()
-        let url = self.baseURL.appendingPathComponent("betaUserAdded")
-        
-        
-        
-        return Success
-    }
 
 }
 

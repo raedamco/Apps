@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import GoogleMaps
 import GooglePlaces
 import Firebase
 import Siren
@@ -89,7 +88,6 @@ extension AppDelegate {
         Siren.shared.wail()
         FirebaseApp.configure()
         authAccountConnection()
-        GMSServices.provideAPIKey("AIzaSyDONTZJEYMYC0tXKKdXt8RiO0n4lbIG9RM")
         GMSPlacesClient.provideAPIKey("AIzaSyDONTZJEYMYC0tXKKdXt8RiO0n4lbIG9RM")
         StripeAPI.defaultPublishableKey = "pk_test_51H0FFyDtW0T37E4Pz0sYdXJePKCU232UipcIWTmXe41RrFI399to65b2L6rRP1qCpHspIe1Hw3utjYAIoONCT5ZI00ATVEgwEQ"
         style()
@@ -107,7 +105,7 @@ extension AppDelegate {
                             self.window!.rootViewController = TabBarViewController()
                         }
                     }else{
-                        let navigationController = UINavigationController(rootViewController: BetaSignUpView())
+                        let navigationController = UINavigationController(rootViewController: StartViewController())
                         let window = UIWindow(frame: UIScreen.main.bounds)
                         window.rootViewController = navigationController
                         window.makeKeyAndVisible()

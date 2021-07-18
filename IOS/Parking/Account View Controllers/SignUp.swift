@@ -107,9 +107,8 @@ class SignUp: UIViewController, UITextFieldDelegate{
         if emailTextField.text?.isEmpty == false && passwordTextField.text?.isEmpty == false && passwordTextField.text == passwordVerifyTextField.text && passwordVerifyTextField.text?.isEmpty == false && nameTextField.text?.isEmpty == false {
             Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
                 if user != nil {
-                    self.signin()
+                    self.signIn()
                     self.createDatabaseAccount()
-//                    self.getData()
                 }else{
                     if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
                         self.errorMessageBLTN = errorCode.errorMessage
@@ -121,7 +120,7 @@ class SignUp: UIViewController, UITextFieldDelegate{
         }
     }
     
-    @objc func signin(){
+    @objc func signIn(){
         Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
             if user != nil {
                 getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
@@ -166,14 +165,14 @@ class SignUp: UIViewController, UITextFieldDelegate{
     }
     
     @objc func viewPrivacyPolicy(){
-        webLink = "https://theoryparking.com/privacy"
+        webLink = "https://raedam.co/privacy"
         webViewLabel = "Privacy Policy"
         let webView = UINavigationController(rootViewController: webViewScreen())
         self.navigationController?.present(webView, animated: false, completion: nil)
     }
     
     @objc func closeView() {
-        self.navigationController?.pushViewController(StartView(), animated: false)
+        self.navigationController?.pushViewController(StartViewController(), animated: false)
     }
     
 }

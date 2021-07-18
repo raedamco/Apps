@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 import Firebase
 import UIKit
+import MapKit
 
 let userDefaults = UserDefaults.standard
 let indexPath = IndexPath(row: Int(), section: Int())
@@ -49,3 +50,6 @@ let largeTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.K
 let blockDistance = 0.012427423844747
 let nearByDistance = Double(1000000)
 
+//User Locations
+var selectedParkingLocation = CLLocation()
+var currentUserLocation = CLLocation()

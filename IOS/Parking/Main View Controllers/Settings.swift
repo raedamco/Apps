@@ -14,7 +14,7 @@ import BLTNBoard
 class SettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let tableView = UITableView()
-    var sections = ["Account","Payments","Preferences","Help","About"]
+    var sections = ["Account","Preferences","Help","About"] //MARK: Add in "Payments" when supported
     
     // BLTNBoard START
        let backgroundStyles = BackgroundStyles()
@@ -114,7 +114,7 @@ class SettingsViewController: UIViewController, UITableViewDelegate, UITableView
     
     @objc func logout(){
         try! Auth.auth().signOut()
-        self.navigationController?.pushViewController(StartView(), animated: false)
+        self.navigationController?.pushViewController(StartViewController(), animated: false)
         self.tabBarController?.tabBar.isHidden = true
         UserData.removeAll()
         TransactionsHistory.removeAll()

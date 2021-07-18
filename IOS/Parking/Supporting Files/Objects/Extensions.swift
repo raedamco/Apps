@@ -320,3 +320,13 @@ extension Measurement where UnitType == UnitLength {
     }()
     var usFormatted: String { Measurement.usFormatted.string(from: self) }
 }
+
+
+extension Bundle {
+    static func infoPlistValue(forKey key: String) -> Any? {
+        guard let value = Bundle.main.object(forInfoDictionaryKey: key) else {
+           return nil
+        }
+        return value
+    }
+}

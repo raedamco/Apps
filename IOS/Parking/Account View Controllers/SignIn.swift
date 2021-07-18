@@ -133,7 +133,7 @@ class SignIn: UIViewController, UITextFieldDelegate {
     }
     
     @objc func closeView() {
-        self.navigationController?.pushViewController(StartView(), animated: false)
+        self.navigationController?.pushViewController(StartViewController(), animated: false)
     }
 
 }

@@ -12,7 +12,7 @@ import Firebase
 import UIKit
 import BLTNBoard
 
-class StartView: UIViewController {
+class StartViewController: UIViewController {
     
     let loginButton = createButton(Title: "log in", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(login))
     let createAccountButton = createButton(Title: "sign up", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(signup))

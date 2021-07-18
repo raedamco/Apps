@@ -11,7 +11,6 @@ target 'Theory Parking' do
 	pod 'Alamofire'
 	pod 'SwiftyJSON'
 	pod 'lottie-ios'
-	pod 'GoogleMaps'
 	pod 'GooglePlaces'
 	pod 'Firebase'
 	pod 'Firebase/Core'
@@ -25,6 +24,9 @@ target 'Theory Parking' do
 	pod 'Stripe'	
 	pod 'ZendeskSupportSDK'
 	pod 'DropDown'
+	pod 'MapboxNavigation'
+
+
 end
 
 post_install do |pi|

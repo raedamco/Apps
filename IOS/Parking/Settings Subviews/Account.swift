@@ -142,7 +142,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         TransactionsHistory.removeAll()
         SelectedParkingData.removeAll()
         try! Auth.auth().signOut()
-        self.navigationController?.pushViewController(StartView(), animated: false)
+        self.navigationController?.pushViewController(StartViewController(), animated: false)
         self.tabBarController?.tabBar.isHidden = true
     }
 

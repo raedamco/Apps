@@ -106,7 +106,7 @@ class BetaSignUpView: UIViewController {
     }
     
     @objc func moveViewBeta(notification: NSNotification) {
-        self.navigationController?.pushViewController(StartView(), animated: false)
+        self.navigationController?.pushViewController(StartViewController(), animated: false)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
