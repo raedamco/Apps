@@ -14,8 +14,8 @@ import BLTNBoard
 
 class StartViewController: UIViewController {
     
-    let loginButton = createButton(Title: "log in", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(login))
-    let createAccountButton = createButton(Title: "sign up", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(signup))
+    let loginButton = createButton(Title: "Login", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(login))
+    let createAccountButton = createButton(Title: "Sign Up", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(signup))
     var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
     let backgroundStyles = BackgroundStyles()
     
@@ -43,7 +43,7 @@ class StartViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
-        setupNavigationBar(LargeText: true, Title: "raedam", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
+        setupNavigationBar(LargeText: true, Title: "Raedam", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: nil, ActionL: nil)
     }
     
     func createScreenLayout(){

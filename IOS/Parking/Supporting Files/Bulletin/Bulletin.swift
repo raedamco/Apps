@@ -635,43 +635,6 @@ enum BulletinDataSource {
                         let successPage = self.makeSuccessPage(TitleText: "Welcome to Beta Access!", ButtonText: "Continue")
                         page.manager?.push(item: successPage)
                         item.manager?.dismissBulletin(animated: true)
-                    }else{
-                        
-                        let url = URL(string: "https://us-central1-theory-parking.cloudfunctions.net/")?.appendingPathComponent("betaUserAdded")
-                        AF.request(url!, method: .post,parameters: ["Email": text!]).validate(statusCode: 200..<300).responseJSON { responseJSON in switch responseJSON.result {
-                                case .success(let json):
-                                    let responseJSON = json as? [String: AnyObject]
-                                    let success = responseJSON?["Success"] as! Bool
-                                    
-                                    if success {
-                                        let completionPage = self.reservedSpotPage(email: text)
-                                        item.manager?.push(item: completionPage)
-                                        item.manager?.dismissBulletin(animated: true)
-                                    }else{
-                                        let errorPage = self.makeErrorPage(message: "Your spot is already reserved. Please wait for an email from us for your early access.")
-                                        page.manager?.push(item: errorPage)
-                                        item.manager?.dismissBulletin(animated: true)
-                                    }
-                                
-                                case .failure(let error):
-                                    print(error.localizedDescription)
-                                    let errorPage = self.makeErrorPage(message: error.localizedDescription)
-                                    page.manager?.push(item: errorPage)
-                                    item.manager?.dismissBulletin(animated: true)
-                            }
-                        }
-                    
-//                        if Database.reservedSpot(Email: text!){
-//                            let completionPage = self.reservedSpotPage(email: text)
-//                            item.manager?.push(item: completionPage)
-//                            item.manager?.dismissBulletin(animated: true)
-//
-//                        }else{
-//                            let errorPage = self.makeErrorPage(message: "Your spot is already reserved. Please wait for an email from us for your early access.")
-//                            page.manager?.push(item: errorPage)
-//                            item.manager?.dismissBulletin(animated: true)
-//
-//                        }
                     }
                 })
             }
@@ -679,6 +642,9 @@ enum BulletinDataSource {
         
         return page
     }
+    
+    
+    
     
     static func reservedSpotPage(email: String?) -> BLTNPageItem {
         let page = BLTNPageItem(title: "Spot reserved!")

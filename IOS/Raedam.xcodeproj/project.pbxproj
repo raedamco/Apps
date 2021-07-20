@@ -270,6 +270,7 @@
 				076F4447246E9BD200EC9C85 /* Results */,
 				070091A72431B5D900A8AF40 /* Transaction */,
 				077FF17C23277C7D00591058 /* Settings Subviews */,
+				07DD4A3026A49D18002A9245 /* Temp Disabled Views */,
 				0734C0A72325BBC000E74D0A /* LaunchScreen.storyboard */,
 				0734C0A52325BBC000E74D0A /* Assets.xcassets */,
 				0734C0AA2325BBC000E74D0A /* Info.plist */,
@@ -309,7 +310,6 @@
 				071A041426954F49005FC806 /* Home.swift */,
 				0793DDD32325F80B002FBE09 /* Settings.swift */,
 				0734C09E2325BBBF00E74D0A /* HomeArchive.swift */,
-				07DD4A3026A49D18002A9245 /* Temp Disabled Views */,
 			);
 			path = "Main View Controllers";
 			sourceTree = "<group>";
@@ -325,7 +325,6 @@
 		07A42B7E235BD99D00A053B0 /* Account View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0728B6052692DDF8001E1C11 /* BetaSignUp.swift */,
 				07A42B83235BE5E500A053B0 /* Start.swift */,
 				07A42B7F235BD9CD00A053B0 /* SignIn.swift */,
 				07A42B81235BD9E100A053B0 /* SignUp.swift */,
@@ -393,6 +392,7 @@
 		07DD4A3026A49D18002A9245 /* Temp Disabled Views */ = {
 			isa = PBXGroup;
 			children = (
+				0728B6052692DDF8001E1C11 /* BetaSignUp.swift */,
 				07DD003F2689728A00687875 /* Park.swift */,
 				074A8AF2242FF6DB00E219A9 /* Pay.swift */,
 			);

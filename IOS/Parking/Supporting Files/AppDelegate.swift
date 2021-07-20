@@ -100,6 +100,17 @@ extension AppDelegate {
                 self.handle = Auth.auth().addStateDidChangeListener { (auth, user) in
                     if (user != nil){
                         getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
+                            if UserData[indexPath.row].BetaAccess {
+                                self.window = UIWindow(frame: UIScreen.main.bounds)
+                                self.window?.makeKeyAndVisible()
+                                self.window!.rootViewController = TabBarViewController()
+                            }else{
+                                let navigationController = UINavigationController(rootViewController: StartViewController())
+                                let window = UIWindow(frame: UIScreen.main.bounds)
+                                window.rootViewController = navigationController
+                                window.makeKeyAndVisible()
+                                self.window = window
+                            }
                             self.window = UIWindow(frame: UIScreen.main.bounds)
                             self.window?.makeKeyAndVisible()
                             self.window!.rootViewController = TabBarViewController()
