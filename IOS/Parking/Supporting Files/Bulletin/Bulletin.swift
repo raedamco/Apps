@@ -659,6 +659,7 @@ enum BulletinDataSource {
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
+            NotificationCenter.default.post(name: NSNotification.Name("closeView"), object: nil)
         }
         
         return page

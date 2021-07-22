@@ -51,6 +51,7 @@ class SignUp: UIViewController, UITextFieldDelegate{
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
         setupNavigationBar(LargeText: true, Title: "Sign Up", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView))
+        NotificationCenter.default.addObserver(self, selector: #selector(closeViewBulletin(notification:)), name: NSNotification.Name(rawValue: "closeView"), object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -127,6 +128,11 @@ class SignUp: UIViewController, UITextFieldDelegate{
         }
     }
     
+    @objc func closeViewBulletin(notification: NSNotification) {
+        self.navigationController?.pushViewController(StartViewController(), animated: false)
+        try! Auth.auth().signOut()
+    }
+    
 //    @objc func signIn(){
 //        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
 //            if user != nil {
@@ -157,6 +163,7 @@ class SignUp: UIViewController, UITextFieldDelegate{
                 self.userEmail = self.emailTextField.text!
                 self.bulletinManagerSuccess.allowsSwipeInteraction = false
                 self.bulletinManagerSuccess.showBulletin(above: self)
+                
             }
         }
     }

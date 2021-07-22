@@ -88,6 +88,28 @@ class DatabaseCalls {
         }
     }
     
+    func checkAccess(Email: String) -> Bool{
+        var Success = Bool()
+        let url = self.baseURL.appendingPathComponent("checkAccess")
+        
+        AF.request(url, method: .post,parameters: ["Email": Email]).validate(statusCode: 200..<300).responseJSON { responseJSON in
+            switch responseJSON.result {
+                case .success(let json):
+                    let responseJSON = json as? [String: AnyObject]
+                    guard let Sucess = responseJSON?["Success"] as? Bool else { return }
+                    
+                    if Sucess {
+                        Success = true
+                    }else{
+                        Success = false
+                    }
+                case .failure(let error): print(error.localizedDescription)
+                    Success = false
+            }
+        }
+        return Success
+    }
+    
 
 }
 
