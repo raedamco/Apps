@@ -12,6 +12,9 @@ import LocalAuthentication
 import Lottie
 import BLTNBoard
 
+var ReturnMessage = String()
+var LoginSuccess = Bool()
+
 class SignIn: UIViewController, UITextFieldDelegate {
     
     let emailTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .emailAddress, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: false, Placeholder: "Email", Target: self)
@@ -103,34 +106,32 @@ class SignIn: UIViewController, UITextFieldDelegate {
     @objc func login(){
         emptyTextField()
         if !emailTextField.text!.isEmpty && !passwordTextField.text!.isEmpty {
-            if Database.checkAccess(Email: emailTextField.text!) {
-                Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
-                    if user != nil{
-                        getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
-                            if UserData[indexPath.row].BetaAccess {
-                                self.navigationController?.setNavigationBarHidden(true, animated: true)
-                                self.tabBarController?.tabBar.isHidden = true
-                                self.navigationController?.popViewController(animated: true)
-                                self.navigationController?.removeFromParent()
-                                self.navigationController?.pushViewController(TabBarViewController(), animated: false)
-                            }else{
-                                self.errorMessageBLTN = "Sit tight. Your spot is reserved! Please wait for an email from us with your access into the app."
+            Database.checkAccess(Email: emailTextField.text!){ (true) in
+                if LoginSuccess{
+                    Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!, completion: { (user,error) in
+                        if user != nil{
+                            getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
+                                if UserData[indexPath.row].BetaAccess {
+                                    self.navigationController?.setNavigationBarHidden(true, animated: true)
+                                    self.tabBarController?.tabBar.isHidden = true
+                                    self.navigationController?.popViewController(animated: true)
+                                    self.navigationController?.removeFromParent()
+                                    self.navigationController?.pushViewController(TabBarViewController(), animated: false)
+                                }
+                            }
+                        }else{
+                            if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
+                                self.errorMessageBLTN = errorCode.errorMessage
                                 self.bulletinManagerError.allowsSwipeInteraction = false
                                 self.bulletinManagerError.showBulletin(above: self)
                             }
                         }
-                    }else{
-                        if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
-                            self.errorMessageBLTN = errorCode.errorMessage
-                            self.bulletinManagerError.allowsSwipeInteraction = false
-                            self.bulletinManagerError.showBulletin(above: self)
-                        }
-                    }
-                })
-            }else{
-                self.errorMessageBLTN = "Sit tight. Your spot is reserved! Please wait for an email from us with your access into the app."
-                self.bulletinManagerError.allowsSwipeInteraction = false
-                self.bulletinManagerError.showBulletin(above: self)
+                    })
+                }else{
+                    self.errorMessageBLTN = "Your account exists. Please wait for an email from us with your access into the app."
+                    self.bulletinManagerError.allowsSwipeInteraction = false
+                    self.bulletinManagerError.showBulletin(above: self)
+                }
             }
         }
     }

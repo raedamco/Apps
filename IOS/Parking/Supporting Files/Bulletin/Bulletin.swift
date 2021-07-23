@@ -611,38 +611,37 @@ enum BulletinDataSource {
         return page
     }
     
-    //MARK: THIS NEEDS TO BE CLEANEDUP
-    static func reserveSpot() -> TextFieldBulletinPage {
-        let page = TextFieldBulletinPage(title: "Reserve my Spot")
-        page.appearance.titleTextColor = standardContrastColor
-        page.requiresCloseButton = false
-        page.descriptionText = "Enter your email address and we will notify you once Raedam is open for you to use."
-        page.actionButtonTitle = "Submit"
-
-        page.textInputHandler = { (item, text) in
-            if functionError == true {
-                let errorPage = self.makeErrorPage(message: "Error")
-                page.manager?.push(item: errorPage)
-                item.manager?.dismissBulletin(animated: true)
-            }else{
-                Auth.auth().fetchSignInMethods(forEmail: text!, completion: {(providers, error) in
-                    if let error = error {
-                        let errorPage = self.makeErrorPage(message: error.localizedDescription)
-                        page.manager?.push(item: errorPage)
-                        item.manager?.dismissBulletin(animated: true)
-                    } else if providers != nil {
-                        NotificationCenter.default.post(name: NSNotification.Name("pushBetaSignInView"), object: nil)
-                        let successPage = self.makeSuccessPage(TitleText: "Welcome to Beta Access!", ButtonText: "Continue")
-                        page.manager?.push(item: successPage)
-                        item.manager?.dismissBulletin(animated: true)
-                    }
-                })
-            }
-        }
-        
-        return page
-    }
-    
+//    //MARK: THIS NEEDS TO BE CLEANEDUP
+//    static func reserveSpot() -> TextFieldBulletinPage {
+//        let page = TextFieldBulletinPage(title: "Reserve my Spot")
+//        page.appearance.titleTextColor = standardContrastColor
+//        page.requiresCloseButton = false
+//        page.descriptionText = "Enter your email address and we will notify you once Raedam is open for you to use."
+//        page.actionButtonTitle = "Submit"
+//
+//        page.textInputHandler = { (item, text) in
+//            if functionError == true {
+//                let errorPage = self.makeErrorPage(message: "Error")
+//                page.manager?.push(item: errorPage)
+//                item.manager?.dismissBulletin(animated: true)
+//            }else{
+//                Auth.auth().fetchSignInMethods(forEmail: text!, completion: {(providers, error) in
+//                    if let error = error {
+//                        let errorPage = self.makeErrorPage(message: error.localizedDescription)
+//                        page.manager?.push(item: errorPage)
+//                        item.manager?.dismissBulletin(animated: true)
+//                    } else if providers != nil {
+//                        NotificationCenter.default.post(name: NSNotification.Name("pushBetaSignInView"), object: nil)
+//                        let successPage = self.makeSuccessPage(TitleText: "Welcome to Beta Access!", ButtonText: "Continue")
+//                        page.manager?.push(item: successPage)
+//                        item.manager?.dismissBulletin(animated: true)
+//                    }
+//                })
+//            }
+//        }
+//
+//        return page
+//    }
     
     
     
@@ -652,7 +651,7 @@ enum BulletinDataSource {
         page.appearance.titleTextColor = standardContrastColor
         page.appearance.actionButtonColor = UIColor.green
         page.appearance.actionButtonTitleColor = UIColor.white
-        page.descriptionText = "An email will be sent to \(email!) when you have beta access to the Raedam app!"
+        page.descriptionText = "Please wait for an email with your access into the Raedam app."
         page.actionButtonTitle = "Finish"
         page.isDismissable = true
         page.requiresCloseButton = false

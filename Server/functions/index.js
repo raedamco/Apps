@@ -33,20 +33,20 @@ exports.checkAccess = functions.https.onRequest(async (req, res) => {
       const snapshot = await admin.firestore().collection("Users").doc("Commuters").collection("Users").where('Email', '==', Email).get();
       if (snapshot.empty) {
         console.log('No matching documents.');
-        return res.status(200).send({Status: false})
+        return res.status(200).send({Status: false, Message: "Account does not exist"})
       }
 
       snapshot.forEach(doc => {
         const betaAccess = doc.data()["Beta Access"];
         if (betaAccess == false) {
-          return res.status(200).send({Status: false});
+          return res.status(200).send({Status: false,Message: "Account does not have access yet"});
         }else{
-          return res.status(200).send({Status: true})
+          return res.status(200).send({Status: true, Message: "Account has access"})
         }
       });
   }catch(error){
       console.log(error)
-      res.status(500).end()
+      res.status(500).send({Status: false, Message: error}).end()
   }
 });
 
