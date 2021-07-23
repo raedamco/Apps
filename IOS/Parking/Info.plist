@@ -32,8 +32,17 @@
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MGLMapboxAccessToken</key>
+	<string>sk.eyJ1Ijoib21hcndha2VkIiwiYSI6ImNrcjVlZGhhNTIwZWUycGxkYzZtMmo4N3gifQ.BVLDukEF5picGD1vlHiFkg</string>
 	<key>MKDirectionsApplicationSupportedModes</key>
 	<array/>
+	<key>Mapbox Map Style</key>
+	<dict>
+		<key>Dark</key>
+		<string>mapbox://styles/omarwaked/ckr8fjs3i2nbx19pd2tpkosu2</string>
+		<key>Light</key>
+		<string>mapbox://styles/omarwaked/ckr8g3omj4b3p17mzxu40u71m</string>
+	</dict>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -59,6 +68,7 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>bluetooth-central</string>
 		<string>location</string>
 		<string>processing</string>

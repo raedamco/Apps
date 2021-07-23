@@ -12,20 +12,18 @@
 		070091A62431B5CE00A8AF40 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070091A52431B5CE00A8AF40 /* History.swift */; };
 		071339612531419F0039568C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 071339602531419F0039568C /* GoogleService-Info.plist */; };
 		071A04132694F847005FC806 /* BetaSignup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071A04122694F847005FC806 /* BetaSignup.swift */; };
-		071A041526954F49005FC806 /* Home2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071A041426954F49005FC806 /* Home2.swift */; };
+		071A041526954F49005FC806 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071A041426954F49005FC806 /* Home.swift */; };
 		0725B2D42325CC03007B400F /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D32325CC03007B400F /* Connection.swift */; };
 		0725B2D82325CF7F007B400F /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D72325CF7F007B400F /* Objects.swift */; };
 		0725B2DA2325CF99007B400F /* Variables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2D92325CF99007B400F /* Variables.swift */; };
 		0725B2DC2325CFC7007B400F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0725B2DB2325CFC7007B400F /* Extensions.swift */; };
-		0725B2DE2325D0F1007B400F /* darkstyle.json in Resources */ = {isa = PBXBuildFile; fileRef = 0725B2D62325CD06007B400F /* darkstyle.json */; };
 		0728B6062692DDF9001E1C11 /* BetaSignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0728B6052692DDF8001E1C11 /* BetaSignUp.swift */; };
 		0728B60B26937D08001E1C11 /* b1.json in Resources */ = {isa = PBXBuildFile; fileRef = 0728B60A26937D08001E1C11 /* b1.json */; };
 		0728B60D26937EC2001E1C11 /* b2.json in Resources */ = {isa = PBXBuildFile; fileRef = 0728B60C26937EC2001E1C11 /* b2.json */; };
 		0734C09B2325BBBF00E74D0A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0734C09A2325BBBF00E74D0A /* AppDelegate.swift */; };
-		0734C09F2325BBBF00E74D0A /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0734C09E2325BBBF00E74D0A /* Home.swift */; };
+		0734C09F2325BBBF00E74D0A /* HomeArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0734C09E2325BBBF00E74D0A /* HomeArchive.swift */; };
 		0734C0A62325BBC000E74D0A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0734C0A52325BBC000E74D0A /* Assets.xcassets */; };
 		0734C0A92325BBC000E74D0A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0734C0A72325BBC000E74D0A /* LaunchScreen.storyboard */; };
-		073D512224281642008450DD /* lightstyle.json in Resources */ = {isa = PBXBuildFile; fileRef = 073D512124281642008450DD /* lightstyle.json */; };
 		074191A9248E087800567DE5 /* Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074191A8248E087800567DE5 /* Bluetooth.swift */; };
 		074191AB2490CB7100567DE5 /* PaymentTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074191AA2490CB7100567DE5 /* PaymentTimer.swift */; };
 		0744C7E824A03EBA00574A0F /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744C7E724A03EBA00574A0F /* Database.swift */; };
@@ -47,12 +45,12 @@
 		07ACDAE924999D4700F170B0 /* Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAE824999D4700F170B0 /* Stripe.swift */; };
 		07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ACDAEB2499B32C00F170B0 /* AddPaymentCards.swift */; };
 		07ADFCBD23712A9900D5D81F /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ADFCBC23712A9900D5D81F /* Structs.swift */; };
-		07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07BAB78E24AA9A9900A425A2 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07BAB78D24AA9A9900A425A2 /* MapKit.framework */; };
 		07BF2DE32438387C0017BCD3 /* Parking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE22438387C0017BCD3 /* Parking.swift */; };
 		07BF2DE5243838970017BCD3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE4243838970017BCD3 /* User.swift */; };
 		07BF2DE7243838D20017BCD3 /* Transactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BF2DE6243838D20017BCD3 /* Transactions.swift */; };
-		07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07CAAC422439372D0027FF60 /* PaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CAAC412439372D0027FF60 /* PaymentMethod.swift */; };
 		07DD00402689728A00687875 /* Park.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DD003F2689728A00687875 /* Park.swift */; };
 		07E3644D2327925100B55203 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E3644C2327925100B55203 /* Preferences.swift */; };
@@ -70,18 +68,17 @@
 		07F0E6FF23792A8500046292 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F0E6FE23792A8500046292 /* About.swift */; };
 		07F0E70123794C6000046292 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F0E70023794C6000046292 /* Filter.swift */; };
 		07F0E7052379D5BE00046292 /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F0E7042379D5BE00046292 /* Classes.swift */; };
-		6806FC7DAF40B86D99CCBD38 /* Pods_Theory_Parking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50554BE32F2B249F204BB60C /* Pods_Theory_Parking.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		07B2CF6D236E959000BBD923 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				07B13CAA23767A1B0015E111 /* (null) in Embed Frameworks */,
-				07C9E7EE236E984800590D44 /* (null) in Embed Frameworks */,
+				07B13CAA23767A1B0015E111 /* BuildFile in Embed Frameworks */,
+				07C9E7EE236E984800590D44 /* BuildFile in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,10 +91,9 @@
 		070091A52431B5CE00A8AF40 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		071339602531419F0039568C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		071A04122694F847005FC806 /* BetaSignup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaSignup.swift; sourceTree = "<group>"; };
-		071A041426954F49005FC806 /* Home2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home2.swift; sourceTree = "<group>"; };
+		071A041426954F49005FC806 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		0725B2CF2325BFAC007B400F /* Parking.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Parking.entitlements; sourceTree = "<group>"; };
 		0725B2D32325CC03007B400F /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
-		0725B2D62325CD06007B400F /* darkstyle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = darkstyle.json; sourceTree = "<group>"; };
 		0725B2D72325CF7F007B400F /* Objects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Objects.swift; sourceTree = "<group>"; };
 		0725B2D92325CF99007B400F /* Variables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variables.swift; sourceTree = "<group>"; };
 		0725B2DB2325CFC7007B400F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -106,11 +102,10 @@
 		0728B60C26937EC2001E1C11 /* b2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = b2.json; sourceTree = "<group>"; };
 		0734C0972325BBBF00E74D0A /* park.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = park.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0734C09A2325BBBF00E74D0A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0734C09E2325BBBF00E74D0A /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		0734C09E2325BBBF00E74D0A /* HomeArchive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeArchive.swift; sourceTree = "<group>"; };
 		0734C0A52325BBC000E74D0A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0734C0A82325BBC000E74D0A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0734C0AA2325BBC000E74D0A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		073D512124281642008450DD /* lightstyle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = lightstyle.json; sourceTree = "<group>"; };
 		074191A8248E087800567DE5 /* Bluetooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bluetooth.swift; sourceTree = "<group>"; };
 		074191AA2490CB7100567DE5 /* PaymentTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTimer.swift; sourceTree = "<group>"; };
 		0744C7E724A03EBA00574A0F /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
@@ -155,9 +150,6 @@
 		07F0E6FE23792A8500046292 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		07F0E70023794C6000046292 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		07F0E7042379D5BE00046292 /* Classes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
-		50554BE32F2B249F204BB60C /* Pods_Theory_Parking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Theory_Parking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		55B5E7FBD727B3D2A1543D64 /* Pods-Theory Parking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.debug.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.debug.xcconfig"; sourceTree = "<group>"; };
-		EF7273DCC8EE502CE150704C /* Pods-Theory Parking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Theory Parking.release.xcconfig"; path = "Target Support Files/Pods-Theory Parking/Pods-Theory Parking.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,7 +160,6 @@
 				07641140237A6DA200EF4332 /* PassKit.framework in Frameworks */,
 				0764113A237A109800EF4332 /* WebKit.framework in Frameworks */,
 				07BAB78E24AA9A9900A425A2 /* MapKit.framework in Frameworks */,
-				6806FC7DAF40B86D99CCBD38 /* Pods_Theory_Parking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,7 +217,6 @@
 				0734C09A2325BBBF00E74D0A /* AppDelegate.swift */,
 				0728B607269378F1001E1C11 /* Animations */,
 				0796DABE244D603A00805018 /* Font */,
-				07BF2DDB243834930017BCD3 /* Map Style */,
 				07EF7D9C235C3A4500D015CF /* Bulletin */,
 				07BF2DE02438384A0017BCD3 /* Website */,
 				07BF2DDE243838110017BCD3 /* Connectivity */,
@@ -275,6 +265,7 @@
 				076F4447246E9BD200EC9C85 /* Results */,
 				070091A72431B5D900A8AF40 /* Transaction */,
 				077FF17C23277C7D00591058 /* Settings Subviews */,
+				07DD4A3026A49D18002A9245 /* Temp Disabled Views */,
 				0734C0A72325BBC000E74D0A /* LaunchScreen.storyboard */,
 				0734C0A52325BBC000E74D0A /* Assets.xcassets */,
 				0734C0AA2325BBC000E74D0A /* Info.plist */,
@@ -311,11 +302,9 @@
 			isa = PBXGroup;
 			children = (
 				0793EC032339F4450099C71C /* Controller.swift */,
-				0734C09E2325BBBF00E74D0A /* Home.swift */,
-				071A041426954F49005FC806 /* Home2.swift */,
-				07DD003F2689728A00687875 /* Park.swift */,
+				071A041426954F49005FC806 /* Home.swift */,
 				0793DDD32325F80B002FBE09 /* Settings.swift */,
-				074A8AF2242FF6DB00E219A9 /* Pay.swift */,
+				0734C09E2325BBBF00E74D0A /* HomeArchive.swift */,
 			);
 			path = "Main View Controllers";
 			sourceTree = "<group>";
@@ -331,7 +320,6 @@
 		07A42B7E235BD99D00A053B0 /* Account View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0728B6052692DDF8001E1C11 /* BetaSignUp.swift */,
 				07A42B83235BE5E500A053B0 /* Start.swift */,
 				07A42B7F235BD9CD00A053B0 /* SignIn.swift */,
 				07A42B81235BD9E100A053B0 /* SignUp.swift */,
@@ -346,15 +334,6 @@
 				074191AA2490CB7100567DE5 /* PaymentTimer.swift */,
 			);
 			path = "Stripe & Server";
-			sourceTree = "<group>";
-		};
-		07BF2DDB243834930017BCD3 /* Map Style */ = {
-			isa = PBXGroup;
-			children = (
-				0725B2D62325CD06007B400F /* darkstyle.json */,
-				073D512124281642008450DD /* lightstyle.json */,
-			);
-			path = "Map Style";
 			sourceTree = "<group>";
 		};
 		07BF2DDD243837F40017BCD3 /* Objects */ = {
@@ -405,6 +384,16 @@
 			path = "User Data";
 			sourceTree = "<group>";
 		};
+		07DD4A3026A49D18002A9245 /* Temp Disabled Views */ = {
+			isa = PBXGroup;
+			children = (
+				0728B6052692DDF8001E1C11 /* BetaSignUp.swift */,
+				07DD003F2689728A00687875 /* Park.swift */,
+				074A8AF2242FF6DB00E219A9 /* Pay.swift */,
+			);
+			path = "Temp Disabled Views";
+			sourceTree = "<group>";
+		};
 		07EF7D9C235C3A4500D015CF /* Bulletin */ = {
 			isa = PBXGroup;
 			children = (
@@ -423,8 +412,6 @@
 		1C301C15EF6F40E27F459DE5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				55B5E7FBD727B3D2A1543D64 /* Pods-Theory Parking.debug.xcconfig */,
-				EF7273DCC8EE502CE150704C /* Pods-Theory Parking.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -437,7 +424,6 @@
 				07641139237A109800EF4332 /* WebKit.framework */,
 				07B13CAB23767AC70015E111 /* Alamofire.framework */,
 				07EF7D95235C357600D015CF /* Lottie.framework */,
-				50554BE32F2B249F204BB60C /* Pods_Theory_Parking.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -449,14 +435,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0734C0AD2325BBC000E74D0A /* Build configuration list for PBXNativeTarget "Theory Parking" */;
 			buildPhases = (
-				C9A1F3CFEEA2D4A3B5B5D0D6 /* [CP] Check Pods Manifest.lock */,
 				0734C0932325BBBF00E74D0A /* Sources */,
 				0734C0942325BBBF00E74D0A /* Frameworks */,
 				0734C0952325BBBF00E74D0A /* Resources */,
 				07B2CF6D236E959000BBD923 /* Embed Frameworks */,
 				0715ECD42533DFB700CD5F24 /* ShellScript */,
-				80FFDDCBDDC39F4554DF645F /* [CP] Embed Pods Frameworks */,
-				BCA382672D567ADF8FB2532C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -506,11 +489,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0728B60D26937EC2001E1C11 /* b2.json in Resources */,
-				073D512224281642008450DD /* lightstyle.json in Resources */,
 				0728B60B26937D08001E1C11 /* b1.json in Resources */,
 				0734C0A92325BBC000E74D0A /* LaunchScreen.storyboard in Resources */,
 				0734C0A62325BBC000E74D0A /* Assets.xcassets in Resources */,
-				0725B2DE2325D0F1007B400F /* darkstyle.json in Resources */,
 				0796DABF244D60AD00805018 /* VarelaRound-Regular.ttf in Resources */,
 				071339612531419F0039568C /* GoogleService-Info.plist in Resources */,
 			);
@@ -521,7 +502,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		0715ECD42533DFB700CD5F24 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputFileListPaths = (
@@ -532,65 +513,9 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
-		};
-		80FFDDCBDDC39F4554DF645F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BCA382672D567ADF8FB2532C /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Theory Parking/Pods-Theory Parking-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C9A1F3CFEEA2D4A3B5B5D0D6 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Theory Parking-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -604,7 +529,7 @@
 				07EF7D94235BF0BF00D015CF /* Connectivity.swift in Sources */,
 				0725B2DA2325CF99007B400F /* Variables.swift in Sources */,
 				07BF2DE5243838970017BCD3 /* User.swift in Sources */,
-				0734C09F2325BBBF00E74D0A /* Home.swift in Sources */,
+				0734C09F2325BBBF00E74D0A /* HomeArchive.swift in Sources */,
 				07E4F81623416E3C001CC519 /* Payments.swift in Sources */,
 				0793DDD52325F80B002FBE09 /* Settings.swift in Sources */,
 				07BF2DE32438387C0017BCD3 /* Parking.swift in Sources */,
@@ -626,7 +551,7 @@
 				0793DDDB23260AC5002FBE09 /* Account.swift in Sources */,
 				07ACDAEC2499B32C00F170B0 /* AddPaymentCards.swift in Sources */,
 				07EF7DAC235C3A4500D015CF /* BulletinFeedback.swift in Sources */,
-				071A041526954F49005FC806 /* Home2.swift in Sources */,
+				071A041526954F49005FC806 /* Home.swift in Sources */,
 				0734C09B2325BBBF00E74D0A /* AppDelegate.swift in Sources */,
 				0764113C237A429800EF4332 /* Search.swift in Sources */,
 				070091A0243018BA00A8AF40 /* TimerClass.swift in Sources */,
@@ -784,12 +709,11 @@
 		};
 		0734C0AE2325BBC000E74D0A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 55B5E7FBD727B3D2A1543D64 /* Pods-Theory Parking.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.00053;
+				CURRENT_PROJECT_VERSION = 1.00055;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -807,7 +731,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00053;
+				MARKETING_VERSION = 1.00055;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theoryparking.park;
 				PRODUCT_NAME = park;
@@ -821,12 +745,11 @@
 		};
 		0734C0AF2325BBC000E74D0A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EF7273DCC8EE502CE150704C /* Pods-Theory Parking.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Parking/Parking.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.00053;
+				CURRENT_PROJECT_VERSION = 1.00055;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = Q5F3QY59N9;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -844,7 +767,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00053;
+				MARKETING_VERSION = 1.00055;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.theoryparking.park;
 				PRODUCT_NAME = park;

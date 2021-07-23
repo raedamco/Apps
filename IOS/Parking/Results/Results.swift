@@ -43,8 +43,9 @@ class ResultView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func createViewLayout(){
         view.backgroundColor = standardBackgroundColor
-        setupNavigationBar(LargeText: true, Title: destinationName, SystemImageR: true, ImageR: true, ImageTitleR: "line.horizontal.3.decrease.circle", TargetR: self, ActionR: #selector(self.filterResults), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
-        
+        //MARK: REPLACE THIS WHEN AVAILABKE
+        //setupNavigationBar(LargeText: true, Title: destinationName, SystemImageR: true, ImageR: true, ImageTitleR: "line.horizontal.3.decrease.circle", TargetR: self, ActionR: #selector(self.filterResults), SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
+        setupNavigationBar(LargeText: true, Title: destinationName, SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: self, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView(gesture:)))
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "resultCell")
         
         tableView.isScrollEnabled = true

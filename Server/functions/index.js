@@ -26,24 +26,28 @@ var slackTransactionBot = require('slack-notify')('https://hooks.slack.com/servi
 
 //ACCOUNT START
 //When a user signs up for bet access, notify slack
-exports.betaUserAdded = functions.https.onRequest(async (req, res) => {
-    const email = req.body.Email;
-    const date = new Date();
+exports.checkAccess = functions.https.onRequest(async (req, res) => {
+  const Email = req.body.Email;
 
-    try {
-      await admin.firestore().collection('UsersBeta').doc(email).get().then(doc => {
-          if (!doc.exists) {
-              return addBetaUser(email, date, res);
-          }else{
-              return res.status(200).send({Success: false, Text: "Your spot is already reserved. Please wait for an email from us for your early access."})
-          }
-      }).catch(err => {
-          console.log('Error getting document', err);
+  try {
+      const snapshot = await admin.firestore().collection("Users").doc("Commuters").collection("Users").where('Email', '==', Email).get();
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return res.status(200).send({Status: false, Message: "Account does not exist"})
+      }
+
+      snapshot.forEach(doc => {
+        const betaAccess = doc.data()["Beta Access"];
+        if (betaAccess == false) {
+          return res.status(200).send({Status: false,Message: "Account does not have access yet"});
+        }else{
+          return res.status(200).send({Status: true, Message: "Account has access"})
+        }
       });
-    }catch(error){
-        console.log(error)
-        res.status(500).end()
-    }
+  }catch(error){
+      console.log(error)
+      res.status(500).send({Status: false, Message: error}).end()
+  }
 });
 
 async function addBetaUser(email, date, res){

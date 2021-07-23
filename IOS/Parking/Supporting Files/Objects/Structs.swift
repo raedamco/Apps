@@ -12,6 +12,7 @@ import UIKit
 
 
 struct User {
+    var BetaAccess: Bool
     var Name: String
     var Email: String
     var UID: String
@@ -20,7 +21,8 @@ struct User {
     var StripeID: String
     var Phone: String
     
-    init(Name: String!, Email: String!, Phone: String!, UID: String!, License: [String], Permit: [String:String], StripeID: String) {
+    init(BetaAccess: Bool, Name: String!, Email: String!, Phone: String!, UID: String!, License: [String], Permit: [String:String], StripeID: String) {
+        self.BetaAccess = BetaAccess
         self.Name = Name
         self.Email = Email
         self.UID = UID

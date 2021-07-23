@@ -611,74 +611,39 @@ enum BulletinDataSource {
         return page
     }
     
-    //MARK: THIS NEEDS TO BE CLEANEDUP
-    static func reserveSpot() -> TextFieldBulletinPage {
-        let page = TextFieldBulletinPage(title: "Reserve my Spot")
-        page.appearance.titleTextColor = standardContrastColor
-        page.requiresCloseButton = false
-        page.descriptionText = "Enter your email address and we will notify you once Raedam is open for you to use."
-        page.actionButtonTitle = "Submit"
-
-        page.textInputHandler = { (item, text) in
-            if functionError == true {
-                let errorPage = self.makeErrorPage(message: "Error")
-                page.manager?.push(item: errorPage)
-                item.manager?.dismissBulletin(animated: true)
-            }else{
-                Auth.auth().fetchSignInMethods(forEmail: text!, completion: {(providers, error) in
-                    if let error = error {
-                        let errorPage = self.makeErrorPage(message: error.localizedDescription)
-                        page.manager?.push(item: errorPage)
-                        item.manager?.dismissBulletin(animated: true)
-                    } else if providers != nil {
-                        NotificationCenter.default.post(name: NSNotification.Name("pushBetaSignInView"), object: nil)
-                        let successPage = self.makeSuccessPage(TitleText: "Welcome to Beta Access!", ButtonText: "Continue")
-                        page.manager?.push(item: successPage)
-                        item.manager?.dismissBulletin(animated: true)
-                    }else{
-                        
-                        let url = URL(string: "https://us-central1-theory-parking.cloudfunctions.net/")?.appendingPathComponent("betaUserAdded")
-                        AF.request(url!, method: .post,parameters: ["Email": text!]).validate(statusCode: 200..<300).responseJSON { responseJSON in switch responseJSON.result {
-                                case .success(let json):
-                                    let responseJSON = json as? [String: AnyObject]
-                                    let success = responseJSON?["Success"] as! Bool
-                                    
-                                    if success {
-                                        let completionPage = self.reservedSpotPage(email: text)
-                                        item.manager?.push(item: completionPage)
-                                        item.manager?.dismissBulletin(animated: true)
-                                    }else{
-                                        let errorPage = self.makeErrorPage(message: "Your spot is already reserved. Please wait for an email from us for your early access.")
-                                        page.manager?.push(item: errorPage)
-                                        item.manager?.dismissBulletin(animated: true)
-                                    }
-                                
-                                case .failure(let error):
-                                    print(error.localizedDescription)
-                                    let errorPage = self.makeErrorPage(message: error.localizedDescription)
-                                    page.manager?.push(item: errorPage)
-                                    item.manager?.dismissBulletin(animated: true)
-                            }
-                        }
-                    
-//                        if Database.reservedSpot(Email: text!){
-//                            let completionPage = self.reservedSpotPage(email: text)
-//                            item.manager?.push(item: completionPage)
-//                            item.manager?.dismissBulletin(animated: true)
+//    //MARK: THIS NEEDS TO BE CLEANEDUP
+//    static func reserveSpot() -> TextFieldBulletinPage {
+//        let page = TextFieldBulletinPage(title: "Reserve my Spot")
+//        page.appearance.titleTextColor = standardContrastColor
+//        page.requiresCloseButton = false
+//        page.descriptionText = "Enter your email address and we will notify you once Raedam is open for you to use."
+//        page.actionButtonTitle = "Submit"
 //
-//                        }else{
-//                            let errorPage = self.makeErrorPage(message: "Your spot is already reserved. Please wait for an email from us for your early access.")
-//                            page.manager?.push(item: errorPage)
-//                            item.manager?.dismissBulletin(animated: true)
+//        page.textInputHandler = { (item, text) in
+//            if functionError == true {
+//                let errorPage = self.makeErrorPage(message: "Error")
+//                page.manager?.push(item: errorPage)
+//                item.manager?.dismissBulletin(animated: true)
+//            }else{
+//                Auth.auth().fetchSignInMethods(forEmail: text!, completion: {(providers, error) in
+//                    if let error = error {
+//                        let errorPage = self.makeErrorPage(message: error.localizedDescription)
+//                        page.manager?.push(item: errorPage)
+//                        item.manager?.dismissBulletin(animated: true)
+//                    } else if providers != nil {
+//                        NotificationCenter.default.post(name: NSNotification.Name("pushBetaSignInView"), object: nil)
+//                        let successPage = self.makeSuccessPage(TitleText: "Welcome to Beta Access!", ButtonText: "Continue")
+//                        page.manager?.push(item: successPage)
+//                        item.manager?.dismissBulletin(animated: true)
+//                    }
+//                })
+//            }
+//        }
 //
-//                        }
-                    }
-                })
-            }
-        }
-        
-        return page
-    }
+//        return page
+//    }
+    
+    
     
     static func reservedSpotPage(email: String?) -> BLTNPageItem {
         let page = BLTNPageItem(title: "Spot reserved!")
@@ -686,13 +651,14 @@ enum BulletinDataSource {
         page.appearance.titleTextColor = standardContrastColor
         page.appearance.actionButtonColor = UIColor.green
         page.appearance.actionButtonTitleColor = UIColor.white
-        page.descriptionText = "An email will be sent to \(email!) when you have beta access to the Raedam app!"
+        page.descriptionText = "Please wait for an email with your access into the Raedam app."
         page.actionButtonTitle = "Finish"
         page.isDismissable = true
         page.requiresCloseButton = false
         
         page.actionHandler = { item in
             item.manager?.dismissBulletin(animated: true)
+            NotificationCenter.default.post(name: NSNotification.Name("closeView"), object: nil)
         }
         
         return page

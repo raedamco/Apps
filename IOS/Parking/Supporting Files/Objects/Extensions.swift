@@ -134,7 +134,6 @@ extension String {
         for index in 0 ..< pattern.count {
             guard index < pureNumber.count else { return pureNumber }
             let stringIndex = String.Index(encodedOffset: index)
-            
             let patternCharacter = pattern[stringIndex]
             guard patternCharacter != replacmentCharacter else { continue }
             pureNumber.insert(patternCharacter, at: stringIndex)
@@ -319,4 +318,14 @@ extension Measurement where UnitType == UnitLength {
         return formatter
     }()
     var usFormatted: String { Measurement.usFormatted.string(from: self) }
+}
+
+
+extension Bundle {
+    static func infoPlistValue(forKey key: String) -> Any? {
+        guard let value = Bundle.main.object(forInfoDictionaryKey: key) else {
+           return nil
+        }
+        return value
+    }
 }

@@ -14,6 +14,7 @@ import Lottie
 import BLTNBoard
 import FirebaseFunctions
 import Stripe
+import Alamofire
 
 class SignUp: UIViewController, UITextFieldDelegate{
     
@@ -21,19 +22,25 @@ class SignUp: UIViewController, UITextFieldDelegate{
     let nameTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: false, Placeholder: "Name", Target: self)
     let passwordTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Password", Target: self)
     let passwordVerifyTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Verify Password", Target: self)
-    let createAccountButton = createButton(Title: "next", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 6, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(createAccount))
+    let createAccountButton = createButton(Title: "Next", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 6, BackgroundColor: standardContrastColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(createAccount))
     let loginButton = createButton(Title: "Have an account? Log In", FontName: font, FontSize: 15, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 0, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(login))
     let privacyPolicyButton = createButton(Title: "Privacy Policy", FontName: font, FontSize: 14, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 0, BackgroundColor: standardClearColor, BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(viewPrivacyPolicy))
    
     // BLTNBoard START
-       let backgroundStyles = BackgroundStyles()
-       var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
+        let backgroundStyles = BackgroundStyles()
+        var currentBackground = (name: "Dimmed", style: BLTNBackgroundViewStyle.dimmed)
 
-       var errorMessageBLTN = String()
-       lazy var bulletinManagerError: BLTNItemManager = {
-           let page = BulletinDataSource.makeErrorPage(message: errorMessageBLTN)
-           return BLTNItemManager(rootItem: page)
-       }()
+        var errorMessageBLTN = String()
+        lazy var bulletinManagerError: BLTNItemManager = {
+            let page = BulletinDataSource.makeErrorPage(message: errorMessageBLTN)
+            return BLTNItemManager(rootItem: page)
+        }()
+    
+        var userEmail = String()
+        lazy var bulletinManagerSuccess: BLTNItemManager = {
+            let page = BulletinDataSource.reservedSpotPage(email: userEmail)
+            return BLTNItemManager(rootItem: page)
+        }()
     // BLTNBoard END
     
     override func viewDidLoad() {
@@ -43,7 +50,8 @@ class SignUp: UIViewController, UITextFieldDelegate{
 
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
-        setupNavigationBar(LargeText: true, Title: "sign up", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView))
+        setupNavigationBar(LargeText: true, Title: "Sign Up", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView))
+        NotificationCenter.default.addObserver(self, selector: #selector(closeViewBulletin(notification:)), name: NSNotification.Name(rawValue: "closeView"), object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -105,11 +113,10 @@ class SignUp: UIViewController, UITextFieldDelegate{
         textFieldEntries()
         
         if emailTextField.text?.isEmpty == false && passwordTextField.text?.isEmpty == false && passwordTextField.text == passwordVerifyTextField.text && passwordVerifyTextField.text?.isEmpty == false && nameTextField.text?.isEmpty == false {
-            Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
+            Auth.auth().createUser(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { (user, error) in
                 if user != nil {
-                    self.signin()
+//                    self.signIn()
                     self.createDatabaseAccount()
-//                    self.getData()
                 }else{
                     if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
                         self.errorMessageBLTN = errorCode.errorMessage
@@ -121,41 +128,46 @@ class SignUp: UIViewController, UITextFieldDelegate{
         }
     }
     
-    @objc func signin(){
-        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
-            if user != nil {
-                getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
-                    self.navigationController?.setNavigationBarHidden(true, animated: false)
-                    self.navigationController?.removeFromParent()
-                    self.tabBarController?.tabBar.isHidden = true
-                    self.tabBarController?.removeFromParent()
-                    self.navigationController?.popViewController(animated: true)
-                    self.navigationController?.pushViewController(TabBarViewController(), animated: false)
-                }
-            }else{
-                if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
-                    self.errorMessageBLTN = errorCode.errorMessage
-                    self.bulletinManagerError.allowsSwipeInteraction = false
-                    self.bulletinManagerError.showBulletin(above: self)
-                }
-            }
-        })
+    @objc func closeViewBulletin(notification: NSNotification) {
+        self.navigationController?.pushViewController(StartViewController(), animated: false)
+        try! Auth.auth().signOut()
     }
     
+//    @objc func signIn(){
+//        Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
+//            if user != nil {
+//                getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
+//                    self.userEmail = self.emailTextField.text!
+//                    self.bulletinManagerSuccess.allowsSwipeInteraction = false
+//                    self.bulletinManagerSuccess.showBulletin(above: self)
+//                }
+//            }else{
+//                if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
+//                    self.errorMessageBLTN = errorCode.errorMessage
+//                    self.bulletinManagerError.allowsSwipeInteraction = false
+//                    self.bulletinManagerError.showBulletin(above: self)
+//                }
+//            }
+//        })
+//    }
+//
     @objc func createDatabaseAccount(){
         let UUID = Auth.auth().currentUser?.uid
-        let structData: [String: Any] = ["Name": self.nameTextField.text!, "Permits":[:],"Vehicles":[]]
+        //MARK: THIS NEEDS TO BE REMOVED IN FUTURE VERSIONS
+        let structData: [String: Any] = ["Beta Access": false, "Name": self.nameTextField.text!, "Permits":[:],"Vehicles":[]]
 
         database.collection("Users").document("Commuters").collection("Users").document(UUID!).setData(structData, merge: true) { error in
             if let error = error?.localizedDescription {
                 print(error)
             }else{
-                print("Successfully added to database")
+                self.userEmail = self.emailTextField.text!
+                self.bulletinManagerSuccess.allowsSwipeInteraction = false
+                self.bulletinManagerSuccess.showBulletin(above: self)
+                
             }
         }
-        
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
@@ -166,14 +178,14 @@ class SignUp: UIViewController, UITextFieldDelegate{
     }
     
     @objc func viewPrivacyPolicy(){
-        webLink = "https://theoryparking.com/privacy"
+        webLink = "https://raedam.co/privacy"
         webViewLabel = "Privacy Policy"
         let webView = UINavigationController(rootViewController: webViewScreen())
         self.navigationController?.present(webView, animated: false, completion: nil)
     }
     
     @objc func closeView() {
-        self.navigationController?.pushViewController(StartView(), animated: false)
+        self.navigationController?.pushViewController(StartViewController(), animated: false)
     }
     
 }

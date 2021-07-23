@@ -12,12 +12,15 @@ import LocalAuthentication
 import Lottie
 import BLTNBoard
 
+var ReturnMessage = String()
+var LoginSuccess = Bool()
+
 class SignIn: UIViewController, UITextFieldDelegate {
     
     let emailTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .emailAddress, ReturnType: .next, BackgroundColor: standardBackgroundColor, SecuredEntry: false, Placeholder: "Email", Target: self)
     let passwordTextField = createTextField(FontName: font, FontSize: 18, KeyboardType: .default, ReturnType: .continue, BackgroundColor: standardBackgroundColor, SecuredEntry: true, Placeholder: "Password", Target: self)
     
-    let loginButton = createButton(Title: "log in", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(login))
+    let loginButton = createButton(Title: "Login", FontName: font, FontSize: 25, FontColor: standardBackgroundColor, BorderWidth: 1.5, CornerRaduis: 12, BackgroundColor: standardContrastColor, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(login))
     let signupButton = createButton(Title: "Don't have an account? Sign up here.", FontName: font, FontSize: 15, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 12, BackgroundColor: .clear, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(signup))
     let forgotButton = createButton(Title: "forgot?", FontName: font, FontSize: 16, FontColor: standardTintColor, BorderWidth: 0, CornerRaduis: 0, BackgroundColor: .clear, BorderColor: UIColor.white.cgColor, Target: self, Action: #selector(passwordReset))
 
@@ -57,7 +60,7 @@ class SignIn: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationbarAttributes(Hidden: false, Translucent: false)
-        setupNavigationBar(LargeText: true, Title: "login", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView))
+        setupNavigationBar(LargeText: true, Title: "Login", SystemImageR: false, ImageR: false, ImageTitleR: "", TargetR: nil, ActionR: nil, SystemImageL: true, ImageL: true, ImageTitleL: "xmark", TargetL: self, ActionL: #selector(self.closeView))
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -103,23 +106,33 @@ class SignIn: UIViewController, UITextFieldDelegate {
     @objc func login(){
         emptyTextField()
         if !emailTextField.text!.isEmpty && !passwordTextField.text!.isEmpty {
-            Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: { (user,error) in
-                if user != nil {
-                    getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
-                        self.navigationController?.setNavigationBarHidden(true, animated: true)
-                        self.tabBarController?.tabBar.isHidden = true
-                        self.navigationController?.popViewController(animated: true)
-                        self.navigationController?.removeFromParent()
-                        self.navigationController?.pushViewController(TabBarViewController(), animated: false)
-                    }
+            Database.checkAccess(Email: emailTextField.text!){ (true) in
+                if LoginSuccess{
+                    Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!, completion: { (user,error) in
+                        if user != nil{
+                            getUserData(UID: Auth.auth().currentUser!.uid) { (true) in
+                                if UserData[indexPath.row].BetaAccess {
+                                    self.navigationController?.setNavigationBarHidden(true, animated: true)
+                                    self.tabBarController?.tabBar.isHidden = true
+                                    self.navigationController?.popViewController(animated: true)
+                                    self.navigationController?.removeFromParent()
+                                    self.navigationController?.pushViewController(TabBarViewController(), animated: false)
+                                }
+                            }
+                        }else{
+                            if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
+                                self.errorMessageBLTN = errorCode.errorMessage
+                                self.bulletinManagerError.allowsSwipeInteraction = false
+                                self.bulletinManagerError.showBulletin(above: self)
+                            }
+                        }
+                    })
                 }else{
-                    if let errorCode = AuthErrorCode(rawValue: (error?._code)!) {
-                        self.errorMessageBLTN = errorCode.errorMessage
-                        self.bulletinManagerError.allowsSwipeInteraction = false
-                        self.bulletinManagerError.showBulletin(above: self)
-                    }
+                    self.errorMessageBLTN = "Your account exists. Please wait for an email from us with your access into the app."
+                    self.bulletinManagerError.allowsSwipeInteraction = false
+                    self.bulletinManagerError.showBulletin(above: self)
                 }
-            })
+            }
         }
     }
     
@@ -133,7 +146,7 @@ class SignIn: UIViewController, UITextFieldDelegate {
     }
     
     @objc func closeView() {
-        self.navigationController?.pushViewController(StartView(), animated: false)
+        self.navigationController?.pushViewController(StartViewController(), animated: false)
     }
 
 }

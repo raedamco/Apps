@@ -88,15 +88,36 @@ class DatabaseCalls {
         }
     }
     
-    func reservedSpot(Email: String) -> Bool{
-        var Success = Bool()
-        let url = self.baseURL.appendingPathComponent("betaUserAdded")
+    func checkAccess(Email: String, completion: @escaping (_ success: Bool) -> Void) {
         
         
-        
-        return Success
-    }
+        DispatchQueue.main.async {
+            let url = self.baseURL.appendingPathComponent("checkAccess")
+            AF.request(url, method: .post, parameters: ["Email": Email]).validate(statusCode: 200..<300).responseJSON { responseJSON in
+                switch responseJSON.result {
+                    case .success(let json):
+                        let responseJSON = json as? [String: AnyObject]
+                        let Sucess = responseJSON?["Status"] as! Bool
+                        let Message = responseJSON?["Message"] as! String
 
+                        if Sucess {
+                            LoginSuccess = true
+                            ReturnMessage = Message
+                            completion(true)
+                        }else{
+                            LoginSuccess = false
+                            ReturnMessage = Message
+                            completion(true)
+                        }
+                    case .failure(let error): print(error.localizedDescription)
+                        LoginSuccess = false
+                        ReturnMessage = error.localizedDescription
+                        completion(true)
+                }
+            }
+        }
+    }
+    
 }
 
 

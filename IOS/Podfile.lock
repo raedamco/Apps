@@ -333,11 +333,6 @@ PODS:
     - GoogleUtilities/Environment (~> 7.2)
     - nanopb (~> 2.30908.0)
     - PromisesObjC (~> 1.2)
-  - GoogleMaps (5.0.0):
-    - GoogleMaps/Maps (= 5.0.0)
-  - GoogleMaps/Base (5.0.0)
-  - GoogleMaps/Maps (5.0.0):
-    - GoogleMaps/Base
   - GooglePlaces (5.0.0)
   - GoogleUtilities/AppDelegateSwizzler (7.4.3):
     - GoogleUtilities/Environment
@@ -385,17 +380,43 @@ PODS:
   - GTMSessionFetcher/Core (1.6.1)
   - leveldb-library (1.22.1)
   - lottie-ios (3.2.3)
+  - Mapbox-iOS-SDK (6.3.0):
+    - MapboxMobileEvents (~> 0.10.4)
+  - MapboxAccounts (2.3.1)
+  - MapboxCommon (9.2.0)
+  - MapboxCoreNavigation (1.4.1):
+    - MapboxAccounts (~> 2.3.0)
+    - MapboxDirections (~> 1.2.0)
+    - MapboxMobileEvents (~> 0.10.2)
+    - MapboxNavigationNative (~> 32.0)
+    - Turf (~> 1.0)
+  - MapboxDirections (1.2.0):
+    - Polyline (~> 5.0)
+    - Turf (~> 1.0)
+  - MapboxMobileEvents (0.10.8)
+  - MapboxNavigation (1.4.1):
+    - Mapbox-iOS-SDK (~> 6.0)
+    - MapboxCoreNavigation (= 1.4.1)
+    - MapboxMobileEvents (~> 0.10.2)
+    - MapboxSpeech (~> 1.0)
+    - Solar (~> 2.1)
+  - MapboxNavigationNative (32.0.0):
+    - MapboxCommon (= 9.2.0)
+  - MapboxSpeech (1.0.0)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
+  - Polyline (5.0.2)
   - PromisesObjC (1.2.12)
   - Siren (5.8.1)
+  - Solar (2.1.0)
   - Stripe (21.6.0):
     - Stripe/Stripe3DS2 (= 21.6.0)
   - Stripe/Stripe3DS2 (21.6.0)
   - SwiftyJSON (5.0.1)
+  - Turf (1.2.0)
   - ZendeskCommonUISDK (6.1.1)
   - ZendeskCoreSDK (2.5.1)
   - ZendeskMessagingAPISDK (3.8.2):
@@ -423,9 +444,9 @@ DEPENDENCIES:
   - Firebase/Functions
   - Firebase/Messaging
   - Firebase/Storage
-  - GoogleMaps
   - GooglePlaces
   - lottie-ios
+  - MapboxNavigation
   - Siren
   - Stripe
   - SwiftyJSON
@@ -451,7 +472,6 @@ SPEC REPOS:
     - FirebaseStorage
     - GoogleAppMeasurement
     - GoogleDataTransport
-    - GoogleMaps
     - GooglePlaces
     - GoogleUtilities
     - "gRPC-C++"
@@ -459,11 +479,23 @@ SPEC REPOS:
     - GTMSessionFetcher
     - leveldb-library
     - lottie-ios
+    - Mapbox-iOS-SDK
+    - MapboxAccounts
+    - MapboxCommon
+    - MapboxCoreNavigation
+    - MapboxDirections
+    - MapboxMobileEvents
+    - MapboxNavigation
+    - MapboxNavigationNative
+    - MapboxSpeech
     - nanopb
+    - Polyline
     - PromisesObjC
     - Siren
+    - Solar
     - Stripe
     - SwiftyJSON
+    - Turf
     - ZendeskCommonUISDK
     - ZendeskCoreSDK
     - ZendeskMessagingAPISDK
@@ -491,7 +523,6 @@ SPEC CHECKSUMS:
   FirebaseStorage: 001a1f6b1ec45ed60ff9689390d23988e4b95a61
   GoogleAppMeasurement: b52eafc9dff542d580700e708216568bd2fbf168
   GoogleDataTransport: 04c3e9a480bbcaa2ec3f5d27f1cdeb6a92f20c8d
-  GoogleMaps: 600e5e69bdf7f4ed7cac4d6aa96c7ec08a5aa254
   GooglePlaces: 5d87ca13ed98b7a937e0d8bc7026f718c7263271
   GoogleUtilities: 45dbb24a7f351d69d0a601482b39ad6c32e30dab
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
@@ -499,11 +530,23 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
+  Mapbox-iOS-SDK: 2563ed87ead6ec08f1c2090873977b8a7be335a8
+  MapboxAccounts: e40ef575df5d8b7ef33d0504ff2d393f4fde0455
+  MapboxCommon: 2c4ef00c10cba35302835423f4d63c6f3dea4bc4
+  MapboxCoreNavigation: 6d70c5f314252436cdbe4f98e91972b0082e21fd
+  MapboxDirections: 383df0cd65784897c2269750a42d9654c832f0ce
+  MapboxMobileEvents: 36ff53b135aac486eed94b61f813c7967a0c2c6f
+  MapboxNavigation: d59bf0692d0478acc6861ba04ac5ceebf5d62040
+  MapboxNavigationNative: e811b9beed18c01e4693e29f843d36b4a760fa61
+  MapboxSpeech: 4b3aea42e35d056fae1d7ad847a9fc0f412d911e
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  Polyline: fce41d72e1146c41c6d081f7656827226f643dff
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Siren: de768099aff1f1c9acda4247064788a4940b4bf3
+  Solar: 2dc6e7cc39186cb0c8228fa08df76fb50c7d8f24
   Stripe: 6cc7bb348f4b1fad111129f6ee40eb6682deaefb
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
+  Turf: aaa060138b11a8e979a19e6d81091d156a31bc58
   ZendeskCommonUISDK: 5808802951ad2bb424f0bed4259dc3c0ce9b52ec
   ZendeskCoreSDK: 19a18e5ef2edcb18f4dbc0ea0d12bd31f515712a
   ZendeskMessagingAPISDK: 144e0fb0e633a3c4e73149b781ab65338938d5a8
@@ -512,6 +555,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: dfac3d811bd3deb82a717c554d078788cfd02e7f
+PODFILE CHECKSUM: c27bd5864b71744ea511e1c07cbc649a4d8af60c
 
 COCOAPODS: 1.10.1

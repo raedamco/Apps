@@ -18,6 +18,7 @@ func getUserData(UID: String, completion: @escaping (_ success: Bool) -> Void) {
     database.collection("Users").document("Commuters").collection("Users").document(UID).getDocument { (document, error) in
         if let document = document, document.exists {
             let data = document.data()!
+            let BetaAccess = data["Beta Access"] as! Bool
             guard let Name = data["Name"] as? String else { return }
             guard let Email = data["Email"] as? String else { return }
             guard let UID = data["UUID"] as? String else { return }
@@ -33,26 +34,20 @@ func getUserData(UID: String, completion: @escaping (_ success: Bool) -> Void) {
             if Permit!.isEmpty {
                 Permit = ["None":" "]
             }
-
-            UserData.append(User(Name: Name, Email: Email,Phone: Phone, UID: UID, License: License, Permit: Permit!, StripeID: StripeID))
+            
+            UserData.append(User(BetaAccess: BetaAccess, Name: Name, Email: Email,Phone: Phone, UID: UID, License: License, Permit: Permit!, StripeID: StripeID))
             
             checkCurrentTransaction()
             getTransactionHistory()
             
             completion(true)
-        } else {
+        }else{
             try! Auth.auth().signOut()
             UserData.removeAll()
             TransactionsHistory.removeAll()
             completion(false)
         }
     }
-
  }
 
 
-func checkIfUserExists(Email: String){
-        
-    
-        
-}

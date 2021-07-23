@@ -1,32 +1,36 @@
 //
-//  HomeViewController.swift
-//  Parking
+//  Home2.swift
+//  Theory Parking
 //
-//  Created for Theory Parking on 9/8/19.
-//  Copyright © 2020 Theory Parking. All rights reserved.
+//  Created by Omar Waked on 7/6/21.
+//  Copyright © 2021 Raedam. All rights reserved.
 //
 
 import UIKit
 import MapKit
-import GoogleMaps
 import GooglePlaces
 import Alamofire
 import SwiftyJSON
 import BLTNBoard
 import FirebaseAnalytics
+import Mapbox
+import MapboxDirections
+import MapboxCoreNavigation
+import MapboxNavigation
 
-var selectedParkingLocation = CLLocation()
-var currentUserLocation = CLLocation()
+let APIKey = "AIzaSyBLF8x5SR3UJbI-ybS04Bd9TPUebvziMlw"
+var darkMapStyle = "mapbox://styles/omarwaked/ckr8fjs3i2nbx19pd2tpkosu2"
+var lightMapStyle = "mapbox://styles/omarwaked/ckr8g3omj4b3p17mzxu40u71m"
 
-class HomeViewController: UIViewController, CLLocationManagerDelegate {
+class HomeViewController: UIViewController, CLLocationManagerDelegate, MGLMapViewDelegate {
      
-    private let locationManager = CLLocationManager()
+    let locationManager = CLLocationManager()
     let destinationTextField = createButton(Title: "Destination", FontName: font, FontSize: 20, FontColor: standardContrastColor, BorderWidth: 0, CornerRaduis: 12, BackgroundColor: standardBackgroundColor.withAlphaComponent(0.7), BorderColor: UIColor.clear.cgColor, Target: self, Action: #selector(searchLocation))
-    let mapView = GMSMapView()
     var userLocation = CLLocation()
     var destinationLocation = CLLocation()
-    var polyline = GMSPolyline()
-    let APIKey = "AIzaSyBLF8x5SR3UJbI-ybS04Bd9TPUebvziMlw"
+    var mapView: MGLMapView?
+    var mapStyle = String()
+    var style = [Style]()
     
     // BLTNBoard START
     let backgroundStyles = BackgroundStyles()
@@ -55,110 +59,77 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        createViewLayout()
-        NotificationCenter.default.addObserver(self, selector: #selector(createRoute(notification:)), name: NSNotification.Name(rawValue: "createRoute"), object: nil)
+        view.backgroundColor = standardBackgroundColor
+
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            locationManager.startUpdatingLocation()
+        }else{
+            locationManager.requestWhenInUseAuthorization()
+            //MARK: Force user to enable location
+        }
+
+        updateMapStyle()
         NotificationCenter.default.addObserver(self, selector: #selector(confirmRoute(notification:)), name: NSNotification.Name(rawValue: "confirmRoute"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(startRoute(notification:)), name: NSNotification.Name(rawValue: "startRoute"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(cancelRoute(notification:)), name: NSNotification.Name(rawValue: "cancelRoute"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(infoRoute(notification:)), name: NSNotification.Name(rawValue: "moreInfo"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(loadMap(notification:)), name: NSNotification.Name(rawValue: "loadMap"), object: nil)
     }
-    
-    func updateMapStyle(){
-        if self.traitCollection.userInterfaceStyle == .dark {
-            styleMap(DarkMode: true)
-            self.view.reloadInputViews()
-        }else{
-            styleMap(DarkMode: false)
-            self.view.reloadInputViews()
-        }
-    }
-    
+
      override func viewDidAppear(_ animated: Bool) {
         setNeedsStatusBarAppearanceUpdate()
         checkConnection()
-        updateMapStyle()
      }
      
      override func viewWillAppear(_ animated: Bool) {
-        updateMapStyle()
         self.view.layoutSubviews()
+        createMap()
         self.view.addSubview(destinationTextField)
         destinationTextField.target(forAction: #selector(self.searchLocation), withSender: self)
         destinationTextField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         destinationTextField.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 80).isActive = true
         destinationTextField.widthAnchor.constraint(equalToConstant: self.view.frame.width - 100).isActive = true
         destinationTextField.heightAnchor.constraint(equalToConstant: (self.view.frame.width - 60)/5.5).isActive = true
-        if destinationTextField.isHidden {
-            navigationbarAttributes(Hidden: false, Translucent: false)
-
-            if DirectionsData.count > 0 {
-                let directionTitle = SelectedParkingData[indexPath.row].Name
-                    //DirectionsData[indexPath.row].Manuver
-
-                self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
-                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
-            }
-        }else{
-            navigationbarAttributes(Hidden: true, Translucent: false)
-            destinationTextField.isEnabled = true
-        }
+        navigationbarAttributes(Hidden: true, Translucent: false)
      }
-
-     func createViewLayout(){
-        view.backgroundColor = standardBackgroundColor
-         
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-            locationManager.startUpdatingLocation()
-            mapView.isMyLocationEnabled = true
-            mapView.settings.allowScrollGesturesDuringRotateOrZoom = true
-            mapView.settings.rotateGestures = true
-        }else{
-            locationManager.requestWhenInUseAuthorization()
-            //MARK: Force user to enable location
-        }
-        
-        view = mapView
-     }
-     
-     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        guard status == .authorizedWhenInUse else {
-            return
-        }
-        locationManager.startUpdatingLocation()
-        mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17)
-        
-     }
-     
+    
+    func createMap(){
+        let mapView = MGLMapView(frame: view.bounds, styleURL: URL(string: mapStyle))
+        mapView.setCenter(CLLocationCoordinate2D(latitude: currentUserLocation.coordinate.latitude, longitude: currentUserLocation.coordinate.longitude), zoomLevel: 17, animated: false)
+        mapView.showsTraffic = true
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+        mapView.showsTraffic = true
+        view.addSubview(mapView)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+       guard status == .authorizedWhenInUse else {
+           return
+       }
+       locationManager.startUpdatingLocation()
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else {
             return
         }
-        
+
         userLocation = location
         currentUserLocation = location
-        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
+//        mapView?.setCenter(CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude), zoomLevel: 17, animated: false)
         locationManager.stopUpdatingLocation()
-        let update = GMSCameraUpdate.setTarget(location.coordinate)
-        mapView.moveCamera(update)
-
 
         if location.distance(from: destinationLocation) <= blockDistance {
             updateDirectionsView()
-        }else{
-            
         }
-
     }
-    
-    
+         
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading){
 
     }
-    
+
      @objc func searchLocation(){
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {
@@ -176,7 +147,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
                 @unknown default:
                 break
             }
-        } else {
+        }else{
             locationManager.requestWhenInUseAuthorization()
         }
     }
@@ -186,7 +157,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
 
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
         destinationName = place.name!
-        
+
         dismiss(animated: true) {
             SelectedParkingData.removeAll()
             getDocumentNearBy(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude, meters: 1000)
@@ -194,20 +165,40 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         }
     }
     
-    @objc func createRoute(notification: NSNotification){
+    @objc func startRoute(notification: NSNotification){
         destinationLocation = CLLocation(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
-        
-        let destinationLocation2D = CLLocationCoordinate2D(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
+        let destinationLocation2D = CLLocationCoordinate2D(latitude:  SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
         
         dismiss(animated: true, completion: {
-            self.mapView.settings.compassButton = true
-            self.mapView.settings.myLocationButton = true
-            self.addMarker(position: destinationLocation2D)
-            self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
- 
+            let origin = Waypoint(coordinate: CLLocationCoordinate2D(latitude: self.userLocation.coordinate.latitude, longitude: self.userLocation.coordinate.longitude), name: "Current Location")
+            let destination = Waypoint(coordinate: CLLocationCoordinate2D(latitude: destinationLocation2D.latitude, longitude: destinationLocation2D.longitude), name: "Destination")
+            let routeOptions = NavigationRouteOptions(waypoints: [origin, destination])
+
+            Directions.shared.calculate(routeOptions) { [weak self] (session, result) in
+                switch result {
+                case .failure(let error):
+                    print(error.localizedDescription)
+                case .success(let response):
+                    guard let route = response.routes?.first, let strongSelf = self else {
+                        return
+                    }
+//                    simulationIsEnabled ? .always : .onPoorGPS
+                    let navigationService = MapboxNavigationService(route: route, routeIndex: 0, routeOptions: routeOptions, simulating: .always)
+
+                    let navigationOptions = NavigationOptions(styles: self!.style, navigationService: navigationService)
+                    let viewController = NavigationViewController(for: route, routeIndex: 0, routeOptions: routeOptions, navigationOptions: navigationOptions)
+                    viewController.modalPresentationStyle = .fullScreen
+                    viewController.view.backgroundColor = standardBackgroundColor
+                    strongSelf.present(viewController, animated: true, completion: nil)
+                    viewController.showsEndOfRouteFeedback = false
+                    if viewController.isBeingDismissed {
+                        SelectedParkingData.removeAll()
+                    }
+                }
+            }
         })
     }
-    
+
     @objc func confirmRoute(notification: NSNotification){
         self.bulletinManagerStartRoute.allowsSwipeInteraction = false
         self.bulletinManagerStartRoute.showBulletin(above: self)
@@ -217,40 +208,20 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         self.tabBarController?.tabBar.isHidden = false
         self.navigationController?.pushViewController(DirectionsTable(), animated: false)
     }
-    
-    @objc func startRoute(notification: NSNotification){
-        destinationLocation = CLLocation(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
 
-        let destinationLocation2D = CLLocationCoordinate2D(latitude:  SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
-        
-        dismiss(animated: true, completion: {
-            self.addMarker(position: destinationLocation2D)
-            self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
-            self.destinationTextField.isHidden = true
-        })
-    }
-
-    @objc func cancelRoute(notification: NSNotification){
-        self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 17, bearing: 0, viewingAngle: 0)
-        SelectedParkingData.removeAll()
-        self.navigationbarAttributes(Hidden: true, Translucent: true)
-        self.destinationTextField.isHidden = false
-        self.mapView.clear()
-        self.reloadInputViews()
-    }
-    
     @objc func loadMap(notification: NSNotification) {
-        if !SelectedParkingData.isEmpty {
-            destinationTextField.isEnabled = false
-            destinationTextField.isHidden = true
-            destinationLocation = CLLocation(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
-            if DirectionsData.isEmpty {
-                self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
-            }
-        }else{
-            destinationTextField.isEnabled = true
-            destinationTextField.isHidden = false
-        }
+//        if !SelectedParkingData.isEmpty {
+//            destinationTextField.isEnabled = false
+//            destinationTextField.isHidden = true
+//            destinationLocation = CLLocation(latitude: SelectedParkingData[indexPath.row].Location.latitude, longitude: SelectedParkingData[indexPath.row].Location.longitude)
+//
+//            if DirectionsData.isEmpty {
+//                self.getRouteSteps(source: self.userLocation.coordinate, destination: self.destinationLocation.coordinate)
+//            }
+//        }else{
+//            destinationTextField.isEnabled = true
+//            destinationTextField.isHidden = false
+//        }
     }
     
     @objc func showRouteInfo(){
@@ -262,108 +233,17 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         print("USER NEAR STRUCTURE")
     }
     
-    func addMarker(position: CLLocationCoordinate2D) {
-        
-//        let pulseAnimation = CABasicAnimation(keyPath: "opacity")
-//        pulseAnimation.duration = 30
-//        pulseAnimation.fromValue = 0
-//        pulseAnimation.toValue = 1
-//        pulseAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-//        pulseAnimation.autoreverses = true
-//        pulseAnimation.repeatCount = .greatestFiniteMagnitude
-//        self.view.layer.add(pulseAnimation, forKey: nil)
-        let marker = GMSMarker()
-        marker.position = position
-        marker.map = mapView
-        marker.appearAnimation = .pop
-    }
-    
-    func drawPath(from polyStr: String){
-        let path = GMSPath(fromEncodedPath: polyStr)
-        let polyline = GMSPolyline(path: path)
-        polyline.strokeColor = UIColor(red: 0.08, green: 0.43, blue: 0.88, alpha: 1.00)
-        polyline.strokeWidth = 3.0
-        polyline.map = mapView
-//        self.mapView.camera = GMSCameraPosition(target: userLocation.coordinate, zoom: 16, bearing: 0, viewingAngle: 25)
-    }
-    
-    func getRouteSteps(source: CLLocationCoordinate2D,destination: CLLocationCoordinate2D) {
-        let url = URL(string: "https://maps.googleapis.com/maps/api/directions/json?origin=\(source.latitude),\(source.longitude)&destination=\(destination.latitude),\(destination.longitude)&sensor=false&mode=driving&key=\(APIKey)")!
-        
-        AF.request(url, method: .post).validate(statusCode: 200..<300).responseJSON { responseJSON in
-            switch responseJSON.result {
-                case .success(let json): //print(json)
-                    let jsonResult = json as? [String: AnyObject]
-                    
-                    guard let routes = jsonResult!["routes"] as? [Any] else { return }
-                    guard let route = routes[0] as? [String: Any] else { return }
-                    guard let legs = route["legs"] as? [Any] else { return }
-                    guard let leg = legs[0] as? [String: Any] else { return }
-                    guard let steps = leg["steps"] as? [Any] else { return }
-                    guard let duration = leg["duration"] as? [String: Any] else { return }
-                    guard let distance = leg["distance"] as? [String: Any] else { return }
-
-                    RouteData.append(RouteInfo(Time: String(describing: duration["text"]! as Any), Distance: String(describing: distance["text"]! as Any)))
-
-                    for item in steps {
-                        guard let step = item as? [String: Any] else { return }
-                        guard let stepTurns = step["html_instructions"] as? String else { return }
-                        guard let stepDistance = step["distance"] as? [String: Any] else { return }
-                        guard let stepTime = step["duration"] as? [String: Any] else { return }
-                        guard let polyline = step["polyline"] as? [String: Any] else { return }
-                        guard let polyLineString = polyline["points"] as? String else { return }
-                   
-//                        guard let maneuver = step["maneuver"] as? String else { return }
-//                        print(maneuver)
-                       
-                        DispatchQueue.main.async {
-                            self.drawPath(from: polyLineString)
-                            DirectionsData.append(DirectionsInfo(Time: String(describing: stepTime["text"]! as Any), Distance: String(describing: stepDistance["text"]! as Any), Manuver: stepTurns.html2String))
-                           
-                            if DirectionsData.count > 0 {
-                                self.navigationbarAttributes(Hidden: false, Translucent: false)
-                                let directionTitle = SelectedParkingData[indexPath.row].Name
-                                   //DirectionsData[indexPath.row].Manuver + " in " + DirectionsData[indexPath.row].Distance //DirectionsData[indexPath.row].Manuver
-                                self.setupNavigationBar(LargeText: true, Title: directionTitle, SystemImageR: true, ImageR: true, ImageTitleR: "ellipsis", TargetR: self, ActionR: #selector(self.showRouteInfo), SystemImageL: false, ImageL: false, ImageTitleL: "", TargetL: self, ActionL: nil)
-                                let DirectionsTitleAttributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor: standardContrastColor, NSAttributedString.Key.font: UIFont(name: font, size: 28)!]
-                                self.navigationController?.navigationBar.largeTitleTextAttributes = DirectionsTitleAttributes
-                           }
-                       }
-                   }
-                case .failure(let error): print(error)
-            }
-        }
-
-        let cameraUpdate = GMSCameraUpdate.fit(GMSCoordinateBounds(coordinate: self.userLocation.coordinate, coordinate: self.destinationLocation.coordinate))
-        self.mapView.moveCamera(cameraUpdate)
-        let currentZoom = self.mapView.camera.zoom
-        self.mapView.animate(toZoom: currentZoom - 0.8)
-    }
-}
-
-extension HomeViewController {
-    func styleMap(DarkMode: Bool) {
-        mapView.settings.myLocationButton = true
-        mapView.settings.rotateGestures = false
-        var style = String()
-        
-        if DarkMode == true || userDefaults.bool(forKey: "THEME") == true {
-            style = "darkstyle"
+    func updateMapStyle(){
+        if self.traitCollection.userInterfaceStyle == .dark {
+            mapStyle = darkMapStyle
+            style = [CustomDayStyle()]
+            self.view.reloadInputViews()
         }else{
-            style = "lightstyle"
-        }
-        
-        do{
-            if let styleURL = Bundle.main.url(forResource: style, withExtension: "json") {
-                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
-            }else{
-                print("Unable to find style.json")
-            }
-        }catch{
-            print("One or more of the map styles failed to load. \(error)")
+            mapStyle = lightMapStyle
+            style = [CustomNightStyle()]
+            self.view.reloadInputViews()
         }
     }
-    
 
     func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
         print("Error: ", error.localizedDescription)
@@ -379,13 +259,105 @@ extension HomeViewController {
         guard UIApplication.shared.applicationState == .inactive else {
             return
         }
+        updateMapStyle()
+    }
+    
+}
 
-        if self.traitCollection.userInterfaceStyle == .dark {
-            styleMap(DarkMode: true)
-            self.view.reloadInputViews()
-        }else{
-            styleMap(DarkMode: false)
-            self.view.reloadInputViews()
-        }
+
+class CustomDayStyle: DayStyle {
+ 
+    private let backgroundColor = #colorLiteral(red: 0.06276176125, green: 0.6164312959, blue: 0.3432356119, alpha: 1)
+    private let darkBackgroundColor = #colorLiteral(red: 0.0473754704, green: 0.4980872273, blue: 0.2575169504, alpha: 1)
+    private let secondaryBackgroundColor = #colorLiteral(red: 0.9842069745, green: 0.9843751788, blue: 0.9841964841, alpha: 1)
+    private let blueColor = #colorLiteral(red: 0.26683864, green: 0.5903761983, blue: 1, alpha: 1)
+    private let lightGrayColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+    private let darkGrayColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+    private let primaryLabelColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+    private let secondaryLabelColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.9)
+     
+    required init() {
+        super.init()
+        mapStyleURL = URL(string: lightMapStyle)!
+        styleType = .day
+    }
+ 
+    override func apply() {
+        super.apply()
+        ArrivalTimeLabel.appearance().textColor = lightGrayColor
+        BottomBannerView.appearance().backgroundColor = secondaryBackgroundColor
+        Button.appearance().textColor = #colorLiteral(red: 0.9842069745, green: 0.9843751788, blue: 0.9841964841, alpha: 1)
+        CancelButton.appearance().tintColor = lightGrayColor
+        DistanceLabel.appearance(whenContainedInInstancesOf: [InstructionsBannerView.self]).unitTextColor = secondaryLabelColor
+        DistanceLabel.appearance(whenContainedInInstancesOf: [InstructionsBannerView.self]).valueTextColor = primaryLabelColor
+        DistanceLabel.appearance(whenContainedInInstancesOf: [StepInstructionsView.self]).unitTextColor = lightGrayColor
+        DistanceLabel.appearance(whenContainedInInstancesOf: [StepInstructionsView.self]).valueTextColor = darkGrayColor
+        DistanceRemainingLabel.appearance().textColor = lightGrayColor
+        DismissButton.appearance().textColor = darkGrayColor
+        FloatingButton.appearance().backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 1)
+        FloatingButton.appearance().tintColor = blueColor
+        InstructionsBannerView.appearance().backgroundColor = backgroundColor
+        LanesView.appearance().backgroundColor = darkBackgroundColor
+        LaneView.appearance().primaryColor = #colorLiteral(red: 0.9842069745, green: 0.9843751788, blue: 0.9841964841, alpha: 1)
+        ManeuverView.appearance().backgroundColor = backgroundColor
+        ManeuverView.appearance(whenContainedInInstancesOf: [InstructionsBannerView.self]).primaryColor = #colorLiteral(red: 0.9842069745, green: 0.9843751788, blue: 0.9841964841, alpha: 1)
+        ManeuverView.appearance(whenContainedInInstancesOf: [InstructionsBannerView.self]).secondaryColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.5)
+        ManeuverView.appearance(whenContainedInInstancesOf: [NextBannerView.self]).primaryColor = #colorLiteral(red: 0.9842069745, green: 0.9843751788, blue: 0.9841964841, alpha: 1)
+        ManeuverView.appearance(whenContainedInInstancesOf: [NextBannerView.self]).secondaryColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.5)
+        ManeuverView.appearance(whenContainedInInstancesOf: [StepInstructionsView.self]).primaryColor = darkGrayColor
+        ManeuverView.appearance(whenContainedInInstancesOf: [StepInstructionsView.self]).secondaryColor = lightGrayColor
+        MarkerView.appearance().pinColor = blueColor
+        NextBannerView.appearance().backgroundColor = backgroundColor
+        NextInstructionLabel.appearance().textColor = #colorLiteral(red: 0.9842069745, green: 0.9843751788, blue: 0.9841964841, alpha: 1)
+        NavigationMapView.appearance().tintColor = blueColor
+        NavigationMapView.appearance().routeCasingColor = #colorLiteral(red: 0.1968861222, green: 0.4148176908, blue: 0.8596113324, alpha: 1)
+        NavigationMapView.appearance().trafficHeavyColor = #colorLiteral(red: 0.9995597005, green: 0, blue: 0, alpha: 1)
+        NavigationMapView.appearance().trafficLowColor = blueColor
+        NavigationMapView.appearance().trafficModerateColor = #colorLiteral(red: 1, green: 0.6184511781, blue: 0, alpha: 1)
+        NavigationMapView.appearance().trafficSevereColor = #colorLiteral(red: 0.7458544374, green: 0.0006075350102, blue: 0, alpha: 1)
+        NavigationMapView.appearance().trafficUnknownColor = blueColor
+        // Customize the color that appears on the traversed section of a route
+        NavigationMapView.appearance().traversedRouteColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 0.5)
+        PrimaryLabel.appearance(whenContainedInInstancesOf: [InstructionsBannerView.self]).normalTextColor = primaryLabelColor
+        PrimaryLabel.appearance(whenContainedInInstancesOf: [StepInstructionsView.self]).normalTextColor = darkGrayColor
+        ResumeButton.appearance().backgroundColor = secondaryBackgroundColor
+        ResumeButton.appearance().tintColor = blueColor
+        SecondaryLabel.appearance(whenContainedInInstancesOf: [InstructionsBannerView.self]).normalTextColor = secondaryLabelColor
+        SecondaryLabel.appearance(whenContainedInInstancesOf: [StepInstructionsView.self]).normalTextColor = darkGrayColor
+        TimeRemainingLabel.appearance().textColor = lightGrayColor
+        TimeRemainingLabel.appearance().trafficLowColor = darkBackgroundColor
+        TimeRemainingLabel.appearance().trafficUnknownColor = darkGrayColor
+        WayNameLabel.appearance().normalTextColor = blueColor
+        WayNameView.appearance().backgroundColor = secondaryBackgroundColor
+    }
+}
+ 
+class CustomNightStyle: NightStyle {
+ 
+    private let backgroundColor = #colorLiteral(red: 0.06276176125, green: 0.6164312959, blue: 0.3432356119, alpha: 1)
+    private let darkBackgroundColor = #colorLiteral(red: 0.0473754704, green: 0.4980872273, blue: 0.2575169504, alpha: 1)
+    private let secondaryBackgroundColor = #colorLiteral(red: 0.1335069537, green: 0.133641988, blue: 0.1335278749, alpha: 1)
+    private let blueColor = #colorLiteral(red: 0.26683864, green: 0.5903761983, blue: 1, alpha: 1)
+    private let lightGrayColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+    private let darkGrayColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+    private let primaryTextColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+    private let secondaryTextColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.9)
+     
+    required init() {
+        super.init()
+        mapStyleURL = URL(string: darkMapStyle)!
+        styleType = .night
+    }
+     
+    override func apply() {
+        super.apply()
+        DistanceRemainingLabel.appearance().normalTextColor = primaryTextColor
+        BottomBannerView.appearance().backgroundColor = secondaryBackgroundColor
+        FloatingButton.appearance().backgroundColor = #colorLiteral(red: 0.1434620917, green: 0.1434366405, blue: 0.1819391251, alpha: 0.9037466989)
+        TimeRemainingLabel.appearance().textColor = primaryTextColor
+        TimeRemainingLabel.appearance().trafficLowColor = primaryTextColor
+        TimeRemainingLabel.appearance().trafficUnknownColor = primaryTextColor
+        ResumeButton.appearance().backgroundColor = #colorLiteral(red: 0.1434620917, green: 0.1434366405, blue: 0.1819391251, alpha: 0.9037466989)
+        ResumeButton.appearance().tintColor = blueColor
     }
 }

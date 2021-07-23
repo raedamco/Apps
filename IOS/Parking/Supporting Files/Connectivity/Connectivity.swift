@@ -106,7 +106,7 @@ class ConnectivityViewController: UIViewController {
                 let viewController = TabBarViewController()
                 self.present(viewController, animated: true, completion: nil)
             }else{
-                let viewController = StartView()
+                let viewController = StartViewController()
                 self.present(viewController, animated: true, completion: nil)
             }
         }
