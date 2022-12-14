@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "firebase-functions": "^3.14.1",
     "slack-notify": "^0.1.7",
     "stripe": "^8.157.0"
