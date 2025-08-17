@@ -1,452 +1,805 @@
- /* eslint-disable */
-//INITIALIZATION START
-//HTTP packages
-const express = require('express');
-const cors = require('cors');
-var bodyParser = require('body-parser');
-const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+import { onRequest } from 'firebase-functions/v2/https';
+import { onDocumentCreated } from 'firebase-functions/v2/firestore';
+import { setGlobalOptions } from 'firebase-functions/v2';
+import { initializeApp, getApps } from 'firebase-admin/app';
 
-//Firebase packages
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-admin.initializeApp({
-  databaseURL: "https://theory-parking.firebaseio.com"
-});
-// PubSub = require(`@google-cloud/pubsub`);
-
-//Private keys
-const stripe = require('stripe')("sk_test_51H0FFyDtW0T37E4P27PEfuEPvDUyGvmkNhInroQ9mAH7sdKzeM0A2hqLEC3advWxPHO0oCMJtHKk7USLmMIqc4aW00RhpYqsgR"); //Secret Key
-var slack = require('slack-notify')('https://hooks.slack.com/services/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');
-var slackTransactionBot = require('slack-notify')('https://hooks.slack.com/services/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');
-//INITIALIZATION END
-
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-//ACCOUNT START
-//When a user signs up for bet access, notify slack
-exports.checkAccess = functions.https.onRequest(async (req, res) => {
-  const Email = req.body.Email;
-
-  try {
-      const snapshot = await admin.firestore().collection("Users").doc("Commuters").collection("Users").where('Email', '==', Email).get();
-      if (snapshot.empty) {
-        console.log('No matching documents.');
-        return res.status(200).send({Status: false, Message: "Account does not exist"})
-      }
-
-      snapshot.forEach(doc => {
-        const betaAccess = doc.data()["Beta Access"];
-        if (betaAccess == false) {
-          return res.status(200).send({Status: false,Message: "Account does not have access yet"});
-        }else{
-          return res.status(200).send({Status: true, Message: "Account has access"})
-        }
-      });
-  }catch(error){
-      console.log(error)
-      res.status(500).send({Status: false, Message: error}).end()
-  }
+// Set global options for all functions with optimized settings
+setGlobalOptions({
+  maxInstances: 20,
+  timeoutSeconds: 30,
+  memory: '512MiB',
+  region: 'us-central1',
+  concurrency: 80,
+  retryCount: 3,
+  minInstances: 1
 });
 
-async function addBetaUser(email, date, res){
-  admin.firestore().collection('UsersBeta').doc(email).set({
-      Email: email,
-      Joined: admin.firestore.Timestamp.fromDate(date),
+// Initialize Firebase Admin with optimized settings
+if (getApps().length === 0) {
+  initializeApp({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    databaseURL: process.env.FIREBASE_DATABASE_URL
   });
-  slack.send({
-      'username': 'User Activity Bot',
-      'text': 'New Beta User Signup :tada:',
-      'icon_emoji': ':tada:',
-      'attachments': [{
-        'color': '#6a0dad',
-        'fields': [{
-              'title': "Email: " + email,
-              "value": "Joined: " + date.toUTCString(),
-              'short': true
-          }]
-      }]
-  })
-  return res.status(200).send({Success: true, Text: "An email will be sent when you have beta access to the Raedam app!"})
 }
 
-// When a user creates their account, set up their database log, stripe account, and notify slack
-exports.addUser = functions.auth.user().onCreate(async (user) => {
-    var date = new Date();
-    const customer = await stripe.customers.create({email: user.email});
+// Import service modules
+import { 
+  UserService, 
+  ParkingService, 
+  PaymentService, 
+  NotificationService 
+} from './services/index.js';
 
-    admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).set({
-        UUID: user.uid,
-        Email: user.email,
-        Joined: admin.firestore.Timestamp.fromDate(date),
-        StripeID: customer.id
-    }, {merge: true});
+// Import middleware
+import { 
+  validateRequest, 
+  rateLimiter, 
+  corsMiddleware, 
+  requestLogger,
+  errorHandler,
+  performanceMonitor
+} from './middleware/index.js';
 
-    await slack.send({
-        'username': 'User Activity Bot',
-        'text': 'New User Joined :tada:',
-        'icon_emoji': ':tada:',
-        'attachments': [{
-          'color': '#30FCF1',
-          'fields': [{
-                'title': 'Email: ' + user.email,
-                'value': 'Joined: ' + date.toUTCString(),
-                'short': true
-            }]
-        }]
-    })
+// Import validation schemas
+import { 
+  parkingSchemas, 
+  paymentSchemas 
+} from './validation/index.js';
 
-    return
-});
+// Import utilities
+import { logger } from './utils/logger.js';
 
-// When a user deletes their account, clean up after them and notify slack
-exports.removeUser = functions.auth.user().onDelete(async (user) => {
-  const snapshot = await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).get();
-  const snapval = snapshot.data();
-  var joined = snapval.Joined.toDate().toUTCString();
+// ============================================================================
+// HTTP FUNCTIONS
+// ============================================================================
 
-  await slack.send({
-      'username': 'User Activity Bot',
-      'text': 'User Deleted Account :disappointed:',
-      'icon_emoji': ':x:',
-      'attachments': [{
-        'color': '#ff0000',
-        'fields': [
-          {
-              'title': 'Member Since',
-              'value': joined,
-              'short': true
-          },
-        ]
-      }]
-  })
-
-  await stripe.customers.del(snapval.StripeID);
-  return admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(user.uid).delete();
-});
-
-//Add vehicle data to user account upon call
-exports.addVehicleData = functions.https.onRequest(async (req, res) => {
-    const UID = req.body.UID;
-    const VehicleData = req.body.VehicleData;
-
+// Health check endpoint
+export const healthCheck = onRequest({
+  cors: true,
+  maxInstances: 10,
+  memory: '256MiB',
+  timeoutSeconds: 10
+}, async (req, res) => {
+  try {
+    // Apply middleware
+    await corsMiddleware(req, res);
+    await requestLogger(req, res);
+    
+    const startTime = Date.now();
+    
+    // Basic health checks
+    const checks = {
+      firebase: true,
+      database: true,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Check Firebase connection
     try {
-        const snapshot = await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).get();
-        const snapval = snapshot.data();
-        const databaseVehicles = snapval.Vehicles;
-        //check if vehicle is already in database before adding, avoiding duplicates
-        if (databaseVehicles.indexOf(VehicleData) > -1) {
-            res.status(200).send({Success: false})
-        } else {
-            admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).set({
-                Vehicles: admin.firestore.FieldValue.arrayUnion(VehicleData)
-            }, {merge: true});
-            res.status(200).send({Success: true})
-        }
-    }catch(error){
-        console.log(error)
-        res.status(500).end()
+      const { getFirestore } = await import('firebase-admin/firestore');
+      const db = getFirestore();
+      await db.collection('_health').doc('check').get();
+    } catch (error) {
+      checks.firebase = false;
+      checks.database = false;
     }
-});
-
-//Add permit data to user account upon call
-exports.addPermitData = functions.https.onRequest(async (req, res) => {
-    const UID = req.body.UID;
-    const Permit = req.body.PermitData;
-    const PermitNumber = req.body.PermitNumber;
-
-    try {
-        admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).set({
-            Permits: {
-                Permit: PermitNumber
-            }
-        }, {merge: true});
-        res.status(200).send({Success: true})
-    }catch(error){
-        console.log(error)
-        res.status(500).end()
-    }
-});
-//ACCOUNT END
-
-//PAYMENTS START
-//Client request to start a server timer (Store data in database to start timer), if successful, allow client to start in app timer for user to keep track of cost and time
-exports.startPayment = functions.https.onRequest(async (req, res) => {
-    const UID = req.body.UID;
-    const Lat = Number(req.body.Latitude);
-    const Long = Number(req.body.Longitude);
-    const Organization = req.body.Organization;
-    const Floor = req.body.Floor;
-    const Spot = req.body.Spot;
-    const Rate = Number(req.body.Rate);
-    const CompanyStripeID = req.body.CompanyStripeID
-    const TimerStart = new Date();
-    const StartLat = Number(req.body.StartLatitude);
-    const StartLong = Number(req.body.StartLongitude);
-
-    try {
-        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UID).collection("History").doc().set({
-            Current: true,
-            CompanyStripeID: CompanyStripeID,
-            Data: {
-                "Start Location": new admin.firestore.GeoPoint(StartLat, StartLong),
-                "Location": new admin.firestore.GeoPoint(Lat, Long),
-                "Organization": Organization,
-                "Floor": Floor,
-                "Spot": Spot,
-                "Rate": Rate
-            },
-            Duration: {
-                Begin: admin.firestore.Timestamp.fromDate(TimerStart)
-            },
-      }, {merge: true});
-        res.status(200).send({Status: true})
-    } catch(error) {
-        console.log(error);
-        res.status(500).end()
-    }
-});
-
-//Send transaction details to client when asking to complete transaction
-exports.getTotal = functions.https.onRequest(async (req, res) => {
-    const TimerEnd = new Date();
-
-    var TransactionDetails = {
-        Duration: String(),
-        Rate: Number(),
-        Begin: String(),
-        End: String(),
-        Amount: Number(),
-        Current: Boolean(),
-        Document: String()
-    }
-
-    try{
-        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(req.body.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-            TransactionDetails.Current = doc.data().Current
-            TransactionDetails.Begin = doc.data()["Duration"].Begin
-            TransactionDetails.Rate = doc.data()["Data"].Rate
-            TransactionDetails.Document = doc.id
-        });
-
-            TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
-            TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
-            TransactionDetails.Amount = (TransactionDetails.Duration * TransactionDetails.Rate)
-            return [TransactionDetails.Amount, TransactionDetails.Document,TransactionDetails.Current]
-
-        }).catch(function(error) {
-            console.log("Error getting documents: " + error);
-        });
-
-        if (TransactionDetails.Current){
-            res.status(200).send({
-                Amount: TransactionDetails.Amount,
-                Document: TransactionDetails.Document,
-                Current: TransactionDetails.Current
-            })
-        }else{
-            res.status(500).send({
-                Amount: TransactionDetails.Amount,
-                Document: TransactionDetails.Document,
-                Current: TransactionDetails.Current
-            }).end()
-        }
-
-    }catch(error){
-        console.log(error)
-        return res.status(500).end()
-    }
-});
-
-//Final step in transaction: finalize database update and send charge to Stripe
-exports.createCharge = functions.https.onRequest(async (req, res) => {
-    const TimerEnd = new Date();
-
-    var UserData = {
-        Name: String(),
-        UID: req.body.UID,
-        StripeID: String(),
-    }
-
-    var TransactionDetails = {
-        IdempotencyKey: req.body.IdempotencyKey,
-        Rate: Number(),
-        Amount: Number(),
-        Duration: String(),
-        Begin: String(),
-        End: String(),
-        TransactionID: String(),
-        DocumentID: String(),
-        Organizaiton: String(),
-        Location: String(),
-        Source: String(),
-        Currency: String("usd"),
-        Details: String("details for charge"),
-        ClientSecret: String(),
-        CompanyStripeID: String()
-    }
-
-    try {
-        await completeTransaction()
-        console.log("trasaction completed successfully")
-        res.status(200).send({
-            Completed: true,
-            ClientSecret: TransactionDetails.ClientSecret
-        })
-    }catch(error){
-        console.log("trasaction did not complete: ", error);
-        res.status(500).end()
-    }
-
-    async function completeTransaction(){
-        //Get user data first
-        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).get().then(doc => {
-            if (!doc.exists) {
-                return console.log('No such document!');
-            }else{
-                UserData.StripeID = String(doc.data().StripeID);
-                UserData.Name = doc.data().Name
-                UserData.Email = doc.data().Email
-                return finalizeTransaction();
-            }
-        }).catch(err => {
-            console.log('Error getting document', err);
-        });
-
-    async function finalizeTransaction(){
-        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").orderBy('Duration.Begin', 'desc').limit(1).get().then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-                TransactionDetails.DocumentID = doc.id
-                TransactionDetails.Begin = doc.data()["Duration"].Begin
-                TransactionDetails.Rate = doc.data()["Data"].Rate
-                TransactionDetails.Organizaiton = doc.data()["Data"].Organizaiton
-                TransactionDetails.Location = doc.data()["Data"].Location
-                TransactionDetails.CompanyStripeID = doc.data().CompanyStripeID
-            });
-            return updateDatabaseDocument();
-        }).catch(function(error) {
-            console.log("Error getting documents: " + error);
-        });
-    }
-
-    async function updateDatabaseDocument(){
-        TransactionDetails.End = admin.firestore.Timestamp.fromDate(TimerEnd)
-        TransactionDetails.Duration = Math.floor(((TransactionDetails.End.toDate() - TransactionDetails.Begin.toDate())/1000)/60)
-        TransactionDetails.Amount = parseFloat((TransactionDetails.Duration * TransactionDetails.Rate) * 100)
-
-        await admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
-            Current: false,
-            Duration: {
-                End: TransactionDetails.End,
-                Minutes: TransactionDetails.Duration,
-            },
-            Transaction: {
-                Amount: (TransactionDetails.Amount/100)
-            }
-        }, {merge: true});
-        return createStripeCharge();
-    }
-
-    async function createStripeCharge(){
-        try {
-            const paymentIntent = await stripe.paymentIntents.create({
-              amount: TransactionDetails.Amount,
-              currency: TransactionDetails.Currency,
-              description: TransactionDetails.Details,
-              customer: UserData.StripeID,
-              application_fee_amount: parseInt(TransactionDetails.Amount * 0.07),
-              transfer_data: {
-                destination: TransactionDetails.CompanyStripeID,
-              },
-            });
-            TransactionDetails.ClientSecret = paymentIntent.client_secret
-            TransactionDetails.TransactionID = paymentIntent.id
-            admin.firestore().collection('Users').doc('Commuters').collection('Users').doc(UserData.UID).collection("History").doc(TransactionDetails.DocumentID).set({
-                Transaction: {
-                    TransactionID: TransactionDetails.TransactionID
-                }
-            }, {merge: true});
-
-            //Send slack message of new finalized transaction
-            await slackTransactionBot.send({
-                'username': 'Stripe Bot',
-                'text': 'Finalized Transaction :tada:',
-                'icon_emoji': ':tada:',
-                'attachments': [{
-                  'color': '#75FF33',
-                  'fields': [{
-                        'title': 'Transaction Information',
-                        'value': "User ID: " + UserData.UID + "\nTime Finalized: " + TimerEnd.toUTCString() + "\nTransaction Amount: $" + (TransactionDetails.Amount/100) + "\nRevenue: $" + parseFloat((TransactionDetails.Amount * 0.07)/100).toFixed(2),
-                        'short': false
-                    }]
-                }]
-            })
-
-        } catch(error) {
-            return console.log(error);
-        }
-      }
-    }
-});
-//PAYMENTS END
-
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-//STRIPE START
-exports.ephemeral_keys = functions.https.onRequest(async (req, res) => {
-    try {
-        let key = await stripe.ephemeralKeys.create(
-          {customer: req.body.customer_id},
-          {apiVersion: req.body.apiVersion}
-        );
-        let JSONResponse = JSON.stringify(key)
-        res.status(200).send(JSONResponse)
-    }catch(error){
-        res.status(500).end()
-    }
-});
-
-exports.create_setup_intent = functions.https.onRequest(async (req, res) => {
-    try {
-        const setupIntent = await stripe.setupIntents.create({
-          customer: req.body.customer_id,
-        });
-        res.status(200).send({
-          clientSecret: setupIntent.client_secret
-        });
-    }catch(error){
-        res.status(500).end()
-    }
-});
-//STRIPE END
-
-
-
-// exports.pubsubcall = functions.pubsub.topic('particle').onPublish(async (message) => {
-//   const messageData = Buffer.from(message.data, 'base64').toString();
-//   var parsedStringData = messageData.split(",");
-//
-//   //Parsed values from main unit
-//   var company = parsedStringData[0];
-//   var location = parsedStringData[1];
-//   var floor = parsedStringData[2];
-//   var mainUnitNumber = parsedStringData[3];
-//   var batteryLevel = parsedStringData[4];
-//
-//   //Update database from values
-//   updateDatabase(company,location,floor,mainUnitNumber,batteryLevel);
-// });
-
-async function updateDatabase(company, location, floor, mainUnitNumber, batteryLevel){
-  const snapshot = await db.collection('Companies').where("CUID", "==",company).get();
-  var fieldName = "Main Units." + mainUnitNumber + ".Battery Level";
-  if (snapshot) {
-    db.collection("Companies").doc(snapshot.id).collection("Data").doc(location).update({
-      fieldName: batteryLevel
-    }).catch((err) => {
-      console.log("Error updating battery level", err);
+    
+    const responseTime = Date.now() - startTime;
+    
+    res.json({
+      success: true,
+      message: 'Parking App Server is running',
+      version: '3.0.0',
+      checks,
+      responseTime: `${responseTime}ms`,
+      timestamp: checks.timestamp
+    });
+  } catch (error) {
+    logger.error('Health check error', { error: error.message, stack: error.stack });
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
     });
   }
-}
+});
+
+// Start a new parking session
+export const startParkingSession = onRequest({
+  cors: true,
+  maxInstances: 50,
+  memory: '512MiB',
+  timeoutSeconds: 30,
+  concurrency: 100
+}, async (req, res) => {
+  try {
+    // Apply middleware
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    // Validate request
+    const { error, value } = validateRequest(req.body, parkingSchemas.startSession);
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        error: 'Validation failed',
+        details: error.details,
+        code: 'VALIDATION_ERROR'
+      });
+    }
+
+    const session = await ParkingService.startSession(value);
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: session,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error starting parking session', { 
+      error: error.message, 
+      stack: error.stack,
+      body: req.body 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to start parking session';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// End a parking session
+export const endParkingSession = onRequest({
+  cors: true,
+  maxInstances: 50,
+  memory: '512MiB',
+  timeoutSeconds: 30
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    const { sessionId, uid } = req.body;
+    
+    if (!sessionId || !uid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields',
+        code: 'MISSING_FIELDS',
+        required: ['sessionId', 'uid']
+      });
+    }
+
+    const session = await ParkingService.endSession(sessionId, uid);
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: session,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error ending parking session', { 
+      error: error.message, 
+      stack: error.stack,
+      body: req.body 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to end parking session';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// Create payment intent
+export const createPaymentIntent = onRequest({
+  cors: true,
+  maxInstances: 30,
+  memory: '512MiB',
+  timeoutSeconds: 30
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    const { error, value } = validateRequest(req.body, paymentSchemas.createPayment);
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        error: 'Validation failed',
+        details: error.details,
+        code: 'VALIDATION_ERROR'
+      });
+    }
+
+    const paymentIntent = await PaymentService.createPaymentIntent(value);
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: paymentIntent,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error creating payment intent', { 
+      error: error.message, 
+      stack: error.stack,
+      body: req.body 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to create payment intent';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// Confirm payment
+export const confirmPayment = onRequest({
+  cors: true,
+  maxInstances: 30,
+  memory: '512MiB',
+  timeoutSeconds: 30
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    const { error, value } = validateRequest(req.body, paymentSchemas.confirmPayment);
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        error: 'Validation failed',
+        details: error.details,
+        code: 'VALIDATION_ERROR'
+      });
+    }
+
+    const result = await PaymentService.confirmPayment(value);
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: result,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error confirming payment', { 
+      error: error.message, 
+      stack: error.stack,
+      body: req.body 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to confirm payment';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// Get user profile
+export const getUserProfile = onRequest({
+  cors: true,
+  maxInstances: 20,
+  memory: '256MiB',
+  timeoutSeconds: 15
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    const { uid } = req.query;
+    
+    if (!uid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing user ID',
+        code: 'MISSING_USER_ID'
+      });
+    }
+
+    const profile = await UserService.getUserProfile(uid);
+    
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found',
+        code: 'USER_NOT_FOUND'
+      });
+    }
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: profile,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error getting user profile', { 
+      error: error.message, 
+      stack: error.stack,
+      query: req.query 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to get user profile';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// Update user profile
+export const updateUserProfile = onRequest({
+  cors: true,
+  maxInstances: 20,
+  memory: '256MiB',
+  timeoutSeconds: 15
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    const { uid } = req.params;
+    const updates = req.body;
+    
+    if (!uid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing user ID',
+        code: 'MISSING_USER_ID'
+      });
+    }
+
+    const result = await UserService.updateUserProfile(uid, updates);
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: result,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error updating user profile', { 
+      error: error.message, 
+      stack: error.stack,
+      params: req.params,
+      body: req.body 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to update user profile';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// Get parking session
+export const getParkingSession = onRequest({
+  cors: true,
+  maxInstances: 20,
+  memory: '256MiB',
+  timeoutSeconds: 15
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    const { sessionId, uid } = req.query;
+    
+    if (!sessionId || !uid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields',
+        code: 'MISSING_FIELDS',
+        required: ['sessionId', 'uid']
+      });
+    }
+
+    const session = await ParkingService.getSession(sessionId, uid);
+    
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        error: 'Session not found',
+        code: 'SESSION_NOT_FOUND'
+      });
+    }
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: session,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error getting parking session', { 
+      error: error.message, 
+      stack: error.stack,
+      query: req.query 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to get parking session';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// Get parking history
+export const getParkingHistory = onRequest({
+  cors: true,
+  maxInstances: 20,
+  memory: '256MiB',
+  timeoutSeconds: 15
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    const { uid } = req.query;
+    const options = {
+      limit: parseInt(req.query.limit) || 20,
+      offset: parseInt(req.query.offset) || 0,
+      status: req.query.status || null
+    };
+    
+    if (!uid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing user ID',
+        code: 'MISSING_USER_ID'
+      });
+    }
+
+    const history = await ParkingService.getUserHistory(uid, options);
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: history,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error getting parking history', { 
+      error: error.message, 
+      stack: error.stack,
+      query: req.query 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to get parking history';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// Get payment methods
+export const getPaymentMethods = onRequest({
+  cors: true,
+  maxInstances: 20,
+  memory: '256MiB',
+  timeoutSeconds: 15
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    const { uid } = req.query;
+    
+    if (!uid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing user ID',
+        code: 'MISSING_USER_ID'
+      });
+    }
+
+    const methods = await PaymentService.getUserPaymentMethods(uid);
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: methods,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error getting payment methods', { 
+      error: error.message, 
+      stack: error.stack,
+      query: req.query 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to get payment methods';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// Add payment method
+export const addPaymentMethod = onRequest({
+  cors: true,
+  maxInstances: 20,
+  memory: '256MiB',
+  timeoutSeconds: 15
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await rateLimiter.apply(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    const { error, value } = validateRequest(req.body, paymentSchemas.addPaymentMethod);
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        error: 'Validation failed',
+        details: error.details,
+        code: 'VALIDATION_ERROR'
+      });
+    }
+
+    const result = await PaymentService.addPaymentMethod(value);
+    
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: result,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error adding payment method', { 
+      error: error.message, 
+      stack: error.stack,
+      body: req.body 
+    });
+    
+    const statusCode = error.statusCode || 500;
+    const message = error.statusCode ? error.message : 'Failed to add payment method';
+    
+    res.status(statusCode).json({
+      success: false,
+      error: message,
+      code: error.code || 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// Get app configuration
+export const getAppConfig = onRequest({
+  cors: true,
+  maxInstances: 10,
+  memory: '256MiB',
+  timeoutSeconds: 10
+}, async (req, res) => {
+  try {
+    await corsMiddleware(req, res);
+    await requestLogger(req, res);
+    await performanceMonitor.start(req, res);
+
+    await performanceMonitor.end(req, res);
+    
+    res.json({
+      success: true,
+      data: {
+        version: '3.0.0',
+        features: {
+          parking: true,
+          payments: true,
+          notifications: true,
+          userProfiles: true
+        },
+        limits: {
+          maxSessions: 10,
+          maxPaymentMethods: 5,
+          sessionTimeout: 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+        },
+        api: {
+          rateLimit: '100 requests per 15 minutes',
+          maxFileSize: '10MB',
+          supportedFormats: ['JSON']
+        }
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    await performanceMonitor.end(req, res);
+    logger.error('Error getting app config', { 
+      error: error.message, 
+      stack: error.stack 
+    });
+    
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get app configuration',
+      code: 'INTERNAL_ERROR',
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+  }
+});
+
+// ============================================================================
+// FIRESTORE TRIGGERS
+// ============================================================================
+
+// Handle parking session completion
+export const onParkingSessionComplete = onDocumentCreated(
+  'users/{userId}/parkingSessions/{sessionId}',
+  {
+    memory: '256MiB',
+    timeoutSeconds: 60,
+    retryCount: 2
+  },
+  async (event) => {
+    try {
+      const sessionData = event.data.data();
+      const { userId, sessionId } = event.params;
+      
+      if (sessionData.status === 'completed') {
+        // Parallel execution for better performance
+        const [notification, statsUpdate] = await Promise.allSettled([
+          NotificationService.sendSessionCompletionNotification(userId, sessionId),
+          UserService.updateUserStats(userId, 'sessionsCompleted')
+        ]);
+
+        // Handle individual results
+        if (notification.status === 'rejected') {
+          logger.warn('Failed to send session completion notification', { 
+            userId, sessionId, error: notification.reason 
+          });
+        }
+        
+        if (statsUpdate.status === 'rejected') {
+          logger.warn('Failed to update user stats', { 
+            userId, error: statsUpdate.reason 
+          });
+        }
+        
+        logger.info('Parking session completion handled', { userId, sessionId });
+      }
+    } catch (error) {
+      logger.error('Error handling parking session completion', { 
+        userId: event.params?.userId, 
+        sessionId: event.params?.sessionId,
+        error: error.message,
+        stack: error.stack 
+      });
+    }
+  }
+);
+
+// Handle payment success
+export const onPaymentSuccess = onDocumentCreated(
+  'users/{userId}/payments/{paymentId}',
+  {
+    memory: '256MiB',
+    timeoutSeconds: 60,
+    retryCount: 2
+  },
+  async (event) => {
+    try {
+      const paymentData = event.data.data();
+      const { userId, paymentId } = event.params;
+      
+      if (paymentData.status === 'succeeded') {
+        // Parallel execution for better performance
+        const [notification, statsUpdate] = await Promise.allSettled([
+          NotificationService.sendPaymentSuccessNotification(userId, paymentId),
+          UserService.updateUserStats(userId, 'paymentsCompleted')
+        ]);
+
+        // Handle individual results
+        if (notification.status === 'rejected') {
+          logger.warn('Failed to send payment success notification', { 
+            userId, paymentId, error: notification.reason 
+          });
+        }
+        
+        if (statsUpdate.status === 'rejected') {
+          logger.warn('Failed to update user stats', { 
+            userId, error: statsUpdate.reason 
+          });
+        }
+        
+        logger.info('Payment success handled', { userId, paymentId });
+      }
+    } catch (error) {
+      logger.error('Error handling payment success', { 
+        userId: event.params?.userId, 
+        paymentId: event.params?.paymentId,
+        error: error.message,
+        stack: error.stack 
+      });
+    }
+  }
+);
+
+

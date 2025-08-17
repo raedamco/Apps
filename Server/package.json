@@ -1,13 +1,53 @@
 {
-  "devDependencies": {
-    "eslint": "^7.23.0",
-    "eslint-plugin-promise": "^4.3.1"
+  "name": "parking-app-server",
+  "version": "3.0.0",
+  "description": "Modern backend server for Parking App with Firebase Functions",
+  "main": "functions/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "firebase emulators:start --only functions",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "deploy:prod": "firebase deploy --only functions --project production",
+    "logs": "firebase functions:log",
+    "lint": "cd functions && npm run lint",
+    "lint:fix": "cd functions && npm run lint:fix",
+    "test": "cd functions && npm test",
+    "test:coverage": "cd functions && npm run test:coverage",
+    "build": "npm run lint",
+    "clean": "rm -rf node_modules functions/node_modules",
+    "install:all": "npm install && cd functions && npm install",
+    "update:deps": "npm update && cd functions && npm update"
+  },
+  "engines": {
+    "node": "20"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "firebase-functions": "^3.14.1",
-    "slack-notify": "^0.1.7",
-    "stripe": "^8.157.0"
-  }
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^4.5.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
+  },
+  "keywords": [
+    "firebase",
+    "functions",
+    "parking",
+    "stripe",
+    "nodejs",
+    "serverless"
+  ],
+  "author": "Parking App Team",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/parking-app-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/parking-app-server/issues"
+  },
+  "homepage": "https://github.com/your-org/parking-app-server#readme"
 }
