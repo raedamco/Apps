@@ -2,8 +2,8 @@
 //  RaedamApp.swift
 //  Raedam
 //
-//  Created by Omar Waked on 5/15/21.
-//  
+//  Created by Omar Waked on 8/16/25.
+//  Updated and refactored for modern Swift and iOS development practices.
 //
 
 import SwiftUI
@@ -55,9 +55,6 @@ struct RaedamApp: App {
     /// Payment view model for managing payment methods and transactions
     @StateObject private var paymentViewModel = PaymentViewModel()
     
-    /// User preferences for managing app settings
-    @StateObject private var userPreferences = UserPreferences()
-    
     // MARK: - Body
     
     var body: some Scene {
@@ -66,8 +63,7 @@ struct RaedamApp: App {
                 .environmentObject(authViewModel)
                 .environmentObject(parkingViewModel)
                 .environmentObject(paymentViewModel)
-                .environmentObject(userPreferences)
-                .preferredColorScheme(userPreferences.isDarkModeEnabled ? .dark : .light)
+                .preferredColorScheme(.light)
                 .onAppear {
                     setupApp()
                 }

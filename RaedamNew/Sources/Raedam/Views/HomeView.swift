@@ -71,7 +71,7 @@ struct HomeView: View {
                 }
             }
             
-            if let location = parkingViewModel.currentLocation {
+            if parkingViewModel.currentLocation != nil {
                 HStack {
                     Image(systemName: "location.fill")
                         .foregroundColor(.red)
@@ -105,7 +105,9 @@ struct HomeView: View {
             }
             
             ForEach(parkingViewModel.activeSessions, id: \.id) { session in
-                ActiveParkingCard(session: session)
+                ActiveParkingCard(session: session) {
+                    // Handle tap action
+                }
             }
         }
         .padding()
@@ -119,7 +121,7 @@ struct HomeView: View {
                 .font(.headline)
                 .fontWeight(.semibold)
             
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                 QuickActionButton(
                     title: "Start Parking",
                     icon: "car.fill",
@@ -130,7 +132,7 @@ struct HomeView: View {
                 
                 QuickActionButton(
                     title: "Find Spot",
-                    icon: "magnifyingglass",
+                    icon: "location.fill",
                     color: .blue
                 ) {
                     // Find spot action
@@ -160,24 +162,16 @@ struct HomeView: View {
     
     private var recentActivitySection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("Recent Activity")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                Spacer()
-                Button("See All") {
-                    // Navigate to full history
-                }
-                .font(.caption)
-                .foregroundColor(.blue)
-            }
+            Text("Recent Activity")
+                .font(.headline)
+                .fontWeight(.semibold)
             
             if parkingViewModel.parkingHistory.isEmpty {
-                Text("No recent parking sessions")
+                Text("No recent parking activity")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical, 20)
+                    .padding()
             } else {
                 ForEach(parkingViewModel.parkingHistory.prefix(3), id: \.id) { session in
                     RecentActivityRow(session: session)
@@ -191,19 +185,30 @@ struct HomeView: View {
     
     private var mapPreviewSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Nearby Parking")
+            Text("Map Preview")
                 .font(.headline)
                 .fontWeight(.semibold)
             
-            Map(coordinateRegion: $region, annotationItems: parkingViewModel.activeSessions) { session in
-                MapMarker(coordinate: session.location.coordinate, tint: .green)
+            if let firstSession = parkingViewModel.activeSessions.first,
+               let location = firstSession.location {
+                Map(coordinateRegion: $region, annotationItems: [firstSession]) { session in
+                    MapMarker(coordinate: location.coordinate, tint: .green)
+                }
+                .frame(height: 200)
+                .cornerRadius(15)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(Color(.systemGray4), lineWidth: 1)
+                )
+            } else {
+                Map(coordinateRegion: $region)
+                    .frame(height: 200)
+                    .cornerRadius(15)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(Color(.systemGray4), lineWidth: 1)
+                    )
             }
-            .frame(height: 200)
-            .cornerRadius(15)
-            .overlay(
-                RoundedRectangle(cornerRadius: 15)
-                    .stroke(Color(.systemGray4), lineWidth: 1)
-            )
         }
         .padding()
         .background(Color(.systemGray6))
@@ -216,77 +221,21 @@ struct HomeView: View {
     }
 }
 
-struct ActiveParkingCard: View {
-    let session: ParkingSession
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(session.location.address)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .lineLimit(1)
-                
-                Text("Started \(session.startTime, style: .relative) ago")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            Button("End") {
-                // End parking action
-            }
-            .font(.caption)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(Color.red)
-            .foregroundColor(.white)
-            .clipShape(Capsule())
-        }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-    }
-}
-
-struct QuickActionButton: View {
-    let title: String
-    let icon: String
-    let color: Color
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 8) {
-                Image(systemName: icon)
-                    .font(.title2)
-                    .foregroundColor(color)
-                
-                Text(title)
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundColor(.primary)
-                    .multilineTextAlignment(.center)
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.white)
-            .cornerRadius(10)
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
 struct RecentActivityRow: View {
     let session: ParkingSession
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(session.location.address)
-                    .font(.subheadline)
-                    .lineLimit(1)
+            VStack(alignment: .leading, spacing: 4) {
+                if let location = session.location {
+                    Text(location.address)
+                        .font(.subheadline)
+                        .lineLimit(1)
+                } else {
+                    Text("Unknown Location")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
                 
                 Text("\(session.startTime, style: .date)")
                     .font(.caption)
@@ -295,27 +244,24 @@ struct RecentActivityRow: View {
             
             Spacer()
             
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("$\(String(format: "%.2f", session.cost))")
+            VStack(alignment: .trailing, spacing: 4) {
+                Text(session.formattedCost)
                     .font(.subheadline)
                     .fontWeight(.semibold)
                 
-                Text(session.status.displayName)
+                Text(session.formattedDuration)
                     .font(.caption)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Color(session.status.color).opacity(0.2))
-                    .foregroundColor(Color(session.status.color))
-                    .clipShape(Capsule())
+                    .foregroundColor(.secondary)
             }
         }
-        .padding(.vertical, 4)
+        .padding()
+        .background(Color.white)
+        .cornerRadius(10)
     }
 }
 
 #Preview {
     HomeView()
-        .environmentObject(AuthViewModel())
         .environmentObject(ParkingViewModel())
-        .environmentObject(PaymentViewModel())
+        .environmentObject(AuthViewModel())
 }

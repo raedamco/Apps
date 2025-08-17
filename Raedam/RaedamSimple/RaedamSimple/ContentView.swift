@@ -2,8 +2,8 @@
 //  ContentView.swift
 //  Raedam
 //
-//  Created by Omar Waked on 5/15/21.
-//  
+//  Created by Omar Waked on 8/16/25.
+//  Updated and refactored for modern Swift and iOS development practices.
 //
 
 import SwiftUI
@@ -21,9 +21,6 @@ struct ContentView: View {
     
     /// Authentication view model for managing user authentication state
     @EnvironmentObject var authViewModel: AuthViewModel
-    
-    /// User preferences for managing app settings
-    @EnvironmentObject var userPreferences: UserPreferences
     
     // MARK: - State Properties
     
@@ -52,29 +49,29 @@ struct ContentView: View {
         TabView(selection: $selectedTab) {
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "house")
+                    Label("Home", systemImage: "house.fill")
                 }
                 .tag(0)
             
             ParkingView()
                 .tabItem {
-                    Label("Parking", systemImage: "car")
+                    Label("Parking", systemImage: "car.fill")
                 }
                 .tag(1)
             
             PaymentView()
                 .tabItem {
-                    Label("Payment", systemImage: "creditcard")
+                    Label("Payment", systemImage: "creditcard.fill")
                 }
                 .tag(2)
             
             SettingsView()
                 .tabItem {
-                    Label("Settings", systemImage: "gearshape")
+                    Label("Settings", systemImage: "gearshape.fill")
                 }
                 .tag(3)
         }
-        .accentColor(userPreferences.isDarkModeEnabled ? .white : .blue)
+        .accentColor(.blue)
         .onAppear {
             loadInitialData()
         }
@@ -108,5 +105,4 @@ struct ContentView: View {
         .environmentObject(AuthViewModel())
         .environmentObject(ParkingViewModel())
         .environmentObject(PaymentViewModel())
-        .environmentObject(UserPreferences())
 }

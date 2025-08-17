@@ -1,41 +1,36 @@
-// swift-tools-version: 5.9
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+//
+//  Package.swift
+//  Raedam
+//
+//  Created by Omar Waked on 5/15/21.
+//  
+//
 
+// swift-tools-version: 5.9
 import PackageDescription
 
 let package = Package(
-    name: "Raedam",
+    name: "RaedamSimple",
     platforms: [
         .iOS(.v17),
-        .macOS(.v11)
+        .macOS(.v14)
     ],
     products: [
         .library(
-            name: "Raedam",
-            targets: ["Raedam"]),
+            name: "RaedamSimple",
+            targets: ["RaedamSimple"]),
     ],
     dependencies: [
-        // Firebase for authentication and backend services
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.20.0"),
-        
-        // Stripe for payment processing
-        .package(url: "https://github.com/stripe/stripe-ios.git", from: "23.21.0"),
-        
-        // Networking and JSON parsing
-        .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.8.1"),
-        
-        // Swift concurrency utilities
-        .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
-        
-        // UI components and utilities
-        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.10.1"),
-        
-        // Localization and internationalization
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.29.0"),
+        .package(url: "https://github.com/stripe/stripe-ios.git", from: "23.32.0"),
+        .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.10.2"),
+        .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.4"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.12.0"),
         .package(url: "https://github.com/malcommac/SwiftLocation.git", from: "5.1.0")
     ],
     targets: [
         .target(
-            name: "Raedam",
+            name: "RaedamSimple",
             dependencies: [
                 .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
                 .product(name: "FirebaseFirestore", package: "firebase-ios-sdk"),
@@ -48,6 +43,6 @@ let package = Package(
                 .product(name: "Kingfisher", package: "Kingfisher"),
                 .product(name: "SwiftLocation", package: "SwiftLocation")
             ],
-            path: "Raedam/Raedam")
+            path: "RaedamSimple")
     ]
 )
