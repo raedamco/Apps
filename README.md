@@ -228,7 +228,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **Documentation**: Check the inline code comments
 - **Issues**: Report bugs via GitHub Issues
 - **Questions**: Open GitHub Discussions
-- **Email**: support@parkingapp.com
 
 ## 🙏 Acknowledgments
 
@@ -238,6 +237,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Mapbox for mapping solutions
 - Open source community for libraries and tools
 
----
-
-**Built with ❤️ using SwiftUI and modern iOS technologies**
